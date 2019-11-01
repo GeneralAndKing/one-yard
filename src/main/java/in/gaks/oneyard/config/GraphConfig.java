@@ -1,7 +1,7 @@
 package in.gaks.oneyard.config;
 
 import graphql.schema.GraphQLSchema;
-import in.gaks.oneyard.service.TestService;
+import in.gaks.oneyard.controller.TestController;
 import io.leangen.graphql.GraphQLSchemaGenerator;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -18,12 +18,12 @@ import org.springframework.context.annotation.Configuration;
 @AllArgsConstructor
 public class GraphConfig {
 
-  private final @NotNull TestService testService;
+  private final @NotNull TestController testController;
 
   @Bean
   public GraphQLSchema graphqlSchema() {
     return new GraphQLSchemaGenerator()
-        .withOperationsFromSingleton(testService).generate();
+        .withOperationsFromSingleton(testController).generate();
   }
 
 }

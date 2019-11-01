@@ -1,4 +1,4 @@
-package in.gaks.oneyard.service;
+package in.gaks.oneyard.controller;
 
 import in.gaks.oneyard.entity.My;
 import in.gaks.oneyard.entity.Test;
@@ -19,20 +19,24 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
 /**
- * .
+ * .测试
  *
  * @author echo
- * @date 2019/11/1 上午10:58
+ * @date 2019/11/1 下午10:02
  */
 @Slf4j
 @Service
 @GraphQLApi
-public class TestService {
-
+public class TestController {
 
   private final ConcurrentMultiMap<String, FluxSink<Test>> subscribers = new ConcurrentMultiMap<>();
 
-
+  /**
+   * .测试查询
+   *
+   * @param test 条件查询
+   * @return 写死的数据
+   */
   @GraphQLQuery
   public Collection<Test> tests(Test test) {
     log.info("{} log", test);
@@ -40,24 +44,40 @@ public class TestService {
         .collect(Collectors.toList());
   }
 
-
+  /**
+   * .测试创建
+   *
+   * @param test 要创建的数据
+   * @return 创建的数据
+   */
   @GraphQLMutation
   public Test createTest(@GraphQLNonNull Test test) {
     log.info("添加 {}", test);
     return test;
   }
 
+  /**
+   * .测试关联查询
+   *
+   * @param test 测试数据
+   * @return 结果
+   */
   @GraphQLQuery
   public My my(@GraphQLContext Test test) {
     log.info("进入子查询");
     return new My("123");
   }
 
+  /**
+   * .测试发布订阅
+   *
+   * @param code 监听的 code
+   * @return 发布者
+   */
   @GraphQLSubscription
   public Publisher<Test> collectionPublisher(String code) {
     return Flux.create(subscriber -> subscribers
             .add(code, subscriber.onDispose(() -> subscribers.remove(code, subscriber))),
         FluxSink.OverflowStrategy.LATEST);
   }
-
 }
