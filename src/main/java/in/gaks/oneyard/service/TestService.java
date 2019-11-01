@@ -6,12 +6,17 @@ import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLNonNull;
 import io.leangen.graphql.annotations.GraphQLQuery;
+import io.leangen.graphql.annotations.GraphQLSubscription;
 import io.leangen.graphql.spqr.spring.annotations.GraphQLApi;
+import io.leangen.graphql.spqr.spring.util.ConcurrentMultiMap;
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.reactivestreams.Publisher;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 
 /**
  * .
@@ -23,6 +28,10 @@ import org.springframework.stereotype.Service;
 @Service
 @GraphQLApi
 public class TestService {
+
+
+  private final ConcurrentMultiMap<String, FluxSink<Test>> subscribers = new ConcurrentMultiMap<>();
+
 
   @GraphQLQuery
   public Collection<Test> tests(Test test) {
@@ -43,4 +52,12 @@ public class TestService {
     log.info("进入子查询");
     return new My("123");
   }
+
+  @GraphQLSubscription
+  public Publisher<Test> collectionPublisher(String code) {
+    return Flux.create(subscriber -> subscribers
+            .add(code, subscriber.onDispose(() -> subscribers.remove(code, subscriber))),
+        FluxSink.OverflowStrategy.LATEST);
+  }
+
 }
