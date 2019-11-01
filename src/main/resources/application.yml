@@ -1,1 +1,6 @@
-
+graphql:
+  spqr:
+    relay:
+      connection-check-relaxed: true
+    gui:
+      enabled: true

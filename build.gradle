@@ -45,10 +45,25 @@ configurations {
 
 ext {
     set('springCloudVersion', "Hoxton.RC1")
+    set('guavaVersion', "28.1-jre")
+    set('gsonVersion', "2.8.6")
+    set('jetbrainsVersion', "17.0.0")
+    set('graphqlJavaVersion', "0.0.4")
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation(
+            "com.google.guava:guava:${guavaVersion}",
+            "com.google.code.gson:gson:${gsonVersion}",
+            "org.jetbrains:annotations:${jetbrainsVersion}",
+            "io.leangen.graphql:graphql-spqr-spring-boot-starter:${graphqlJavaVersion}"
+    )
+    implementation (
+            'org.springframework.boot:spring-boot-starter-websocket',
+            'org.springframework.boot:spring-boot-starter-actuator',
+            'org.springframework.boot:spring-boot-starter-web',
+            'io.projectreactor:reactor-core'
+    )
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
