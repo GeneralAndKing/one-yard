@@ -6,6 +6,7 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import lombok.Data;
@@ -51,7 +52,6 @@ public class SysUser extends BaseEntity implements Serializable {
   @NonNull
   private String phone;
 
-  @NonNull
-  private Long roleId;
-
+  @OneToOne
+  private SysRole role;
 }
