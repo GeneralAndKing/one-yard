@@ -1,7 +1,6 @@
-package in.gaks.oneyard.controller;
+package in.gaks.oneyard.test;
 
-import in.gaks.oneyard.entity.My;
-import in.gaks.oneyard.entity.Test;
+import in.gaks.oneyard.base.BaseController;
 import io.leangen.graphql.annotations.GraphQLContext;
 import io.leangen.graphql.annotations.GraphQLMutation;
 import io.leangen.graphql.annotations.GraphQLNonNull;
@@ -14,20 +13,21 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.FluxSink;
 
 /**
  * .测试
  *
- * @author echo
+ * @author <a href="https://echocow.cn">EchoCow</a>
  * @date 2019/11/1 下午10:02
  */
 @Slf4j
-@Service
+@Controller
 @GraphQLApi
-public class TestController {
+@SuppressWarnings("unused")
+public class TestController implements BaseController {
 
   private final ConcurrentMultiMap<String, FluxSink<Test>> subscribers = new ConcurrentMultiMap<>();
 

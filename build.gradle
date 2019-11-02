@@ -61,6 +61,7 @@ dependencies {
     implementation (
             'org.springframework.boot:spring-boot-starter-websocket',
             'org.springframework.boot:spring-boot-starter-actuator',
+            'org.springframework.boot:spring-boot-starter-data-jpa',
             'org.springframework.boot:spring-boot-starter-web',
             'io.projectreactor:reactor-core'
     )

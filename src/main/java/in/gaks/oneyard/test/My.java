@@ -1,4 +1,4 @@
-package in.gaks.oneyard.entity;
+package in.gaks.oneyard.test;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * .
  *
- * @author echo
+ * @author <a href="https://echocow.cn">EchoCow</a>
  * @date 2019/11/1 上午11:50
  */
 @Data

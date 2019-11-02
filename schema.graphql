@@ -8,7 +8,9 @@ schema {
 
 "Mutation root"
 type Mutation {
+    createSysUser(sysUser: SysUserInput!): SysUser
     createTest(test: TestInput!): Test
+    updateSysUser(id: Long!, sysUser: SysUserInput!): SysUser
 }
 
 type My {
@@ -17,6 +19,8 @@ type My {
 
 "Query root"
 type Query {
+    sysUser(id: Long!): SysUser
+    sysUsers(sysUser: SysUserInput): [SysUser]
     tests(test: TestInput): [Test]
 }
 
@@ -25,14 +29,72 @@ type Subscription {
     collectionPublisher(code: String): Test
 }
 
+type SysRole {
+    createTime: LocalDateTime
+    createUser: String
+    departmentId: Long
+    description: String
+    id: Long
+    isEnable: Boolean
+    modifyTime: LocalDateTime
+    modifyUser: String
+    name: String
+    remark: String
+    sort: Int
+}
+
+type SysUser {
+    createTime: LocalDateTime
+    createUser: String
+    email: String
+    icon: String
+    id: Long
+    isEnable: Boolean
+    modifyTime: LocalDateTime
+    modifyUser: String
+    name: String
+    password: String
+    phone: String
+    remark: String
+    roleId: Long
+    roles: SysRole
+    sort: Int
+    status: Status
+    username: String
+}
+
 type Test {
     my: My
     name: String
     password: String
 }
 
+enum Status {
+    LOCKED
+    NORMAL
+}
+
 input MyInput {
     name: String
+}
+
+input SysUserInput {
+    createTime: LocalDateTime
+    createUser: String
+    email: String
+    icon: String
+    id: Long
+    isEnable: Boolean
+    modifyTime: LocalDateTime
+    modifyUser: String
+    name: String
+    password: String
+    phone: String
+    remark: String
+    roleId: Long
+    sort: Int
+    status: Status
+    username: String
 }
 
 input TestInput {
@@ -42,5 +104,11 @@ input TestInput {
 }
 
 
+"Built-in scalar representing a local date-time"
+scalar LocalDateTime
+
 "Unrepresentable type"
 scalar UNREPRESENTABLE
+
+"Long type"
+scalar Long
