@@ -1,6 +1,5 @@
 package in.gaks.oneyard.base;
 
-import io.leangen.graphql.annotations.GraphQLQuery;
 import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
@@ -93,49 +92,4 @@ public class BaseEntity {
    */
   private Boolean isEnable = true;
 
-
-  @GraphQLQuery(name = "id")
-  public Long getId() {
-    return id;
-  }
-
-  @GraphQLQuery(name = "name")
-  public String getName() {
-    return name;
-  }
-
-  @GraphQLQuery(name = "sort")
-  public Integer getSort() {
-    return sort;
-  }
-
-  @GraphQLQuery(name = "createTime")
-  public LocalDateTime getCreateTime() {
-    return createTime;
-  }
-
-  @GraphQLQuery(name = "createUser")
-  public String getCreateUser() {
-    return createUser;
-  }
-
-  @GraphQLQuery(name = "modifyTime")
-  public LocalDateTime getModifyTime() {
-    return modifyTime;
-  }
-
-  @GraphQLQuery(name = "modifyUser")
-  public String getModifyUser() {
-    return modifyUser;
-  }
-
-  @GraphQLQuery(name = "remark")
-  public String getRemark() {
-    return remark;
-  }
-
-  @GraphQLQuery(name = "isEnable")
-  public Boolean getEnable() {
-    return isEnable;
-  }
 }

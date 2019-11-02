@@ -1,9 +1,3 @@
-graphql:
-  spqr:
-    relay:
-      connection-check-relaxed: true
-    gui:
-      enabled: true
 spring:
   datasource:
     url: jdbc:mysql://118.24.1.170:3306/gak?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&autoReconnect=true&serverTimezone=UTC
