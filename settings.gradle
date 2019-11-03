@@ -1,1 +1,3 @@
 rootProject.name = 'one-yard'
+include 'one-yard-generate'
+
