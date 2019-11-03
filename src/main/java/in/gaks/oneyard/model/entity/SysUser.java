@@ -3,10 +3,15 @@ package in.gaks.oneyard.model.entity;
 import in.gaks.oneyard.base.BaseEntity;
 import in.gaks.oneyard.model.constant.Status;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.OneToOne;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import lombok.Data;
@@ -28,9 +33,9 @@ import org.hibernate.annotations.Where;
 @Table(name = "sys_user")
 @Entity(name = "sys_user")
 @Accessors(chain = true)
-@ToString(callSuper = true)
 @Where(clause = "is_enable = 1")
-@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true, exclude = "roles")
+@EqualsAndHashCode(callSuper = true, exclude = "roles")
 public class SysUser extends BaseEntity implements Serializable {
 
   @NonNull
@@ -52,7 +57,9 @@ public class SysUser extends BaseEntity implements Serializable {
   @NonNull
   private String phone;
 
-  @OneToOne
-  private SysRole role;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "userId"),
+      inverseJoinColumns = @JoinColumn(name = "roleId"))
+  private Set<SysRole> roles = new HashSet<>();
 
 }
