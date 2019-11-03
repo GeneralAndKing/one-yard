@@ -9,6 +9,7 @@ package in.gaks.oneyard.model.helper;
  * @date 2019/11/2 下午11:24
  */
 public interface VerifyParameterPredicate<T, V> {
+
   /**
    * 测试.
    *

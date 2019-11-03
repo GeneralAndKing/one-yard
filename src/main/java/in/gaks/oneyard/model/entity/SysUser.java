@@ -54,4 +54,5 @@ public class SysUser extends BaseEntity implements Serializable {
 
   @OneToOne
   private SysRole role;
+
 }

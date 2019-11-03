@@ -4,4 +4,8 @@ spring:
     username: gak
     password: G&k123456
   jpa:
+    open-in-view: true
     show-sql: true
+    properties:
+      hibernate:
+        format_sql: true

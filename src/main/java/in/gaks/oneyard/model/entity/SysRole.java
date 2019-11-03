@@ -2,6 +2,7 @@ package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +29,7 @@ public class SysRole extends BaseEntity {
 
   private String description;
 
-  private Long departmentId;
+  @OneToOne
+  private SysDepartment department;
 
 }
