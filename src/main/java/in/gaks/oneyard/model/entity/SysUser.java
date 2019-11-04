@@ -1,60 +1,65 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import in.gaks.oneyard.model.constant.Status;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import lombok.*;
-import javax.persistence.*;
 import org.hibernate.annotations.Where;
 
-
 /**
- * sys_user
+ * .用户
  *
- * @author BugRui EchoCow Japoul
- * @date 2019年11月4日 下午5:22:07
+ * @author <a href="https://echocow.cn">EchoCow</a>
+ * @date 2019/11/2 上午8:44
  */
 @Data
 @NoArgsConstructor
-@Accessors(chain = true)
-@ToString(callSuper = true)
 @Table(name = "sys_user")
 @Entity(name = "sys_user")
+@Accessors(chain = true)
 @Where(clause = "is_enable = 1")
-@EqualsAndHashCode(callSuper = true)
-public class SysUser extends BaseEntity {
+@ToString(callSuper = true, exclude = "roles")
+@EqualsAndHashCode(callSuper = true, exclude = "roles")
+public class SysUser extends BaseEntity implements Serializable {
 
-  /**
-   * 名称
-   */
-  private java.lang.String name;
+  @NonNull
+  private String username;
 
-  /**
-   * 用户名
-   */
-  private java.lang.String username;
+  @NonNull
+  private String password;
 
-  /**
-   * 密码
-   */
-  private java.lang.String password;
+  @NonNull
+  @Enumerated(EnumType.ORDINAL)
+  private Status status;
 
-  /**
-   * 状态 1、启用 0、禁用
-   */
-  private java.lang.Integer status;
+  @NonNull
+  private String icon;
 
-  /**
-   * 头像
-   */
-  private java.lang.String icon;
+  @Email
+  private String email;
 
-  /**
-   * 电子邮箱
-   */
-  private java.lang.String email;
+  @NonNull
+  private String phone;
 
-  /**
-   * 手机号
-   */
-  private java.lang.String phone;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "userId"),
+      inverseJoinColumns = @JoinColumn(name = "roleId"))
+  private Set<SysRole> roles = new HashSet<>();
+
 }

@@ -8,10 +8,10 @@ import org.hibernate.annotations.Where;
 
 
 /**
- * sys_user_role
- *
+ * sys_user_role.
  * @author BugRui EchoCow Japoul
- * @date 2019年11月4日 下午5:22:07
+ * @date 2019年11月4日 下午10:17:20
+ *
  */
 @Data
 @NoArgsConstructor
@@ -22,19 +22,14 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_enable = 1")
 @EqualsAndHashCode(callSuper = true)
 public class SysUserRole extends BaseEntity {
-
   /**
-   *
-   */
-  private java.lang.String name;
-
-  /**
-   *
+   * .
    */
   private java.lang.Integer userId;
 
   /**
-   *
+   * .
    */
   private java.lang.Integer roleId;
+
 }

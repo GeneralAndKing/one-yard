@@ -7,7 +7,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**
 * Repository.
-*
 * @author BugRui EchoCow Japoul
 * @date ${.now?datetime}
 */

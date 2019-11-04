@@ -42,7 +42,8 @@ public class GenEntity extends AbstractGen {
 
     @Override
     Map<String, Object> genData(Map.Entry<String, List<Column>> tableData) {
-      String[] noGen = new String[]{"id", "createUser", "createTime", "modifyUser", "modifyTime",
+      String[] noGen = new String[]{"id", "name", "createUser", "createTime", "modifyUser",
+          "modifyTime",
           "isEnable", "sort", "remark"};
         String tableName = tableData.getKey();
         List<Column> columns = tableData.getValue();

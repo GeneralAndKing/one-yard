@@ -8,10 +8,10 @@ import org.hibernate.annotations.Where;
 
 
 /**
- * sys_department_permission
- *
+ * sys_department_permission.
  * @author BugRui EchoCow Japoul
- * @date 2019年11月4日 下午5:22:07
+ * @date 2019年11月4日 下午10:17:20
+ *
  */
 @Data
 @NoArgsConstructor
@@ -22,19 +22,14 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_enable = 1")
 @EqualsAndHashCode(callSuper = true)
 public class SysDepartmentPermission extends BaseEntity {
-
   /**
-   * 名称
-   */
-  private java.lang.String name;
-
-  /**
-   * 部门
+   * 部门.
    */
   private java.lang.Integer departmentId;
 
   /**
-   * 权限
+   * 权限.
    */
   private java.lang.Integer permissionId;
+
 }

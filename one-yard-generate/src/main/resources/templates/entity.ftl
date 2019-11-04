@@ -8,10 +8,10 @@ import org.hibernate.annotations.Where;
 
 
 /**
-* ${TableName}
-*
+* ${TableName}.
 * @author BugRui EchoCow Japoul
 * @date ${.now?datetime}
+*
 */
 @Data
 @NoArgsConstructor
@@ -23,10 +23,10 @@ import org.hibernate.annotations.Where;
 @EqualsAndHashCode(callSuper = true)
 public class ${ClassName} extends BaseEntity {
 <#list Columns as column>
-
   /**
-  * ${column.comment}
+  * ${column.comment}.
   */
   private ${column.type} ${column.name};
+
 </#list>
 }

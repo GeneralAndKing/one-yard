@@ -7,9 +7,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**
  * Repository.
- *
  * @author BugRui EchoCow Japoul
- * @date 2019年11月4日 下午5:22:07
+ * @date 2019年11月4日 下午10:17:20
  */
 @RepositoryRestResource(path = OneYard.PLAN_MATERIAL)
 public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Long> {
