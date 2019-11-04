@@ -30,8 +30,8 @@ import org.hibernate.annotations.Where;
 @Table(name = "sys_permission")
 @Entity(name = "sys_permission")
 @Where(clause = "is_enable = 1")
-@ToString(callSuper = true, exclude = "departments")
-@EqualsAndHashCode(callSuper = true, exclude = "departments")
+@ToString(callSuper = true, exclude = {"departments", "roles"})
+@EqualsAndHashCode(callSuper = true, exclude = {"departments", "roles"})
 public class SysPermission extends BaseEntity {
 
   private String description;
@@ -44,5 +44,9 @@ public class SysPermission extends BaseEntity {
   @JsonBackReference
   @ManyToMany(mappedBy = "permissions", fetch = FetchType.EAGER)
   private Set<SysDepartment> departments = new HashSet<>();
+
+  @JsonBackReference
+  @ManyToMany(mappedBy = "rolePermissions", fetch = FetchType.EAGER)
+  private Set<SysRole> roles = new HashSet<>();
 
 }
