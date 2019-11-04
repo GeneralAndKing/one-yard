@@ -8,7 +8,7 @@ import org.hibernate.annotations.Where;
 
 
 /**
- * sys_user
+ * material_plan_summary
  *
  * @author BugRui EchoCow Japoul
  * @date 2019年11月4日 下午5:22:07
@@ -17,44 +17,24 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @Accessors(chain = true)
 @ToString(callSuper = true)
-@Table(name = "sys_user")
-@Entity(name = "sys_user")
+@Table(name = "material_plan_summary")
+@Entity(name = "material_plan_summary")
 @Where(clause = "is_enable = 1")
 @EqualsAndHashCode(callSuper = true)
-public class SysUser extends BaseEntity {
+public class MaterialPlanSummary extends BaseEntity {
 
   /**
-   * 名称
+   * 物料需求计划汇总表名称
    */
   private java.lang.String name;
 
   /**
-   * 用户名
+   * 计划状态： 0 自由 1 已提交汇总 2 已删除 3 已终止
    */
-  private java.lang.String username;
+  private java.lang.Integer planStatus;
 
   /**
-   * 密码
+   * 审批状态： 0 未提交 1 审批中 2 审批退回 3 审批通过
    */
-  private java.lang.String password;
-
-  /**
-   * 状态 1、启用 0、禁用
-   */
-  private java.lang.Integer status;
-
-  /**
-   * 头像
-   */
-  private java.lang.String icon;
-
-  /**
-   * 电子邮箱
-   */
-  private java.lang.String email;
-
-  /**
-   * 手机号
-   */
-  private java.lang.String phone;
+  private java.lang.Integer approvalStatus;
 }

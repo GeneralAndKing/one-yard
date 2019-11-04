@@ -8,7 +8,7 @@ import org.hibernate.annotations.Where;
 
 
 /**
- * sys_user
+ * auth
  *
  * @author BugRui EchoCow Japoul
  * @date 2019年11月4日 下午5:22:07
@@ -17,44 +17,34 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @Accessors(chain = true)
 @ToString(callSuper = true)
-@Table(name = "sys_user")
-@Entity(name = "sys_user")
+@Table(name = "auth")
+@Entity(name = "auth")
 @Where(clause = "is_enable = 1")
 @EqualsAndHashCode(callSuper = true)
-public class SysUser extends BaseEntity {
+public class Auth extends BaseEntity {
 
   /**
-   * 名称
+   *
    */
   private java.lang.String name;
 
   /**
-   * 用户名
+   * 审批类型 0 物料需求计划审批 1 采购计划审批
    */
-  private java.lang.String username;
+  private java.lang.Integer authType;
 
   /**
-   * 密码
+   * 需求计划汇总表id
    */
-  private java.lang.String password;
+  private java.lang.Integer planId;
 
   /**
-   * 状态 1、启用 0、禁用
+   * 审批意见（结果） （审批退回 审批通过）
    */
-  private java.lang.Integer status;
+  private java.lang.String result;
 
   /**
-   * 头像
+   * 说明（对审批结果的解释）
    */
-  private java.lang.String icon;
-
-  /**
-   * 电子邮箱
-   */
-  private java.lang.String email;
-
-  /**
-   * 手机号
-   */
-  private java.lang.String phone;
+  private java.lang.String description;
 }

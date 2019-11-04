@@ -8,7 +8,7 @@ import org.hibernate.annotations.Where;
 
 
 /**
- * sys_permission
+ * material_type
  *
  * @author BugRui EchoCow Japoul
  * @date 2019年11月4日 下午5:22:07
@@ -17,29 +17,19 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @Accessors(chain = true)
 @ToString(callSuper = true)
-@Table(name = "sys_permission")
-@Entity(name = "sys_permission")
+@Table(name = "material_type")
+@Entity(name = "material_type")
 @Where(clause = "is_enable = 1")
 @EqualsAndHashCode(callSuper = true)
-public class SysPermission extends BaseEntity {
+public class MaterialType extends BaseEntity {
 
   /**
-   *
+   * 物资类别编号
+   */
+  private java.lang.String code;
+
+  /**
+   * 物料类别名称
    */
   private java.lang.String name;
-
-  /**
-   *
-   */
-  private java.lang.String description;
-
-  /**
-   * URL 匹配
-   */
-  private java.lang.String matchUrl;
-
-  /**
-   * 允许通过的方法：GET POST PUT DELETE ALL
-   */
-  private java.lang.String method;
 }

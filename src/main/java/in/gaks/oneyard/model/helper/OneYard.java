@@ -19,4 +19,27 @@ public final class OneYard {
 
   public static final String SYS_DEPARTMENT = "sysDepartment";
 
+  public static final String SYS_DEPARTMENT_PERMISSION = "sysDepartmentPermission";
+
+  public static final String SYS_ROLE_PERMISSION = "sysRolePermission";
+
+  public static final String SYS_USER_ROLE = "sysUserRole";
+
+  public static final String AUTH = "auth";
+
+  public static final String INVENTORY = "inventory";
+
+  public static final String MATERIAL = "material";
+
+  public static final String MATERIAL_DEMAND_PLAN = "materialDemandPlan";
+
+  public static final String MATERIAL_PLAN_SUMMARY = "materialPlanSummary";
+
+  public static final String MATERIAL_TYPE = "materialType";
+
+  public static final String PLAN_MATERIAL = "planMaterial";
+
+  public static final String SUPPLIER = "supplier";
+
+
 }

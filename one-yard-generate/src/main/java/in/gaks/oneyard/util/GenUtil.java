@@ -13,22 +13,31 @@ import java.util.regex.Pattern;
  **/
 @Component
 public class GenUtil {
+
+  private static final String UNDERLINE = "_";
     private static final Pattern COMPILE = Pattern.compile("_([a-z])");
 
     /**
      * 下划线转驼峰式
      *
-     * @param underLine 待转换字符串
+     * @param para 待转换字符串
      * @return 驼峰式字符串
      */
-    public static String underLineToHump(String underLine) {
-        Matcher matcher = COMPILE.matcher(underLine);
-        StringBuffer buffer = new StringBuffer();
-        while (matcher.find()) {
-            matcher.appendReplacement(buffer, matcher.group(1).toUpperCase());
+    public static String underLineToHump(String para) {
+      StringBuilder result = new StringBuilder();
+      for (String s : para.split(UNDERLINE)) {
+        if (!para.contains("_")) {
+          result.append(s);
+          continue;
         }
-        matcher.appendTail(buffer);
-        return buffer.toString();
+        if (result.length() == 0) {
+          result.append(s.toLowerCase());
+        } else {
+          result.append(s.substring(0, 1).toUpperCase());
+          result.append(s.substring(1).toLowerCase());
+        }
+      }
+      return result.toString();
     }
 
     /**

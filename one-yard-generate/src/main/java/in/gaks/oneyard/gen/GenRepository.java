@@ -28,16 +28,18 @@ public class GenRepository extends AbstractGen {
 
     @Override
     String path() {
-        return "light-blog-module\\src\\main\\java\\com\\bugrui\\module\\repository";
+      return "./src/main/java/in/gaks/oneyard/repository";
     }
 
     @Override
     Map<String, Object> genData(Map.Entry<String, List<Column>> tableData) {
         Map<String, Object> data = new HashMap<>();
+      String path = tableData.getKey().toUpperCase();
         String entityNameLow = GenUtil.underLineToHump(tableData.getKey());
         String entityName = GenUtil.firstCharChange(entityNameLow);
         data.put("EntityName", entityName);
         data.put("EntityNameLow", entityNameLow);
+      data.put("path", path);
         return data;
     }
 

@@ -32,7 +32,7 @@ public class GenEntity extends AbstractGen {
 
     @Override
     String path() {
-        return "light-blog-module/src/main/java/com/bugrui/module/entity";
+      return "./src/main/java/in/gaks/oneyard/model/entity";
     }
 
     @Override
@@ -42,7 +42,8 @@ public class GenEntity extends AbstractGen {
 
     @Override
     Map<String, Object> genData(Map.Entry<String, List<Column>> tableData) {
-        String[] noGen=new String[]{"id","createId","createTime","updateId","updateTime","remark"};
+      String[] noGen = new String[]{"id", "createUser", "createTime", "modifyUser", "modifyTime",
+          "isEnable", "sort", "remark"};
         String tableName = tableData.getKey();
         List<Column> columns = tableData.getValue();
         HashMap<String, Object> data = new HashMap<>();
@@ -61,7 +62,7 @@ public class GenEntity extends AbstractGen {
             }
         }
         className= GenUtil.firstCharChange(className);
-        data.put("PackageName", "in.gaks.oneyard.module.entity;");
+      data.put("PackageName", "in.gaks.oneyard.model.entity;");
         data.put("TableName",tableName);
         data.put("ClassName",className);
         data.put("Columns",columns);
