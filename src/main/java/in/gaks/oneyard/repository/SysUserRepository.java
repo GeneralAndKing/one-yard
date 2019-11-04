@@ -4,6 +4,7 @@ import in.gaks.oneyard.base.BaseRepository;
 import in.gaks.oneyard.model.entity.SysUser;
 import in.gaks.oneyard.model.helper.OneYard;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -31,4 +32,44 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
       nativeQuery = true)
   List<SysUser> searchByRoleId(Long id);
 
+  /**
+   * 通过名字查询是否存在.
+   *
+   * @param name 名字
+   * @return 结果
+   */
+  boolean existsByName(String name);
+
+  /**
+   * 通过用户名查询是否存在.
+   *
+   * @param username 用户名
+   * @return 结果
+   */
+  boolean existsByUsername(String username);
+
+  /**
+   * 通过邮箱查询是否存在.
+   *
+   * @param email 邮箱
+   * @return 结果
+   */
+  boolean existsByEmail(String email);
+
+  /**
+   * 通过手机号查询是否存在.
+   *
+   * @param phone 手机号
+   * @return 结果
+   */
+  boolean existsByPhone(String phone);
+
+  /**
+   * 根据邮箱查询用户.
+   *
+   * @param email 邮箱
+   * @return 用户
+   */
+  @RestResource(path = "byEmail")
+  Optional<SysUser> findFirstByEmail(String email);
 }

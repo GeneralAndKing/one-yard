@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.2.0.RELEASE'
+        springBootVersion = '2.1.9.RELEASE'
     }
     repositories {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
@@ -12,7 +12,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version '2.2.0.RELEASE'
+    id 'org.springframework.boot' version '2.1.9.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
     id 'idea'
@@ -46,8 +46,9 @@ allprojects {
         set('guavaVersion', "28.1-jre")
         set('gsonVersion', "2.8.6")
         set('jetbrainsVersion', "17.0.0")
-        set('fasgjsonVersion', '1.2.62')
+        set('fastjsonVersion', '1.2.62')
         set('apacheCommonsLangVersion', '3.9')
+        set('junt5Version', '5.6.0-M1')
     }
 
 }
@@ -67,14 +68,17 @@ dependencies {
             "com.google.guava:guava:${guavaVersion}",
             "com.google.code.gson:gson:${gsonVersion}",
             "org.jetbrains:annotations:${jetbrainsVersion}",
-            "com.alibaba:fastjson:${fasgjsonVersion}",
+            "com.alibaba:fastjson:${fastjsonVersion}",
             "org.apache.commons:commons-lang3:${apacheCommonsLangVersion}"
     )
     implementation(
+            "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}",
+            "org.springframework.boot:spring-boot-starter-security",
             'org.springframework.boot:spring-boot-starter-websocket',
             'org.springframework.boot:spring-boot-starter-actuator',
             'org.springframework.boot:spring-boot-starter-data-jpa',
             'org.springframework.boot:spring-boot-starter-data-rest',
+            'org.springframework.boot:spring-boot-starter-data-redis',
             'org.springframework.boot:spring-boot-starter-web',
             'org.springframework.data:spring-data-rest-hal-browser'
     )
@@ -82,15 +86,10 @@ dependencies {
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
-    testImplementation('org.springframework.boot:spring-boot-starter-test') {
-        exclude group: 'junit', module: 'junit'
-    }
     testImplementation(
-            'org.springframework.security:spring-security-test',
-            'org.junit.jupiter:junit-jupiter-api',
-            'org.junit.jupiter:junit-jupiter-params'
+            'org.springframework.boot:spring-boot-starter-test',
+            'org.springframework.security:spring-security-test'
     )
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     runtimeOnly 'mysql:mysql-connector-java'
 }
 

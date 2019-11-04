@@ -58,7 +58,8 @@ public class SysUser extends BaseEntity implements Serializable {
   private String phone;
 
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "sys_user_role", joinColumns = @JoinColumn(name = "userId"),
+  @JoinTable(name = "sys_user_role",
+      joinColumns = @JoinColumn(name = "userId"),
       inverseJoinColumns = @JoinColumn(name = "roleId"))
   private Set<SysRole> roles = new HashSet<>();
 

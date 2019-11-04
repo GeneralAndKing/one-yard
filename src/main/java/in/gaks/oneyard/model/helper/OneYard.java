@@ -41,5 +41,4 @@ public final class OneYard {
 
   public static final String SUPPLIER = "supplier";
 
-
 }

@@ -1,5 +1,7 @@
 package in.gaks.oneyard.model.constant;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * http method.
  *
@@ -38,7 +40,11 @@ public enum HttpMethod {
    * @param name 匹配的方法
    * @return 结果
    */
-  public boolean match(String name) {
+  public boolean match(@NotNull String name) {
     return name().equalsIgnoreCase(name);
+  }
+
+  public boolean match(@NotNull HttpMethod method) {
+    return method.name().equals(name());
   }
 }

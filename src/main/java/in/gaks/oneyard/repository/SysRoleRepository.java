@@ -4,6 +4,7 @@ import in.gaks.oneyard.base.BaseRepository;
 import in.gaks.oneyard.model.entity.SysRole;
 import in.gaks.oneyard.model.helper.OneYard;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -30,4 +31,12 @@ public interface SysRoleRepository extends BaseRepository<SysRole, Long> {
       nativeQuery = true)
   List<SysRole> searchByDepartmentId(Long id);
 
+  /**
+   * 根据名称查询角色.
+   *
+   * @param name 名称
+   * @return 角色
+   */
+  @RestResource(exported = false)
+  Optional<SysRole> findFirstByName(String name);
 }

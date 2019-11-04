@@ -36,7 +36,8 @@ public class SysDepartment extends BaseEntity {
 
 
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "sys_department_permission", joinColumns = @JoinColumn(name = "departmentId"),
+  @JoinTable(name = "sys_department_permission",
+      joinColumns = @JoinColumn(name = "departmentId"),
       inverseJoinColumns = @JoinColumn(name = "permissionId"))
   private Set<SysPermission> permissions = new HashSet<>();
 

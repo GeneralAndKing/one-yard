@@ -21,4 +21,8 @@ public enum Status {
   Status(int status) {
     this.value = status;
   }
+
+  public static boolean isNormal(Status status) {
+    return NORMAL == status;
+  }
 }
