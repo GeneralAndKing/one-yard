@@ -1,14 +1,16 @@
 package in.gaks.oneyard.auth.permission;
 
-
 import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_ADMIN;
 import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_NO_AUTH;
 import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_PUBLIC;
 
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 import in.gaks.oneyard.model.constant.HttpMethod;
+import in.gaks.oneyard.model.entity.SysDepartment;
 import in.gaks.oneyard.model.entity.SysPermission;
 import in.gaks.oneyard.model.entity.SysRole;
-import in.gaks.oneyard.model.exception.ResourceNotFoundException;
+import in.gaks.oneyard.repository.SysDepartmentRepository;
 import in.gaks.oneyard.repository.SysPermissionRepository;
 import in.gaks.oneyard.repository.SysRoleRepository;
 import java.util.Collection;
@@ -30,7 +32,7 @@ import org.springframework.util.CollectionUtils;
 
 
 /**
- * .
+ * FilterInvocationSecurityMetadataSource.
  *
  * @author <a href="https://echocow.cn">EchoCow</a>
  * @date 2019/11/4 下午10:02
@@ -40,8 +42,9 @@ import org.springframework.util.CollectionUtils;
 @RequiredArgsConstructor
 public class SecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
-  private final SysPermissionRepository sysPermissionRepository;
   private final SysRoleRepository sysRoleRepository;
+  private final SysDepartmentRepository sysDepartmentRepository;
+  private final SysPermissionRepository sysPermissionRepository;
   private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
   @Override
@@ -53,8 +56,6 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
     String method = httpRequest.getMethod();
     String requestUrl = httpRequest.getServletPath();
     List<SysPermission> permissions = sysPermissionRepository.findAll();
-    SysRole publicRole = sysRoleRepository.findFirstByName(ROLE_PUBLIC).orElseThrow(
-        () -> new ResourceNotFoundException("公共资源角色未找到！"));
     for (SysPermission permission : permissions) {
       // 路径匹配
       if (!antPathMatcher.match(permission.getMatchUrl(), requestUrl)) {
@@ -65,23 +66,24 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
           && !(method.equals(permission.getMethod().name()))) {
         continue;
       }
-      Set<SysRole> roles = permission.getRoles();
-      if (CollectionUtils.isEmpty(roles)) {
+      List<SysRole> roles = sysRoleRepository.searchByPermission(permission.getId());
+      List<SysDepartment> departments = sysDepartmentRepository
+          .searchByPermission(permission.getId());
+      if (CollectionUtils.isEmpty(roles) && CollectionUtils.isEmpty(departments)) {
         continue;
       }
-      // 获取匹配当前资源的角色 id 表
-      List<Long> sysRoleIds = roles.stream().map(SysRole::getId).collect(Collectors.toList());
-      // 如果当前匹配的角色中含有公共资源的 id
-      if (sysRoleIds.contains(publicRole.getId())) {
+      Set<String> roleNames = roles.stream().map(SysRole::getName).collect(Collectors.toSet());
+      // 如果当前匹配的角色中含有公共角色
+      if (roleNames.contains(ROLE_PUBLIC)) {
         return SecurityConfig.createList(ROLE_PUBLIC);
       }
-      List<SysRole> matchRoles = roles.stream().filter(
-          sysRole -> sysRoleIds.contains(sysRole.getId())).collect(Collectors.toList());
-      if (CollectionUtils.isEmpty(matchRoles)) {
-        continue;
-      }
-      return SecurityConfig.createListFromCommaDelimitedString(matchRoles.stream()
-          .map(SysRole::getName).collect(Collectors.joining(",")));
+      Set<Long> roleIds = roles.stream().map(SysRole::getId).collect(Collectors.toSet());
+      Set<String> departmentNames = departments.stream()
+          .filter(department -> roleIds.contains(department.getId()))
+          .map(SysDepartment::getName)
+          .collect(Collectors.toSet());
+      SetView<String> match = Sets.union(roleNames, departmentNames);
+      return SecurityConfig.createListFromCommaDelimitedString(String.join(",", match));
     }
     return SecurityConfig.createList(ROLE_NO_AUTH);
   }

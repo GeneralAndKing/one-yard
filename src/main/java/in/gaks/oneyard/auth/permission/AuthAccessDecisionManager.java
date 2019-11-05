@@ -21,8 +21,11 @@ import org.springframework.stereotype.Component;
 @Slf4j
 @Component
 public class AuthAccessDecisionManager implements AccessDecisionManager {
+
   @Override
-  public void decide(Authentication authentication, Object object, Collection<ConfigAttribute> configAttributes) throws AccessDeniedException, InsufficientAuthenticationException {
+  public void decide(Authentication authentication, Object object,
+      Collection<ConfigAttribute> configAttributes)
+      throws AccessDeniedException, InsufficientAuthenticationException {
     for (ConfigAttribute configAttribute : configAttributes) {
       String needRole = configAttribute.getAttribute();
       //  对于不允许访问的资源

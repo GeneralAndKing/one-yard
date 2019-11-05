@@ -26,10 +26,37 @@ public interface SysRoleRepository extends BaseRepository<SysRole, Long> {
    * @return 角色
    */
   @RestResource(path = "byDepartment")
-  @Query(value = "select r.* from sys_role r, sys_department d\n"
+  @Query(value = "select r.* from sys_role r, sys_department d "
       + "where d.id = :id and r.department_id = d.id and r.is_enable = 1 and d.is_enable = 1",
       nativeQuery = true)
   List<SysRole> searchByDepartmentId(Long id);
+
+  /**
+   * 根据用户查询橘色.
+   *
+   * @param id 用户
+   * @return 角色
+   */
+  @RestResource(path = "byUser")
+  @Query(value = "select r.* from sys_role r, sys_user_role ur, sys_user u "
+      + "where u.id = :id and ur.user_id = u.id and ur.role_id = r.id "
+      + "and r.is_enable = 1 and ur.is_enable = 1 and u.is_enable = 1",
+      nativeQuery = true)
+  List<SysRole> searchByUser(Long id);
+
+  /**
+   * 根据权限查询橘色.
+   *
+   * @param id id
+   * @return 角色
+   */
+  @RestResource(path = "byPermission")
+  @Query(value = "select r.* from sys_role r, sys_role_permission rp, sys_permission p "
+      + "where p.id = :id and rp.permission_id = p.id and rp.role_id = r.id "
+      + "and r.is_enable = 1 and rp.is_enable = 1 and p.is_enable = 1",
+      nativeQuery = true)
+  List<SysRole> searchByPermission(Long id);
+
 
   /**
    * 根据名称查询角色.

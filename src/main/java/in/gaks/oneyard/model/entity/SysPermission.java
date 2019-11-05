@@ -1,15 +1,11 @@
 package in.gaks.oneyard.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import in.gaks.oneyard.base.BaseEntity;
 import in.gaks.oneyard.model.constant.HttpMethod;
-import java.util.HashSet;
-import java.util.Set;
+import in.gaks.oneyard.model.constant.Status;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,23 +26,18 @@ import org.hibernate.annotations.Where;
 @Table(name = "sys_permission")
 @Entity(name = "sys_permission")
 @Where(clause = "is_enable = 1")
-@ToString(callSuper = true, exclude = {"departments", "roles"})
-@EqualsAndHashCode(callSuper = true, exclude = {"departments", "roles"})
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 public class SysPermission extends BaseEntity {
 
   private String description;
 
   private String matchUrl;
 
+  @Enumerated(EnumType.ORDINAL)
+  private Status status;
+
   @Enumerated(EnumType.STRING)
   private HttpMethod method;
-
-  @JsonBackReference
-  @ManyToMany(mappedBy = "permissions", fetch = FetchType.EAGER)
-  private Set<SysDepartment> departments = new HashSet<>();
-
-  @JsonBackReference
-  @ManyToMany(mappedBy = "rolePermissions", fetch = FetchType.EAGER)
-  private Set<SysRole> roles = new HashSet<>();
 
 }
