@@ -1,9 +1,9 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import javax.persistence.*;
 import lombok.experimental.Accessors;
 import lombok.*;
-import javax.persistence.*;
 import org.hibernate.annotations.Where;
 
 
@@ -22,10 +22,16 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_enable = 1")
 @EqualsAndHashCode(callSuper = true)
 public class PlanMaterial extends BaseEntity {
+
   /**
    * 物料分类编码.
    */
-  private java.lang.Integer materialTypeId;
+  private java.lang.Long planId;
+
+  /**
+   * 物料分类编码.
+   */
+  private java.lang.String materialTypeCode;
 
   /**
    * 物料分类名称.
@@ -35,7 +41,7 @@ public class PlanMaterial extends BaseEntity {
   /**
    * 物料编码.
    */
-  private java.lang.Integer materialId;
+  private java.lang.String materialCode;
 
   /**
    * 物料名称.
@@ -61,11 +67,6 @@ public class PlanMaterial extends BaseEntity {
    * 需求数量.
    */
   private java.lang.Integer number;
-
-  /**
-   * 需求月份（格式201911）.
-   */
-  private java.lang.String month;
 
   /**
    * 需求日期.

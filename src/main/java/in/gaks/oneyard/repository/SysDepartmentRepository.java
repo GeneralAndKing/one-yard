@@ -5,6 +5,7 @@ import in.gaks.oneyard.model.entity.SysDepartment;
 import in.gaks.oneyard.model.helper.OneYard;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
@@ -28,6 +29,6 @@ public interface SysDepartmentRepository extends BaseRepository<SysDepartment, L
       + "where p.id = :id and dp.permission_id = p.id and dp.department_id = d.id "
       + "and d.is_enable = 1 and dp.is_enable = 1 and p.is_enable = 1",
       nativeQuery = true)
-  List<SysDepartment> searchByPermission(Long id);
+  List<SysDepartment> searchByPermission(@Param("id") Long id);
 
 }
