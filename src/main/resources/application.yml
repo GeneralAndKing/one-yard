@@ -9,7 +9,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
+application:
+  security:
+    enable: true
+    client-id: gak
+    client-secret: $2a$12$cLJL7vsJLzM07g83pV7FBeosMxwi0TWm1N70GskkmG2CIcWCFbLYK
+    access-token-validity-hour: 24
+    refresh-token-validity-hour: 24
 logging:
   level:
     org:

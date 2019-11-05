@@ -1,6 +1,6 @@
 package in.gaks.oneyard.auth.oauth;
 
-import java.time.Duration;
+import in.gaks.oneyard.model.helper.SecurityProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,17 +26,18 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
   private final AuthenticationManager authenticationManager;
   private final TokenStore redisTokenStore;
   private final UserDetailsService userDetailsService;
+  private final SecurityProperties securityProperties;
 
   @Override
   public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
     clients.inMemory()
-        .withClient("gak")
-        .secret("$2a$12$cLJL7vsJLzM07g83pV7FBeosMxwi0TWm1N70GskkmG2CIcWCFbLYK")
+        .withClient(securityProperties.getClientId())
+        .secret(securityProperties.getClientSecret())
         .authorizedGrantTypes("refresh_token", "password")
         .resourceIds("gak")
         .scopes("all")
-        .accessTokenValiditySeconds(Math.toIntExact(Duration.ofDays(1).getSeconds()))
-        .refreshTokenValiditySeconds(Math.toIntExact(Duration.ofDays(1).getSeconds()));
+        .accessTokenValiditySeconds(securityProperties.accessTokenValiditySeconds())
+        .refreshTokenValiditySeconds(securityProperties.refreshTokenValiditySeconds());
   }
 
   @Override

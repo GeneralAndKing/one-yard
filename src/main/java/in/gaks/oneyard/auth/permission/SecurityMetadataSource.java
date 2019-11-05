@@ -10,6 +10,7 @@ import in.gaks.oneyard.model.constant.HttpMethod;
 import in.gaks.oneyard.model.entity.SysDepartment;
 import in.gaks.oneyard.model.entity.SysPermission;
 import in.gaks.oneyard.model.entity.SysRole;
+import in.gaks.oneyard.model.helper.SecurityProperties;
 import in.gaks.oneyard.repository.SysDepartmentRepository;
 import in.gaks.oneyard.repository.SysPermissionRepository;
 import in.gaks.oneyard.repository.SysRoleRepository;
@@ -45,12 +46,13 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
   private final SysRoleRepository sysRoleRepository;
   private final SysDepartmentRepository sysDepartmentRepository;
   private final SysPermissionRepository sysPermissionRepository;
+  private final SecurityProperties securityProperties;
   private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
   @Override
   public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
     HttpServletRequest httpRequest = ((FilterInvocation) object).getHttpRequest();
-    if (isRoleAdmin()) {
+    if (isRoleAdmin() || !securityProperties.getEnable()) {
       return SecurityConfig.createList(ROLE_PUBLIC);
     }
     String method = httpRequest.getMethod();
