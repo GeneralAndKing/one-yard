@@ -61,6 +61,7 @@ public class AuthServiceImpl implements AuthService {
     SysUser sysUser = sysUserRepository.findFirstByEmail(email)
         .orElseThrow(() -> new ResourceNotFoundException("用户 %s 不存在", email));
     sysUser.setPassword(passwordEncoder.encode(password));
+    sysUserRepository.save(sysUser);
   }
 
 }
