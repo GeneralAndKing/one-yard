@@ -9,13 +9,22 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  data:
+    rest:
+      base-path: /rest
+      default-page-size: 10
+      default-media-type: application/json
+server:
+  servlet:
+    context-path: /api
 application:
   security:
-    enable: true
+    enable: false
     client-id: gak
     client-secret: $2a$12$cLJL7vsJLzM07g83pV7FBeosMxwi0TWm1N70GskkmG2CIcWCFbLYK
     access-token-validity-hour: 24
     refresh-token-validity-hour: 24
+  register-code-validity-minute: 30
 logging:
   level:
     org:

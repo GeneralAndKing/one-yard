@@ -1,6 +1,12 @@
 package in.gaks.oneyard.model.helper;
 
+import static java.lang.annotation.ElementType.METHOD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
 import com.alibaba.fastjson.JSONObject;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
 
 /**
  * 参数验证注解，对于 controller 的参数校验.
@@ -18,6 +24,9 @@ import com.alibaba.fastjson.JSONObject;
  * @author <a href="https://echocow.cn">EchoCow</a>
  * @date 2019/11/2 下午11:23
  */
+@Target(METHOD)
+@Retention(RUNTIME)
+@Documented
 public @interface VerifyParameter {
 
   /**

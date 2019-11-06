@@ -81,5 +81,17 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @return 用户
    */
   @RestResource(path = "byNameOrEmail")
-  Optional<SysUser> findFirstByNameOrEmail(String name, String email);
+  Optional<SysUser> findFirstByUsernameOrEmail(String name, String email);
+
+  /**
+   * 根据邮箱和名称和手机号查询用户.
+   *
+   * @param name  名称
+   * @param email 邮箱
+   * @param phone 手机号
+   * @return 用户
+   */
+  @RestResource(path = "byNameOrEmail")
+  Optional<SysUser> findFirstByUsernameOrEmailOrPhone(String name, String email, String phone);
+
 }

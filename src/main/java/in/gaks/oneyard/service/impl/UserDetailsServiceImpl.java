@@ -44,7 +44,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     log.debug("email login user: {}", username);
-    SysUser sysUser = sysUserRepository.findFirstByNameOrEmail(username, username)
+    SysUser sysUser = sysUserRepository.findFirstByUsernameOrEmail(username, username)
         .orElseThrow(() -> new UsernameNotFoundException(String.format("用户 %s 不存在", username)));
     List<SysRole> sysRoles = sysRoleRepository.searchByUser(sysUser.getId());
     List<SimpleGrantedAuthority> authorities = sysRoles.stream()

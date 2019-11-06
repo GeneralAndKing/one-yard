@@ -12,8 +12,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
@@ -22,6 +24,8 @@ import org.springframework.util.Assert;
  * @author <a href="https://echocow.cn">EchoCow</a>
  * @date 2019/11/2 下午11:13
  */
+@Aspect
+@Component
 @SuppressWarnings("all")
 public class VerifyParameterAop {
 
@@ -57,14 +61,14 @@ public class VerifyParameterAop {
             && (Long) value < getRangeRight(condition)),
         () -> " 不存在或不在指定大小范围内！");
     check(annotation.size(), (condition, value) -> Objects.nonNull(value)
-            && value.toString().length() < getRangeRight(condition)
-            && value.toString().length() > getRangeLeft(condition),
+            && value.toString().length() <= getRangeRight(condition)
+            && value.toString().length() >= getRangeLeft(condition),
         () -> " 不存在或长度不合法！");
     check(annotation.max(), (condition, value) -> Objects.nonNull(value)
-            && Long.parseLong(value.toString()) < getMax(condition),
+            && Long.parseLong(value.toString()) <= getMax(condition),
         () -> " 不存在或数值过大！");
     check(annotation.min(), (condition, value) -> Objects.nonNull(value)
-            && Long.parseLong(value.toString()) < getMin(condition),
+            && Long.parseLong(value.toString()) <= getMin(condition),
         () -> " 不存在或数值过小！");
     check(annotation.number(), (condition, value) -> Objects.nonNull(value)
             && StringUtils.isNumeric(value.toString()),

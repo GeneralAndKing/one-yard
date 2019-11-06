@@ -8,13 +8,13 @@ package in.gaks.oneyard.model.constant;
  */
 public enum Status {
   /**
-   * 正常.
-   */
-  NORMAL(1),
-  /**
    * 锁定.
    */
-  LOCKED(0);
+  LOCKED(0),
+  /**
+   * 正常.
+   */
+  NORMAL(1);
 
   private int value;
 

@@ -35,7 +35,7 @@ public class SysUser extends BaseEntity implements Serializable {
   private String password;
 
   @Enumerated(EnumType.ORDINAL)
-  private Status status;
+  private Status status = Status.NORMAL;
 
   private String icon;
 
