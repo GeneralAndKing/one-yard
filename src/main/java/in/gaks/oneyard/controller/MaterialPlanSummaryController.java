@@ -2,10 +2,12 @@ package in.gaks.oneyard.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
-import in.gaks.oneyard.model.entity.MaterialDemandPlan;
-import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.constant.OneYard;
+import in.gaks.oneyard.model.entity.MaterialDemandPlan;
+import in.gaks.oneyard.model.entity.MaterialPlanSummary;
+import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.service.MaterialPlanService;
+import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -30,36 +32,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @RequiredArgsConstructor
 @RepositoryRestController
-@RequestMapping(OneYard.MATERIAL_DEMAND_PLAN)
-public class MaterialPlanController extends BaseController<MaterialDemandPlan,
-    MaterialPlanService, Long> {
+@RequestMapping(OneYard.MATERIAL_PLAN_SUMMARY)
+public class MaterialPlanSummaryController extends BaseController<MaterialPlanSummary,
+    MaterialPlanSummaryService, Long> {
 
-  private final @NonNull MaterialPlanService materialPlanService;
+  private final @NonNull MaterialPlanSummaryService materialPlanSummaryService;
 
-  /**
-   * 保存/修改物料计划表.
-   *
-   * @return 执行结果
-   */
-  @PostMapping("/materialPlan")
-  public HttpEntity<?> materialPlanCreate(@NotNull @RequestBody JSONObject data) {
-    MaterialDemandPlan materialPlan = data.getObject("materialPlan", MaterialDemandPlan.class);
-    List<PlanMaterial> materials = data.getJSONArray("desserts").toJavaList(PlanMaterial.class);
-    Assert.notNull(materialPlan, "请求参数不合法");
-    materialPlanService.savePlanAndPlanMaterials(materialPlan, materials);
-    return ResponseEntity.ok().build();
-  }
 
   /**
-   * 根据id查询完整的计划表.
+   * 根据id查询完整的汇总表.
    *
-   * @param id 计划表id
+   * @param id 汇总表id
    * @return 查询的数据
    */
-  @GetMapping("/materialPlan")
+  @GetMapping("/getMaterialPlanSummary")
   public HttpEntity<?> getMaterialPlan(@NotNull Long id) {
     Assert.notNull(id, "请求参数不合法");
-    return ResponseEntity.ok(materialPlanService.findByIdToMaterial(id));
+    return ResponseEntity.ok(materialPlanSummaryService.findByIdToMaterialSummary(id));
   }
 
 }

@@ -38,7 +38,7 @@ public class MaterialDemandPlan extends BaseEntity {
   /**
    * 汇总表id.
    */
-  private java.lang.Integer summaryId;
+  private java.lang.Long summaryId;
 
   /**
    * 需求人员.
@@ -57,7 +57,7 @@ public class MaterialDemandPlan extends BaseEntity {
   private PlanStatus planStatus;
 
   /**
-   * 审批状态： 0 未提交 1 审批中 2 审批退回 3 审批通过.
+   * 审批状态： 0 未提交 1 审批中 2 审批通过.
    */
   @Enumerated(EnumType.ORDINAL)
   private ApprovalStatus approvalStatus;

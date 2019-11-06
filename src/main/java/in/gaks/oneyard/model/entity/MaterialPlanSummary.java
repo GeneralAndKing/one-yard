@@ -1,6 +1,9 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import in.gaks.oneyard.model.constant.ApprovalStatus;
+import in.gaks.oneyard.model.constant.PlanStatus;
+import java.util.List;
 import lombok.experimental.Accessors;
 import lombok.*;
 import javax.persistence.*;
@@ -23,13 +26,21 @@ import org.hibernate.annotations.Where;
 @EqualsAndHashCode(callSuper = true)
 public class MaterialPlanSummary extends BaseEntity {
   /**
-   * 计划状态： 0 自由 1 已提交汇总 2 已删除 3 已终止.
+   * 计划状态： 0 自由 2 已删除 3 已终止.
    */
-  private java.lang.Integer planStatus;
+  @Enumerated(EnumType.ORDINAL)
+  private PlanStatus planStatus;
 
   /**
-   * 审批状态： 0 未提交 1 审批中 2 审批退回 3 审批通过.
+   * 审批状态： 0 未提交 1 审批中 2 审批通过.
    */
-  private java.lang.Integer approvalStatus;
+  @Enumerated(EnumType.ORDINAL)
+  private ApprovalStatus approvalStatus;
+
+  /**
+   * 汇总表物资清单.
+   */
+  @Transient
+  private List<PlanMaterial> planMaterials;
 
 }

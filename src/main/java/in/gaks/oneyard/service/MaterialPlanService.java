@@ -22,7 +22,7 @@ public interface MaterialPlanService extends BaseService<MaterialDemandPlan, Lon
    * @param materials 需求的物资列表
    * @return 是否保存成功
    */
-  Boolean savePlanAndPlanMaterials(MaterialDemandPlan materialPlan,
+  void savePlanAndPlanMaterials(MaterialDemandPlan materialPlan,
       List<PlanMaterial> materials);
 
   /**

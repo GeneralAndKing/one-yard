@@ -3,13 +3,18 @@ package in.gaks.oneyard.service.impl;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.PlanMaterial;
+import in.gaks.oneyard.model.exception.ResourceErrorException;
+import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.service.MaterialPlanService;
 import java.util.List;
+import java.util.Objects;
+import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 /**
  * .
@@ -34,23 +39,21 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
    * @return 是否保存成功
    */
   @Override
-  public Boolean savePlanAndPlanMaterials(MaterialDemandPlan materialPlan,
+  @Transactional(rollbackOn = Exception.class)
+  public void savePlanAndPlanMaterials(MaterialDemandPlan materialPlan,
       List<PlanMaterial> materials) {
     //判断计划基础信息不为空
-    if (materialPlan != null) {
-      materialPlanRepository.save(materialPlan);
-      //判断是否保存成功并返回了id
-      if (materialPlan.getId() != null) {
-        Long planId = materialPlan.getId();
-        //循环保存
-        materials.forEach(material -> {
-          material.setPlanId(planId);
-          planMaterialRepository.save(material);
-        });
-        return true;
-      }
+    materialPlanRepository.save(materialPlan);
+    //判断是否保存成功并返回了id
+    if (Objects.isNull(materialPlan.getId())) {
+      throw new ResourceErrorException("需求计划保存失败");
     }
-    return false;
+    Long planId = materialPlan.getId();
+    //循环保存
+    materials.forEach(material -> {
+      material.setPlanId(planId);
+      planMaterialRepository.save(material);
+    });
   }
 
   /**
@@ -61,14 +64,10 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
    */
   @Override
   public MaterialDemandPlan findByIdToMaterial(Long id) {
-    if (id != null) {
-      MaterialDemandPlan plan = materialPlanRepository.findById(id).orElse(null);
-      if (plan != null) {
-        plan.setMaterials(planMaterialRepository.findAllByPlanId(id));
-        return plan;
-      }
-    }
-    return null;
+    MaterialDemandPlan plan = materialPlanRepository.findById(id).orElseThrow(
+        () -> new ResourceErrorException("需求计划查询失败"));
+    plan.setMaterials(planMaterialRepository.findAllByPlanId(id));
+    return plan;
   }
 
 }

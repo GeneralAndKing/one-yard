@@ -31,4 +31,11 @@ public interface MaterialDemandPlanRepository extends BaseRepository<MaterialDem
       @Param("planStatus") PlanStatus planStatus,
       @Param("approvalStatus") ApprovalStatus approvalStatus);
 
+  /**
+   * 根据汇总表id查询计划表.
+   *
+   * @param summaryId 汇总表id
+   * @return 计划列表
+   */
+  List<MaterialDemandPlan> findAllBySummaryId(@Param("summaryId") Long summaryId);
 }
