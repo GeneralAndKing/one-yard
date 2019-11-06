@@ -6,6 +6,7 @@ import in.gaks.oneyard.model.helper.OneYard;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
@@ -26,11 +27,11 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @return 结果
    */
   @RestResource(path = "byRole")
-  @Query(value = "select u.* from sys_user u, sys_role r, sys_user_role ur "
-      + "where u.id = ur.user_id and ur.role_id = r.id and u.is_enable = 1\n"
-      + "  and ur.is_enable = 1 and r.is_enable = 1 and r.id = :id",
+  @Query(value = "select u.* from sys_user u, sys_role r "
+      + "where r.id = :id and u.role_id = r.id "
+      + "and u.is_enable = 1 and r.is_enable = 1",
       nativeQuery = true)
-  List<SysUser> searchByRoleId(Long id);
+  List<SysUser> searchByRoleId(@Param("id") Long id);
 
   /**
    * 通过名字查询是否存在.

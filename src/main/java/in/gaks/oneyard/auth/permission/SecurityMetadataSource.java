@@ -4,14 +4,10 @@ import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_ADMIN;
 import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_NO_AUTH;
 import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_PUBLIC;
 
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 import in.gaks.oneyard.model.constant.HttpMethod;
-import in.gaks.oneyard.model.entity.SysDepartment;
 import in.gaks.oneyard.model.entity.SysPermission;
 import in.gaks.oneyard.model.entity.SysRole;
 import in.gaks.oneyard.model.helper.SecurityProperties;
-import in.gaks.oneyard.repository.SysDepartmentRepository;
 import in.gaks.oneyard.repository.SysPermissionRepository;
 import in.gaks.oneyard.repository.SysRoleRepository;
 import java.util.Collection;
@@ -44,7 +40,6 @@ import org.springframework.util.CollectionUtils;
 public class SecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
 
   private final SysRoleRepository sysRoleRepository;
-  private final SysDepartmentRepository sysDepartmentRepository;
   private final SysPermissionRepository sysPermissionRepository;
   private final SecurityProperties securityProperties;
   private AntPathMatcher antPathMatcher = new AntPathMatcher();
@@ -69,9 +64,7 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
         continue;
       }
       List<SysRole> roles = sysRoleRepository.searchByPermission(permission.getId());
-      List<SysDepartment> departments = sysDepartmentRepository
-          .searchByPermission(permission.getId());
-      if (CollectionUtils.isEmpty(roles) && CollectionUtils.isEmpty(departments)) {
+      if (CollectionUtils.isEmpty(roles)) {
         continue;
       }
       Set<String> roleNames = roles.stream().map(SysRole::getName).collect(Collectors.toSet());
@@ -79,13 +72,8 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
       if (roleNames.contains(ROLE_PUBLIC)) {
         return SecurityConfig.createList(ROLE_PUBLIC);
       }
-      Set<Long> roleIds = roles.stream().map(SysRole::getId).collect(Collectors.toSet());
-      Set<String> departmentNames = departments.stream()
-          .filter(department -> roleIds.contains(department.getId()))
-          .map(SysDepartment::getName)
-          .collect(Collectors.toSet());
-      SetView<String> match = Sets.union(roleNames, departmentNames);
-      return SecurityConfig.createListFromCommaDelimitedString(String.join(",", match));
+      return SecurityConfig.createListFromCommaDelimitedString(
+          String.join(",", roleNames));
     }
     return SecurityConfig.createList(ROLE_NO_AUTH);
   }

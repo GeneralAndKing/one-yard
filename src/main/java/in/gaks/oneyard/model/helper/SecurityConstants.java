@@ -52,13 +52,8 @@ public final class SecurityConstants {
   public static final String ROLE_NO_AUTH = "ROLE_NO_AUTH";
 
   /**
-   * 教师角色.
+   * 访客角色.
    */
-  public static final String ROLE_TEACHER = "ROLE_TEACHER";
-
-  /**
-   * 学生角色.
-   */
-  public static final String ROLE_STUDENT = "ROLE_STUDENT";
+  public static final String ROLE_ACCESS = "ROLE_ACCESS";
 
 }
