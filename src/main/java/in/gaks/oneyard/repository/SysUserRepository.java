@@ -81,7 +81,7 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @param email 邮箱
    * @return 用户
    */
-  @RestResource(path = "byNameOrEmail")
+  @RestResource(path = "byUsernameOrEmail")
   Optional<SysUser> findFirstByUsernameOrEmail(String name, String email);
 
   /**
@@ -92,7 +92,7 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @param phone 手机号
    * @return 用户
    */
-  @RestResource(path = "byNameOrEmail")
+  @RestResource(path = "byUsernameOrEmailOrPhone")
   Optional<SysUser> findFirstByUsernameOrEmailOrPhone(String name, String email, String phone);
 
 }

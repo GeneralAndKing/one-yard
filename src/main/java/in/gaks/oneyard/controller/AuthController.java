@@ -50,6 +50,7 @@ public class AuthController {
   private static final String RE_PASSWORD = "rePassword";
   private static final String CODE = "code";
   private static final String EMAIL = "email";
+  private static final String ERROR_MESSAGE = "验证码错误";
 
   /**
    * 注册.
@@ -74,7 +75,7 @@ public class AuthController {
     Assert.isTrue(user.getString(PASSWORD).equals(user.getString(RE_PASSWORD)), "两次密码不一致");
     SysUser sysUser = user.toJavaObject(SysUser.class);
     if (errorCode(codeProperties.forgetKey(sysUser.getEmail()), user.getString(CODE))) {
-      throw new ValidationException("验证码错误");
+      throw new ValidationException(ERROR_MESSAGE);
     }
     authService.register(sysUser);
     return ResponseEntity.status(HttpStatus.CREATED).build();
@@ -96,6 +97,21 @@ public class AuthController {
   }
 
   /**
+   * 找回密码验证邮箱.
+   *
+   * @param email 邮箱
+   * @param code  验证码
+   * @return 响应
+   */
+  @GetMapping("/forget/{email}/{code}")
+  public HttpEntity<?> forgetValidate(@PathVariable String email, @PathVariable String code) {
+    if (errorCode(codeProperties.forgetKey(email), code)) {
+      throw new ValidationException(ERROR_MESSAGE);
+    }
+    return ResponseEntity.ok().build();
+  }
+
+  /**
    * 找回密码修改密码.
    *
    * @param params 参数
@@ -105,7 +121,7 @@ public class AuthController {
       required = {"email#邮箱为必填项",
           "password#密码为必填项",
           "rePassword#确认密码为必填项",
-          "code#确认密码为必填项"},
+          "code#验证码为必填项"},
       size = {
           "password|8-18#密码长度应该在8-18之间",
           "rePassword|8-18#确认密码长度应该在8-18之间"
@@ -115,7 +131,7 @@ public class AuthController {
   public HttpEntity<?> forget(@NotNull @RequestBody JSONObject params) {
     Assert.isTrue(params.getString(PASSWORD).equals(params.getString(RE_PASSWORD)), "两次密码不一致");
     if (errorCode(codeProperties.forgetKey(params.getString(EMAIL)), params.getString(CODE))) {
-      throw new ValidationException("验证码错误");
+      throw new ValidationException(ERROR_MESSAGE);
     }
     authService.modifyPassword(params.getString(EMAIL), params.getString(PASSWORD));
     return ResponseEntity.ok().build();
@@ -167,7 +183,7 @@ public class AuthController {
   private boolean errorCode(@NotNull String key, @NotNull String code) {
     ValueOperations<String, String> operation = redisTemplate.opsForValue();
     String validate = operation.get(key);
-    Assert.notNull(validate, "验证码发送失败或已失效，请重新发送。");
+    Assert.notNull(validate, "验证码发送失败或已失效，请重新验证。");
     return !code.equals(validate);
   }
 
