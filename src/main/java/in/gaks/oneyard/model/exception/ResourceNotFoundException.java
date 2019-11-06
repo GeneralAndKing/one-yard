@@ -6,7 +6,7 @@ package in.gaks.oneyard.model.exception;
  * @author <a href="https://echocow.cn">EchoCow</a>
  * @date 2019/11/2 下午12:56
  */
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends ResourceException {
 
   public ResourceNotFoundException() {
     super("Resource Not Found Exception");
