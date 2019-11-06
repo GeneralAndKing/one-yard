@@ -1,6 +1,6 @@
 package in.gaks.oneyard.config;
 
-import in.gaks.oneyard.model.helper.SecurityProperties;
+import in.gaks.oneyard.model.properties.SecurityProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

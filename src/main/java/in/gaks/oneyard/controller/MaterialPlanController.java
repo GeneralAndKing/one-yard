@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.PlanMaterial;
-import in.gaks.oneyard.model.helper.OneYard;
+import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.service.MaterialPlanService;
 import java.util.List;
 import lombok.NonNull;

@@ -1,4 +1,4 @@
-package in.gaks.oneyard.model.helper;
+package in.gaks.oneyard.model.constant;
 
 /**
  * .

@@ -1,7 +1,7 @@
 package in.gaks.oneyard.auth.permission;
 
-import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_NO_AUTH;
-import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_PUBLIC;
+import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_NO_AUTH;
+import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_PUBLIC;
 
 import java.util.Collection;
 import lombok.extern.slf4j.Slf4j;

@@ -14,9 +14,25 @@ spring:
       base-path: /rest
       default-page-size: 10
       default-media-type: application/json
+  mail:
+    host: smtp.exmail.qq.com
+    port: 465
+    username: lessonCloud@japoul.cn
+    password: lessonC2019
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            required: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+    test-connection: false
 server:
   servlet:
     context-path: /api
+
 application:
   security:
     enable: false
@@ -24,7 +40,8 @@ application:
     client-secret: $2a$12$cLJL7vsJLzM07g83pV7FBeosMxwi0TWm1N70GskkmG2CIcWCFbLYK
     access-token-validity-hour: 24
     refresh-token-validity-hour: 24
-  register-code-validity-minute: 30
+  code:
+    email-code-validity-minute: 30
 logging:
   level:
     org:

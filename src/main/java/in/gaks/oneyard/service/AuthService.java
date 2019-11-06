@@ -26,4 +26,11 @@ public interface AuthService {
    */
   boolean existByEmail(String email);
 
+  /**
+   * 修改密码.
+   *
+   * @param email    邮箱
+   * @param password 密码
+   */
+  void modifyPassword(String email, String password);
 }

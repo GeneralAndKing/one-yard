@@ -1,4 +1,4 @@
-package in.gaks.oneyard.model.helper;
+package in.gaks.oneyard.model.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -12,19 +12,23 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties("application")
-public class ApplicationProperties {
+@ConfigurationProperties("application.code")
+public class CodeProperties {
 
   private String registerCodeKeySuffix = "@register";
 
-  private Integer registerCodeLength = 4;
+  private String forgetCodeKeySuffix = "@forget";
 
-  private Long registerCodeValidityMinute = 1L;
+  private Integer emailCodeLength = 4;
 
-  private Long forgetCodeValidityMinute = 15L;
+  private Long emailCodeValidityMinute = 15L;
 
   public String registerKey(String email) {
     return email + registerCodeKeySuffix;
+  }
+
+  public String forgetKey(String email) {
+    return email + forgetCodeKeySuffix;
   }
 
 }

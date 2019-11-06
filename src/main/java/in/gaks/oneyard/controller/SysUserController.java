@@ -2,7 +2,7 @@ package in.gaks.oneyard.controller;
 
 import in.gaks.oneyard.base.BaseController;
 import in.gaks.oneyard.model.entity.SysUser;
-import in.gaks.oneyard.model.helper.OneYard;
+import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.service.SysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,13 +1,13 @@
 package in.gaks.oneyard.auth.permission;
 
-import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_ADMIN;
-import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_NO_AUTH;
-import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_PUBLIC;
+import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_ADMIN;
+import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_NO_AUTH;
+import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_PUBLIC;
 
 import in.gaks.oneyard.model.constant.HttpMethod;
 import in.gaks.oneyard.model.entity.SysPermission;
 import in.gaks.oneyard.model.entity.SysRole;
-import in.gaks.oneyard.model.helper.SecurityProperties;
+import in.gaks.oneyard.model.properties.SecurityProperties;
 import in.gaks.oneyard.repository.SysPermissionRepository;
 import in.gaks.oneyard.repository.SysRoleRepository;
 import java.util.Collection;

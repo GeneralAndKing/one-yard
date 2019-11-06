@@ -1,6 +1,6 @@
 package in.gaks.oneyard.auth.oauth;
 
-import in.gaks.oneyard.model.helper.SecurityProperties;
+import in.gaks.oneyard.model.properties.SecurityProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

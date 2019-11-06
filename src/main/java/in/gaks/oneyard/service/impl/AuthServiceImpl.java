@@ -1,11 +1,12 @@
 package in.gaks.oneyard.service.impl;
 
-import static in.gaks.oneyard.model.helper.SecurityConstants.ROLE_ACCESS;
+import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_ACCESS;
 
 import in.gaks.oneyard.model.entity.SysRole;
 import in.gaks.oneyard.model.entity.SysUser;
 import in.gaks.oneyard.model.exception.ResourceException;
 import in.gaks.oneyard.model.exception.ResourceExistException;
+import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.SysRoleRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
 import in.gaks.oneyard.service.AuthService;
@@ -54,4 +55,12 @@ public class AuthServiceImpl implements AuthService {
   public boolean existByEmail(String email) {
     return sysUserRepository.findFirstByEmail(email).isPresent();
   }
+
+  @Override
+  public void modifyPassword(String email, String password) {
+    SysUser sysUser = sysUserRepository.findFirstByEmail(email)
+        .orElseThrow(() -> new ResourceNotFoundException("用户 %s 不存在", email));
+    sysUser.setPassword(passwordEncoder.encode(password));
+  }
+
 }

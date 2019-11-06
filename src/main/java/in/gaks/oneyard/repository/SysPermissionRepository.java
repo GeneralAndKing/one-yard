@@ -2,7 +2,7 @@ package in.gaks.oneyard.repository;
 
 import in.gaks.oneyard.base.BaseRepository;
 import in.gaks.oneyard.model.entity.SysPermission;
-import in.gaks.oneyard.model.helper.OneYard;
+import in.gaks.oneyard.model.constant.OneYard;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

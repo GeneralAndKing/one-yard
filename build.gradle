@@ -80,16 +80,23 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-data-rest',
             'org.springframework.boot:spring-boot-starter-data-redis',
             'org.springframework.boot:spring-boot-starter-web',
+            'org.springframework.boot:spring-boot-starter-thymeleaf',
+            'org.springframework.boot:spring-boot-starter-mail',
             'org.springframework.data:spring-data-rest-hal-browser'
     )
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'junit', module: 'junit'
+    }
     testImplementation(
-            'org.springframework.boot:spring-boot-starter-test',
-            'org.springframework.security:spring-security-test'
+            'org.springframework.security:spring-security-test',
+            'org.junit.jupiter:junit-jupiter-api',
+            'org.junit.jupiter:junit-jupiter-params'
     )
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     runtimeOnly 'mysql:mysql-connector-java'
 }
 
