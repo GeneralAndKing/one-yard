@@ -1,8 +1,8 @@
 package in.gaks.oneyard.repository;
 
 import in.gaks.oneyard.base.BaseRepository;
-import in.gaks.oneyard.model.entity.MaterialPlanSummary;
 import in.gaks.oneyard.model.constant.OneYard;
+import in.gaks.oneyard.model.entity.MaterialPlanSummary;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**

@@ -17,15 +17,15 @@ import org.hibernate.annotations.Where;
 @NoArgsConstructor
 @Accessors(chain = true)
 @ToString(callSuper = true)
-@Table(name = "auth")
-@Entity(name = "auth")
+@Table(name = "approval")
+@Entity(name = "approval")
 @Where(clause = "is_enable = 1")
 @EqualsAndHashCode(callSuper = true)
-public class Auth extends BaseEntity {
+public class Approval extends BaseEntity {
   /**
    * 审批类型 0 物料需求计划审批 1 采购计划审批.
    */
-  private java.lang.Integer authType;
+  private java.lang.Integer approvalType;
 
   /**
    * 需求计划汇总表id.

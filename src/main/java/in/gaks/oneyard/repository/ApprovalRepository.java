@@ -1,8 +1,8 @@
 package in.gaks.oneyard.repository;
 
 import in.gaks.oneyard.base.BaseRepository;
-import in.gaks.oneyard.model.entity.Auth;
 import in.gaks.oneyard.model.constant.OneYard;
+import in.gaks.oneyard.model.entity.Approval;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 /**
@@ -11,6 +11,6 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
  * @date 2019年11月4日 下午10:17:20
  */
 @RepositoryRestResource(path = OneYard.AUTH)
-public interface AuthRepository extends BaseRepository<Auth, Long> {
+public interface ApprovalRepository extends BaseRepository<Approval, Long> {
 
 }

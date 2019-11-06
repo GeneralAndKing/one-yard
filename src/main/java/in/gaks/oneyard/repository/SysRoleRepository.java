@@ -1,8 +1,8 @@
 package in.gaks.oneyard.repository;
 
 import in.gaks.oneyard.base.BaseRepository;
-import in.gaks.oneyard.model.entity.SysRole;
 import in.gaks.oneyard.model.constant.OneYard;
+import in.gaks.oneyard.model.entity.SysRole;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
