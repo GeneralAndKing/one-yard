@@ -33,7 +33,7 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
     clients.inMemory()
         .withClient(securityProperties.getClientId())
         .secret(securityProperties.getClientSecret())
-        .authorizedGrantTypes("refresh_token", "password")
+        .authorizedGrantTypes("password", "refresh_token")
         .resourceIds("gak")
         .scopes("all")
         .accessTokenValiditySeconds(securityProperties.accessTokenValiditySeconds())

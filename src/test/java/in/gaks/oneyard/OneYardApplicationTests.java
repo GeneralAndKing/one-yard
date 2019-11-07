@@ -16,7 +16,7 @@ class OneYardApplicationTests {
 
   @Test
   void contextLoads() {
-    System.out.println(passwordEncoder.encode("1997"));
+    System.out.println(passwordEncoder.encode("123456789"));
   }
 
 }

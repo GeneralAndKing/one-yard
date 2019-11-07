@@ -74,7 +74,7 @@ public class AuthController {
   public HttpEntity<?> register(@NotNull @RequestBody JSONObject user) {
     Assert.isTrue(user.getString(PASSWORD).equals(user.getString(RE_PASSWORD)), "两次密码不一致");
     SysUser sysUser = user.toJavaObject(SysUser.class);
-    if (errorCode(codeProperties.forgetKey(sysUser.getEmail()), user.getString(CODE))) {
+    if (errorCode(codeProperties.registerKey(sysUser.getEmail()), user.getString(CODE))) {
       throw new ValidationException(ERROR_MESSAGE);
     }
     authService.register(sysUser);
@@ -167,7 +167,8 @@ public class AuthController {
     HashMap<String, Object> params = Maps.newHashMap();
     params.put("time", codeProperties.getEmailCodeValidityMinute());
     params.put(CODE, code);
-    emailUtils.sendTemplateMail(email, type, subject, "CodeTemplate.html", params);
+    log.info("向 {} 发送 {} 邮件验证码：{}", email, type, code);
+//    emailUtils.sendTemplateMail(email, type, subject, "CodeTemplate.html", params);
     ValueOperations<String, String> operation = redisTemplate.opsForValue();
     operation
         .set(key, code, Duration.ofMinutes(codeProperties.getEmailCodeValidityMinute()));

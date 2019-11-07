@@ -9,6 +9,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 
 /**
  * CorsFilter.
@@ -29,12 +30,12 @@ public class CorsFilter implements Filter {
 
     // Origin ->> http://localhost:8080，允许此URL进行资源访问
     // https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Access-Control-Allow-Origin?utm_source=mozilla&utm_medium=devtools-netmonitor&utm_campaign=default
-    response.setHeader("Access-Control-Allow-Origin", reqs.getHeader("Origin"));
-    response.setHeader("Access-Control-Allow-Credentials", "true");
-    response.setHeader("Access-Control-Allow-Methods", "POST, GET, PUT, PATCH, OPTIONS, DELETE");
-    response.setHeader("Access-Control-Max-Age", "3600");
+    response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN, reqs.getHeader("Origin"));
+    response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS, "true");
+    response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_METHODS, "POST, GET, PUT, PATCH, OPTIONS, DELETE");
     // application/x-www-form-urlencoded, multipart/form-data 或 text/plain
-    response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+    response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "x-requested-with");
+    response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
     chain.doFilter(req, res);
   }
 
