@@ -23,6 +23,15 @@ public interface BaseRepository<T extends BaseEntity, ID> extends JpaRepository<
     JpaSpecificationExecutor<T> {
 
   /**
+   * 查所有数据，不分页
+   *
+   * @return 数据
+   */
+  @Override
+  @RestResource(path = "all")
+  List<T> findAll();
+
+  /**
    * 修改默认的删除方法.
    *
    * @param id id
@@ -78,7 +87,7 @@ public interface BaseRepository<T extends BaseEntity, ID> extends JpaRepository<
   /**
    * 通过 id 列表查询
    *
-   * @param ids id 列表
+   * @param ids      id 列表
    * @param pageable 分页对象
    * @return 结果
    */
