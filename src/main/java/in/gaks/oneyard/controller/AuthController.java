@@ -53,7 +53,22 @@ public class AuthController {
   private static final String ERROR_MESSAGE = "验证码错误";
 
   /**
-   * 注册.
+   * 注册第一步：发送注册邮件.
+   *
+   * @param email 注册邮箱
+   * @return 响应
+   */
+  @GetMapping("/register/{email}")
+  public HttpEntity<?> registerCode(@PathVariable String email) {
+    if (authService.existByEmail(email)) {
+      throw new ResourceExistException("用户 %s 已经存在", email);
+    }
+    sendCode(email, "注册", "欢迎注册", codeProperties.registerKey(email));
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * 注册第二步：注册.
    *
    * @param user 用户
    * @return 结果
@@ -82,22 +97,22 @@ public class AuthController {
   }
 
   /**
-   * 发送注册邮件.
+   * 找回密码第一步： 找回密码发送验证码.
    *
-   * @param email 注册邮箱
-   * @return 响应
+   * @param email 找回邮箱
+   * @return 结果
    */
-  @GetMapping("/register/{email}")
-  public HttpEntity<?> registerCode(@PathVariable String email) {
-    if (authService.existByEmail(email)) {
-      throw new ResourceExistException("用户 %s 已经存在", email);
+  @GetMapping("/forget/{email}")
+  public HttpEntity<?> forgetCode(@PathVariable String email) {
+    if (!authService.existByEmail(email)) {
+      throw new ResourceNotFoundException("用户 %s 不存在", email);
     }
-    sendCode(email, "注册", "欢迎注册", codeProperties.registerKey(email));
+    sendCode(email, "找回密码", "找回密码", codeProperties.forgetKey(email));
     return ResponseEntity.ok().build();
   }
 
   /**
-   * 找回密码验证邮箱.
+   * 找回密码第二步：找回密码验证邮箱.
    *
    * @param email 邮箱
    * @param code  验证码
@@ -112,7 +127,7 @@ public class AuthController {
   }
 
   /**
-   * 找回密码修改密码.
+   * 找回密码第三步：找回密码修改密码.
    *
    * @param params 参数
    * @return 响应
@@ -137,22 +152,6 @@ public class AuthController {
     return ResponseEntity.ok().build();
   }
 
-
-  /**
-   * 找回密码发送验证码.
-   *
-   * @param email 找回邮箱
-   * @return 结果
-   */
-  @GetMapping("/forget/{email}")
-  public HttpEntity<?> forgetCode(@PathVariable String email) {
-    if (!authService.existByEmail(email)) {
-      throw new ResourceNotFoundException("用户 %s 不存在", email);
-    }
-    sendCode(email, "找回密码", "找回密码", codeProperties.forgetKey(email));
-    return ResponseEntity.ok().build();
-  }
-
   /**
    * 发送邮件.
    *
@@ -168,7 +167,9 @@ public class AuthController {
     params.put("time", codeProperties.getEmailCodeValidityMinute());
     params.put(CODE, code);
     log.info("向 {} 发送 {} 邮件验证码：{}", email, type, code);
-//    emailUtils.sendTemplateMail(email, type, subject, "CodeTemplate.html", params);
+    if (codeProperties.getEmailEnable()) {
+      emailUtils.sendTemplateMail(email, type, subject, "CodeTemplate.html", params);
+    }
     ValueOperations<String, String> operation = redisTemplate.opsForValue();
     operation
         .set(key, code, Duration.ofMinutes(codeProperties.getEmailCodeValidityMinute()));

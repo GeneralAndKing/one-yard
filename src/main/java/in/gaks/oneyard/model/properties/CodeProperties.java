@@ -15,18 +15,47 @@ import org.springframework.stereotype.Component;
 @ConfigurationProperties("application.code")
 public class CodeProperties {
 
+  /**
+   * 缓存中注册验证码的后最.
+   */
   private String registerCodeKeySuffix = "@register";
 
+  /**
+   * 缓存中找回密码验证码的后最.
+   */
   private String forgetCodeKeySuffix = "@forget";
 
+  /**
+   * 邮件验证码长度.
+   */
   private Integer emailCodeLength = 4;
 
+  /**
+   * 是否真的发送邮件.
+   */
+  private Boolean emailEnable = true;
+
+  /**
+   * 邮件验证码有效期.
+   */
   private Long emailCodeValidityMinute = 15L;
 
+  /**
+   * 构建注册验证码的 key.
+   *
+   * @param email 邮箱号
+   * @return 结果
+   */
   public String registerKey(String email) {
     return email + registerCodeKeySuffix;
   }
 
+  /**
+   * 构建找回密码验证码的 key.
+   *
+   * @param email 邮箱号
+   * @return 结果
+   */
   public String forgetKey(String email) {
     return email + forgetCodeKeySuffix;
   }

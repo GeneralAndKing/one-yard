@@ -42,6 +42,7 @@ application:
     refresh-token-validity-hour: 24
   code:
     email-code-validity-minute: 30
+    email-enable: false
 logging:
   level:
     org:
