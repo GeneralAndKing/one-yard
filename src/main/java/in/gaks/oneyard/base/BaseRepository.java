@@ -27,9 +27,9 @@ public interface BaseRepository<T extends BaseEntity, ID> extends JpaRepository<
    *
    * @return 数据
    */
-  @Override
-  @RestResource(path = "all")
-  List<T> findAll();
+  @RestResource(path = "all", rel = "all")
+  @Query(value = "select * from #{#entityName} where is_enable = 1", nativeQuery = true)
+  List<T> searchAll();
 
   /**
    * 修改默认的删除方法.
