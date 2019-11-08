@@ -14,7 +14,7 @@ public enum PlanStatus {
   /**
    * 提交审批.
    */
-  APPRAVAL(1),
+  APPROVAL(1),
   /**
    * 提交至汇总.
    */

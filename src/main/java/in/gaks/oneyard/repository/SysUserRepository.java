@@ -55,7 +55,7 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @param email 邮箱
    * @return 结果
    */
-  boolean existsByEmail(String email);
+  boolean existsByEmail(@Param("email") String email);
 
   /**
    * 通过手机号查询是否存在.
