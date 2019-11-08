@@ -3,6 +3,27 @@ spring:
     url: jdbc:mysql://118.24.1.170:3306/gak?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&autoReconnect=true&serverTimezone=UTC
     username: gak
     password: G&k123456
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      filters: stat,wall
+      initial-size: 5
+      max-active: 20
+      max-pool-prepared-statement-per-connection-size: 20
+      max-wait: 60000
+      min-evictable-idle-time-millis: 30000
+      min-idle: 5
+      test-on-borrow: false
+      test-on-return: false
+      test-while-idle: true
+      time-between-eviction-runs-millis: 60000
+      use-global-data-source-stat: true
+      validation-query: select 'x'
+      stat-view-servlet:
+        enabled: true
+        login-password: 123456
+        login-username: admin
+        url-pattern: /druid/*
   jpa:
     open-in-view: true
     show-sql: true

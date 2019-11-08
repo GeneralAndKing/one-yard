@@ -49,6 +49,7 @@ allprojects {
         set('fastjsonVersion', '1.2.62')
         set('apacheCommonsLangVersion', '3.9')
         set('junt5Version', '5.6.0-M1')
+        set('druidVersion', '1.1.21')
     }
 
 }
@@ -66,6 +67,7 @@ configurations {
 dependencies {
     implementation(
             "com.google.guava:guava:${guavaVersion}",
+            "com.alibaba:druid-spring-boot-starter:${druidVersion}",
             "com.google.code.gson:gson:${gsonVersion}",
             "org.jetbrains:annotations:${jetbrainsVersion}",
             "com.alibaba:fastjson:${fastjsonVersion}",
