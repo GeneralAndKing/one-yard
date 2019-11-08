@@ -14,7 +14,7 @@ public enum ApprovalStatus {
   /**
    * 审批中.
    */
-  APPRAVAL(1),
+  APPROVAL(1),
   /**
    * 审批通过.
    */
