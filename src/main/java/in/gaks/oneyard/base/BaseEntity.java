@@ -17,6 +17,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * 实体抽象.
@@ -55,6 +56,7 @@ public class BaseEntity {
    * 创建时间.
    */
   @CreatedDate
+  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   @Column(name = "create_time", nullable = false,
       columnDefinition = "datetime not null default now() comment '创建时间'")
   private LocalDateTime createTime;
@@ -70,6 +72,7 @@ public class BaseEntity {
    * 修改时间.
    */
   @LastModifiedDate
+  @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
   @Column(name = "modify_time", nullable = false,
       columnDefinition = "datetime not null default now() comment '修改时间'")
     private LocalDateTime modifyTime;

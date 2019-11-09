@@ -1,11 +1,14 @@
 package in.gaks.oneyard.config;
 
+import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.web.HateoasPageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
@@ -16,7 +19,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfig implements WebMvcConfigurer {
+public class ApplicationConfig implements WebMvcConfigurer, AsyncConfigurer {
 
   private final HateoasPageableHandlerMethodArgumentResolver pageableResolver;
 
@@ -32,6 +35,16 @@ public class ApplicationConfig implements WebMvcConfigurer {
         pageableResolver, null);
     pagedResourcesAssembler.setForceFirstAndLastRels(true);
     return pagedResourcesAssembler;
+  }
+
+  @Override
+  public Executor getAsyncExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(10);
+    executor.setMaxPoolSize(50);
+    executor.setQueueCapacity(100);
+    executor.initialize();
+    return executor;
   }
 
 }
