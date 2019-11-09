@@ -38,4 +38,13 @@ public interface MaterialDemandPlanRepository extends BaseRepository<MaterialDem
    * @return 计划列表
    */
   List<MaterialDemandPlan> findAllBySummaryId(@Param("summaryId") Long summaryId);
+
+  /**
+   * 根据创建者查询计划表.
+   *
+   * @param createUser 创建者
+   * @return 计划列表
+   */
+  @RestResource(path = "byCreateUser")
+  List<MaterialDemandPlan> findAllByCreateUser(@Param("createUser") String createUser);
 }

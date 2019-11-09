@@ -14,11 +14,15 @@ public enum ApprovalStatus {
   /**
    * 审批中.
    */
-  APPROVAL(1),
+  APPROVAL_ING(1),
   /**
    * 审批通过.
    */
-  DELETED(2);
+  APPROVAL_OK(2),
+  /**
+   * 审批退回.
+   */
+  APPROVAL_NO(3);
 
   private int value;
 

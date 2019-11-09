@@ -57,7 +57,7 @@ public class MaterialDemandPlan extends BaseEntity {
   private PlanStatus planStatus;
 
   /**
-   * 审批状态： 0 未提交 1 审批中 2 审批通过.
+   * 审批状态： 0 未提交 1 审批中 2 审批退回 3 审批通过 4已失效.
    */
   @Enumerated(EnumType.ORDINAL)
   private ApprovalStatus approvalStatus;
@@ -66,6 +66,11 @@ public class MaterialDemandPlan extends BaseEntity {
    * 是否预算内计划 0 false 1 true.
    */
   private java.lang.Boolean isBudgetPlan;
+
+  /**
+   * 修改意见.
+   */
+  private java.lang.String modifyIdea;
 
   /**
    * 物资清单.
