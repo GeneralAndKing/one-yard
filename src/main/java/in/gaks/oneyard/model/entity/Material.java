@@ -32,4 +32,30 @@ public class Material extends BaseEntity {
    */
   private java.lang.Integer typeId;
 
+  /**
+   * 物料库存数量.
+   */
+  private java.lang.Integer number;
+
+  /**
+   * 规格.
+   */
+  private java.lang.String specifications;
+
+  /**
+   * 型号.
+   */
+  private java.lang.String size;
+
+  /**
+   * 计量单位.
+   */
+  private java.lang.String unit;
+
+  /**
+   * 物料采购提前期（天）.
+   */
+  private java.lang.Integer procurementLeadTime;
+
+
 }

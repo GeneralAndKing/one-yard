@@ -28,4 +28,9 @@ public class SysDepartment extends BaseEntity {
 
   private String description;
 
+  /**
+   * 组织编码.
+   */
+  private String code;
+
 }

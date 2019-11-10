@@ -1,6 +1,7 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import in.gaks.oneyard.model.constant.MaterialStatus;
 import javax.persistence.*;
 import lombok.experimental.Accessors;
 import lombok.*;
@@ -44,26 +45,6 @@ public class PlanMaterial extends BaseEntity {
   private java.lang.String materialCode;
 
   /**
-   * 物料名称.
-   */
-  private java.lang.String materialName;
-
-  /**
-   * 规格.
-   */
-  private java.lang.String specifications;
-
-  /**
-   * 型号.
-   */
-  private java.lang.String size;
-
-  /**
-   * 计量单位.
-   */
-  private java.lang.String unit;
-
-  /**
    * 需求数量.
    */
   private java.lang.Integer number;
@@ -89,6 +70,17 @@ public class PlanMaterial extends BaseEntity {
   private java.lang.String fixedSupplier;
 
   /**
+   * 供应方式 （库存供应、采购）.
+   */
+  private java.lang.String supplyMode;
+
+  /**
+   * 需求物料状态 0 初始 1 退回.
+   */
+  @Enumerated(EnumType.ORDINAL)
+  private MaterialStatus status;
+
+  /**
    * 需求库存组织.
    */
   private java.lang.String inventory;
@@ -98,4 +90,8 @@ public class PlanMaterial extends BaseEntity {
    */
   private java.lang.String materialTrackingCode;
 
+  /**
+   * 采购日期.
+   */
+  private java.time.LocalDateTime purchaseDate;
 }
