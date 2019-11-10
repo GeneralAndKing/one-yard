@@ -10,6 +10,8 @@ import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.SysRoleRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
 import in.gaks.oneyard.service.AuthService;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import javax.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -45,7 +47,9 @@ public class AuthServiceImpl implements AuthService {
         () -> new ResourceException("系统角色 %s 未找到，请确认是否拥有此角色！", ROLE_ACCESS)
     );
     sysUser.setId(null);
-    sysUser.setRoleId(access.getId());
+    List<SysRole> roles = new ArrayList<>(1);
+    roles.add(access);
+    sysUser.setRoles(roles);
     sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
     SysUser save = sysUserRepository.save(sysUser);
     Assert.notNull(save.getId(), "注册失败");

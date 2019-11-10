@@ -1,9 +1,7 @@
 package in.gaks.oneyard.service.impl;
 
 import in.gaks.oneyard.model.constant.Status;
-import in.gaks.oneyard.model.entity.SysRole;
 import in.gaks.oneyard.model.entity.SysUser;
-import in.gaks.oneyard.repository.SysRoleRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +26,6 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
   private final SysUserRepository sysUserRepository;
-  private final SysRoleRepository sysRoleRepository;
 
   /**
    * 通过用户名查找用户，这是对密码登录的仅有支持.
@@ -46,8 +43,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     log.debug("email login user: {}", username);
     SysUser sysUser = sysUserRepository.findFirstByUsernameOrEmail(username, username)
         .orElseThrow(() -> new UsernameNotFoundException(String.format("用户 %s 不存在", username)));
-    List<SysRole> sysRoles = sysRoleRepository.searchByUser(sysUser.getId());
-    List<SimpleGrantedAuthority> authorities = sysRoles.stream()
+    List<SimpleGrantedAuthority> authorities = sysUser.getRoles().stream()
         .map(sysRole -> new SimpleGrantedAuthority(sysRole.getName()))
         .collect(Collectors.toList());
     return new User(sysUser.getUsername(), sysUser.getPassword(), sysUser.getIsEnable(), true, true,

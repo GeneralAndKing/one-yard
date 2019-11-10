@@ -27,9 +27,9 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @return 结果
    */
   @RestResource(path = "byRole")
-  @Query(value = "select u.* from sys_user u, sys_role r "
-      + "where r.id = :id and u.role_id = r.id "
-      + "and u.is_enable = 1 and r.is_enable = 1",
+  @Query(value = "select u.* from sys_user u, sys_role r, sys_user_role ur "
+      + "where u.id = ur.user_id and ur.role_id = r.id and u.is_enable = 1\n"
+      + "  and ur.is_enable = 1 and r.is_enable = 1 and r.id = :id",
       nativeQuery = true)
   List<SysUser> searchByRoleId(@Param("id") Long id);
 
