@@ -2,6 +2,7 @@ package in.gaks.oneyard.service;
 
 import in.gaks.oneyard.base.BaseService;
 import in.gaks.oneyard.model.entity.SysUser;
+import java.util.List;
 
 /**
  * .
@@ -11,4 +12,10 @@ import in.gaks.oneyard.model.entity.SysUser;
  */
 public interface SysUserService extends BaseService<SysUser, Long> {
 
+  /**
+   * 查所有.
+   *
+   * @return all
+   */
+  List<SysUser> findAll();
 }

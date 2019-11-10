@@ -2,10 +2,15 @@ package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
 import in.gaks.oneyard.model.constant.Status;
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,7 +33,7 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_enable = 1")
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class SysUser extends BaseEntity implements Serializable {
+public class SysUser extends BaseEntity {
 
   private String username;
 
@@ -43,6 +48,10 @@ public class SysUser extends BaseEntity implements Serializable {
 
   private String phone;
 
-  private Long roleId;
+  @ManyToMany(fetch = FetchType.EAGER)
+  @JoinTable(name = "sys_user_role",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  private List<SysRole> roles = new ArrayList<>();
 
 }
