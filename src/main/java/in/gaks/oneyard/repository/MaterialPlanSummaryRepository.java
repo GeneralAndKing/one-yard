@@ -18,12 +18,12 @@ import org.springframework.data.rest.core.annotation.RestResource;
 public interface MaterialPlanSummaryRepository extends BaseRepository<MaterialPlanSummary, Long> {
 
   /**
-   * 根据创建者查询汇总表.
+   * 根据name查询汇总表.
    *
-   * @param createUser 创建者
+   * @param name 汇总计划名字
    * @return 汇总表列表
    */
-  @RestResource(path = "byCreateUser")
-  List<MaterialPlanSummary> findAllByCreateUser(@Param("createUser") String createUser);
+  @RestResource(path = "byName")
+  List<MaterialPlanSummary> findAllByName(@Param("name") String name);
 
 }

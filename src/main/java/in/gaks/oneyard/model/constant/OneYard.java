@@ -33,6 +33,8 @@ public final class OneYard {
 
   public static final String PLAN_MATERIAL = "planMaterial";
 
+  public static final String PROCUREMENT_PLAN = "procurementPlan";
+
   public static final String SUPPLIER = "supplier";
 
 }

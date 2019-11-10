@@ -25,9 +25,14 @@ import org.hibernate.annotations.Where;
 public class PlanMaterial extends BaseEntity {
 
   /**
-   * 物料分类编码.
+   * 需求计划id.
    */
   private java.lang.Long planId;
+
+  /**
+   * 采购计划id.
+   */
+  private java.lang.Long procurementPlanId;
 
   /**
    * 物料分类编码.
@@ -75,6 +80,16 @@ public class PlanMaterial extends BaseEntity {
   private java.lang.String supplyMode;
 
   /**
+   * 供应数量.
+   */
+  private java.lang.Long supplyNumber;
+
+  /**
+   * 采购日期.
+   */
+  private java.time.LocalDateTime purchaseDate;
+
+  /**
    * 需求物料状态 0 初始 1 退回.
    */
   @Enumerated(EnumType.ORDINAL)
@@ -90,8 +105,5 @@ public class PlanMaterial extends BaseEntity {
    */
   private java.lang.String materialTrackingCode;
 
-  /**
-   * 采购日期.
-   */
-  private java.time.LocalDateTime purchaseDate;
+
 }
