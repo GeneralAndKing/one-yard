@@ -1,5 +1,6 @@
 package in.gaks.oneyard.handle;
 
+import java.util.Objects;
 import java.util.Optional;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 @Configuration
 public class UserAuditorHandle implements AuditorAware<String> {
 
+  private static final String ANONYMOUS_USER = "anonymousUser";
+
   /**
    * 获取用户 username.
    *
@@ -25,14 +28,15 @@ public class UserAuditorHandle implements AuditorAware<String> {
   @Override
   public Optional<String> getCurrentAuditor() {
     SecurityContext context = SecurityContextHolder.getContext();
-    if (context == null || context.getAuthentication() == null
-        || context.getAuthentication().getPrincipal() == null) {
-      return Optional.empty();
+    if (Objects.isNull(context)
+        || Objects.isNull(context.getAuthentication())
+        || Objects.isNull(context.getAuthentication().getPrincipal())) {
+      return Optional.of(ANONYMOUS_USER);
     }
     Object principal = context.getAuthentication().getPrincipal();
     if (principal.getClass().isAssignableFrom(String.class)) {
       return Optional.of(principal.toString());
     }
-    return Optional.empty();
+    return Optional.of(ANONYMOUS_USER);
   }
 }

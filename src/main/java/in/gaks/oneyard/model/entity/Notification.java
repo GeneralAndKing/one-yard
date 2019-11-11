@@ -1,9 +1,16 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import in.gaks.oneyard.model.constant.NotificationStatus;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import lombok.*;
-import javax.persistence.*;
 import org.hibernate.annotations.Where;
 
 
@@ -24,28 +31,19 @@ import org.hibernate.annotations.Where;
 public class Notification extends BaseEntity {
 
   /**
-   * 来源模块的路径（如：点此进行处理——模块路径+相应的参数）.
-   */
-  private java.lang.String source;
-
-  /**
    * 通知的实际内容（***，您好！您关于***的申请被已经拒绝/接受；***，您好！有人邀请您介入***项目）.
    */
   private java.lang.String content;
 
   /**
-   * 接收通知消息的模块路径.
-   */
-  private java.lang.String recModule;
-
-  /**
    * 接收通知的用户编号.
    */
-  private java.lang.Integer receiverId;
+  private java.lang.Long receiverId;
 
   /**
    * 是否已读 0未读 1已读.
    */
-  private java.lang.Integer status;
+  @Enumerated(EnumType.ORDINAL)
+  private NotificationStatus status;
 
 }

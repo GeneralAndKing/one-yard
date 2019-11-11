@@ -66,6 +66,5 @@ application:
     email-enable: false
 logging:
   level:
-    org:
-      springframework:
-        security: DEBUG
+    org.springframework.security: DEBUG
+    in.gaks.oneyard: DEBUG

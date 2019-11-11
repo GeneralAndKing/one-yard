@@ -46,8 +46,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     List<SimpleGrantedAuthority> authorities = sysUser.getRoles().stream()
         .map(sysRole -> new SimpleGrantedAuthority(sysRole.getName()))
         .collect(Collectors.toList());
-    return new User(sysUser.getUsername(), sysUser.getPassword(), sysUser.getIsEnable(), true, true,
-        Status.isNormal(sysUser.getStatus()), authorities);
+    return User.builder()
+        .username(sysUser.getUsername())
+        .password(sysUser.getPassword())
+        .disabled(!sysUser.getIsEnable())
+        .accountLocked(Status.isLocked(sysUser.getStatus()))
+        .authorities(authorities)
+        .build();
   }
 
 }

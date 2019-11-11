@@ -7,9 +7,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.web.HateoasPageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
  * 应用配置.
@@ -17,8 +21,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @author <a href="https://echocow.cn">EchoCow</a>
  * @date 2019/11/2 下午11:10
  */
+@EnableAsync
 @Configuration
+@EnableWebSocket
 @RequiredArgsConstructor
+@EnableHypermediaSupport(type = { EnableHypermediaSupport.HypermediaType.HAL })
 public class ApplicationConfig implements WebMvcConfigurer, AsyncConfigurer {
 
   private final HateoasPageableHandlerMethodArgumentResolver pageableResolver;
@@ -46,5 +53,11 @@ public class ApplicationConfig implements WebMvcConfigurer, AsyncConfigurer {
     executor.initialize();
     return executor;
   }
+
+  @Bean
+  public ServerEndpointExporter serverEndpointExporter() {
+    return new ServerEndpointExporter();
+  }
+
 
 }

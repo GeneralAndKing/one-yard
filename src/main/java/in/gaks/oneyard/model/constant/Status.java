@@ -25,4 +25,8 @@ public enum Status {
   public static boolean isNormal(Status status) {
     return NORMAL == status;
   }
+
+  public static boolean isLocked(Status status) {
+    return LOCKED == status;
+  }
 }
