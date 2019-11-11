@@ -18,4 +18,13 @@ public interface SysUserService extends BaseService<SysUser, Long> {
    * @return all
    */
   List<SysUser> findAll();
+
+  /**
+   * 根据用户名获取信息.
+   *
+   * @param username 用户名
+   * @return 结果
+   */
+  SysUser findByUsername(String username);
+
 }

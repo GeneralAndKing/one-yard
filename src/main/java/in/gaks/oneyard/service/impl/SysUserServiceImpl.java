@@ -25,4 +25,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserRepository, SysUs
   public List<SysUser> findAll() {
     return sysUserRepository.findAll();
   }
+
+  @Override
+  public SysUser findByUsername(String username) {
+    return sysUserRepository.findFirstByUsername(username).orElse(null);
+  }
 }
