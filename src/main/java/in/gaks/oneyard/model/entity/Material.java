@@ -57,5 +57,4 @@ public class Material extends BaseEntity {
    */
   private java.lang.Integer procurementLeadTime;
 
-
 }
