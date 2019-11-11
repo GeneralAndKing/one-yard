@@ -1,0 +1,28 @@
+version: "3"
+services:
+  one-yard-redis:
+    container_name: redis-dev
+    image: redis:5
+    ports: 
+      - 6379:6379
+    volumes: 
+      # docker volumes mapping
+      - "${REDIS_DIR}/conf:/usr/local/etc/redis"
+      - "${REDIS_DIR}/data:/data"
+    command: 
+      redis-server
+    restart: always
+  one-yard-mysql:
+    container_name: mysql-dev
+    image: mysql:8
+    ports:
+      - 3306:3306
+    volumes:
+      - "${MYSQL_DIR}/data:/var/lib/mysql"
+      - "${MYSQL_DIR}/conf.d:/etc/mysql/conf.d"
+    environment:
+      # environment variables
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    
+
+
