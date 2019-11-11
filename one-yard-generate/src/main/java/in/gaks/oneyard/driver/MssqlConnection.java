@@ -16,31 +16,33 @@ import java.util.List;
 @Slf4j
 public class MssqlConnection implements ConnectionStrategy {
 
-    public MssqlConnection(DataSourceProperties dataSourceProperties) {
-        log.info("start initializing the mssql connection");
-        try {
-            Class.forName(dataSourceProperties.getDriverClassName());
-            Connection connection = DriverManager.getConnection(dataSourceProperties.getUrl(), dataSourceProperties.getUsername(), dataSourceProperties.getPassword());
-            System.out.println(connection);
-        } catch (ClassNotFoundException | SQLException e) {
-            e.printStackTrace();
-        }
+  public MssqlConnection(DataSourceProperties dataSourceProperties) {
+    log.info("start initializing the mssql connection");
+    try {
+      Class.forName(dataSourceProperties.getDriverClassName());
+      Connection connection = DriverManager
+          .getConnection(dataSourceProperties.getUrl(), dataSourceProperties.getUsername(),
+              dataSourceProperties.getPassword());
+      System.out.println(connection);
+    } catch (ClassNotFoundException | SQLException e) {
+      e.printStackTrace();
     }
+  }
 
-    @Override
-    public List<String> getTables() {
-        return null;
-    }
+  @Override
+  public List<String> getTables() {
+    return null;
+  }
 
-    @Override
-    public List<Column> getColumns(String tableName) {
-        return null;
-    }
+  @Override
+  public List<Column> getColumns(String tableName) {
+    return null;
+  }
 
-    @Override
-    public String fieldConversion(String mysqlFieldType) {
-        return null;
-    }
+  @Override
+  public String fieldConversion(String mysqlFieldType) {
+    return null;
+  }
 
 
 }

@@ -23,27 +23,27 @@ import java.util.Map;
 @SuppressWarnings({"all"})
 @EnableConfigurationProperties(GenConfigProperties.class)
 public class GenerateAutoConfiguration {
-    private static final String MYSQL="com.mysql";
-    private static final String MSSQL="com.microsoft.sqlserver";
 
-    @Bean
-    public GenerateRunner generateRunner(Map<String,AbstractGen> beans, ConnectionStrategy connection){
-            return new GenerateRunner(connection,beans);
+  private static final String MYSQL = "com.mysql";
+  private static final String MSSQL = "com.microsoft.sqlserver";
+
+  @Bean
+  public GenerateRunner generateRunner(Map<String, AbstractGen> beans,
+      ConnectionStrategy connection) {
+    return new GenerateRunner(connection, beans);
+  }
+
+  @Bean
+  public ConnectionStrategy mysqlConnect(GenConfigProperties genConfigProperties) {
+    DataSourceProperties dataSource = genConfigProperties.getDataSource();
+    ConnectionStrategy connection = null;
+    if (dataSource.getDriverClassName().contains(MYSQL)) {
+      connection = new MysqlConnection(dataSource);
+    } else if (dataSource.getDriverClassName().contains(MSSQL)) {
+      connection = new MssqlConnection(dataSource);
     }
-
-    @Bean
-    public ConnectionStrategy mysqlConnect(GenConfigProperties genConfigProperties){
-        DataSourceProperties dataSource = genConfigProperties.getDataSource();
-        ConnectionStrategy connection = null;
-        if(dataSource.getDriverClassName().contains(MYSQL)){
-            connection=new MysqlConnection(dataSource);
-        }
-        else if(dataSource.getDriverClassName().contains(MSSQL)){
-            connection=new MssqlConnection(dataSource);
-        }
-        return connection;
-    }
-
+    return connection;
+  }
 
 
 }

@@ -11,12 +11,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "spring.gen")
 public class GenConfigProperties {
 
-    private DataSourceProperties dataSource;
+  private DataSourceProperties dataSource;
 
-    private Boolean underLineToHump=true;
+  private Boolean underLineToHump = true;
 
-    private Boolean firstCharUpperCase=true;
+  private Boolean firstCharUpperCase = true;
 
-    private String suffix="java";
+  private String suffix = "java";
 
 }

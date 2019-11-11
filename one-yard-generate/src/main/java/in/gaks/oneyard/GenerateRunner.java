@@ -19,18 +19,18 @@ import java.util.Map;
 public class GenerateRunner implements ApplicationRunner {
 
 
-    private final  ConnectionStrategy connection;
-    private final Map<String, AbstractGen> beans;
+  private final ConnectionStrategy connection;
+  private final Map<String, AbstractGen> beans;
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        List<String> tables = connection.getTables();
-        HashMap<String, List<Column>> tablesData = new HashMap<>();
-        tables.forEach((tableName) -> {
-            tablesData.put(tableName, connection.getColumns(tableName));
-        });
-        beans.forEach((k, bean) -> {
-            bean.run(tablesData);
-        });
-    }
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    List<String> tables = connection.getTables();
+    HashMap<String, List<Column>> tablesData = new HashMap<>();
+    tables.forEach((tableName) -> {
+      tablesData.put(tableName, connection.getColumns(tableName));
+    });
+    beans.forEach((k, bean) -> {
+      bean.run(tablesData);
+    });
+  }
 }
