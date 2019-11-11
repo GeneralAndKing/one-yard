@@ -40,11 +40,10 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   @Override
   public List<PlanMaterial> findAllByPlanId(Long id) {
     return planMaterialRepository.findAllByPlanId(id)
-        .stream().map(planMaterial -> {
+        .stream().peek(planMaterial -> {
           Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
               () -> new ResourceErrorException("物料主数据查询失败"));
           planMaterial.setMaterial(material);
-          return planMaterial;
         }).collect(Collectors.toList());
   }
 
