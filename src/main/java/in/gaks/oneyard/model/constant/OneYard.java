@@ -39,4 +39,6 @@ public final class OneYard {
 
   public static final String SUPPLIER = "supplier";
 
+  public static final String NOTIFICATION = "notification";
+
 }

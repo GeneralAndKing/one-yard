@@ -24,19 +24,9 @@ import org.hibernate.annotations.Where;
 public class Notification extends BaseEntity {
 
   /**
-   * 来源模块的路径（如：点此进行处理——模块路径+相应的参数）.
-   */
-  private java.lang.String source;
-
-  /**
    * 通知的实际内容（***，您好！您关于***的申请被已经拒绝/接受；***，您好！有人邀请您介入***项目）.
    */
   private java.lang.String content;
-
-  /**
-   * 接收通知消息的模块路径.
-   */
-  private java.lang.String recModule;
 
   /**
    * 接收通知的用户编号.

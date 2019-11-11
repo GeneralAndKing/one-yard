@@ -8,6 +8,7 @@ import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.service.MaterialPlanService;
+import in.gaks.oneyard.service.PlanMaterialService;
 import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
@@ -30,13 +31,13 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
 
   private final @NonNull MaterialDemandPlanRepository materialPlanRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
+  private final @NonNull PlanMaterialService planMaterialService;
 
   /**
    * 保存/修改物料需求计划表.
    *
    * @param materialPlan 物料需求计划基础信息
    * @param materials 需求的物资列表
-   * @return 是否保存成功
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -66,7 +67,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   public MaterialDemandPlan findByIdToMaterial(Long id) {
     MaterialDemandPlan plan = materialPlanRepository.findById(id).orElseThrow(
         () -> new ResourceErrorException("需求计划查询失败"));
-    plan.setMaterials(planMaterialRepository.findAllByPlanId(id));
+    plan.setMaterials(planMaterialService.findAllByPlanId(id));
     return plan;
   }
 

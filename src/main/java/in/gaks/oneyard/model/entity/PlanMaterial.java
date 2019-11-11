@@ -10,9 +10,9 @@ import org.hibernate.annotations.Where;
 
 /**
  * plan_material.
+ *
  * @author BugRui EchoCow Japoul
  * @date 2019年11月4日 下午10:17:20
- *
  */
 @Data
 @NoArgsConstructor
@@ -45,9 +45,9 @@ public class PlanMaterial extends BaseEntity {
   private java.lang.String materialTypeName;
 
   /**
-   * 物料编码.
+   * 物料id.
    */
-  private java.lang.String materialCode;
+  private java.lang.Long materialId;
 
   /**
    * 需求数量.
@@ -105,5 +105,10 @@ public class PlanMaterial extends BaseEntity {
    */
   private java.lang.String materialTrackingCode;
 
+  /**
+   * 物料数据.
+   */
+  @Transient
+  private Material material;
 
 }

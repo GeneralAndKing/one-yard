@@ -9,6 +9,7 @@ import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.MaterialPlanSummaryRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.service.MaterialPlanSummaryService;
+import in.gaks.oneyard.service.PlanMaterialService;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.NonNull;
@@ -29,7 +30,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
 
   private final @NonNull MaterialPlanSummaryRepository materialPlanSummaryRepository;
   private final @NonNull MaterialDemandPlanRepository materialPlanRepository;
-  private final @NonNull PlanMaterialRepository planMaterialRepository;
+  private final @NonNull PlanMaterialService planMaterialService;
 
   /**
    * 根据id获取完整的需求计划表.
@@ -44,7 +45,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
     List<MaterialDemandPlan> plans = materialPlanRepository.findAllBySummaryId(id);
     List<PlanMaterial> materials = new ArrayList<>();
     plans.forEach(plan -> {
-      materials.addAll(planMaterialRepository.findAllByPlanId(plan.getId()));
+      materials.addAll(planMaterialService.findAllByPlanId(plan.getId()));
     });
     summary.setPlanMaterials(materials);
     return summary;
