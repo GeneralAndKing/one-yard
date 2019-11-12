@@ -109,10 +109,11 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
       notification.setMessage("您于" + materialDemandPlan.getCreateTime()
           + "提报创建的 " + materialDemandPlan.getName() + " 因为某些原因被退回了。");
     }
-    notificationRepository.save(notification);
     // 获取通知接收方id
     SysUser user = sysUserRepository.findFirstByUsername(materialDemandPlan.getCreateUser())
         .orElseThrow(() -> new ResourceNotFoundException("该计划的提报员查询失败"));
+    notification.setReceiverId(user.getId());
+    notificationRepository.save(notification);
     // 检测用户是否在线发送通知
     notifyUtil.sendMessage(user.getId().toString(), notification);
   }
