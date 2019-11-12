@@ -4,6 +4,7 @@ import in.gaks.oneyard.base.BaseRepository;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.Material;
 import java.util.List;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
@@ -23,6 +24,6 @@ public interface MaterialRepository extends BaseRepository<Material, Long> {
    * @return 结果
    */
   @RestResource(path = "byTypeId")
-  List<Material> findByTypeId(Long typeId);
+  List<Material> findByTypeId(@Param("typeId") Long typeId);
 
 }

@@ -3,9 +3,11 @@ package in.gaks.oneyard.service.impl;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.entity.Material;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
+import in.gaks.oneyard.model.entity.MaterialType;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.repository.MaterialRepository;
+import in.gaks.oneyard.repository.MaterialTypeRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.service.PlanMaterialService;
 import java.util.List;
@@ -29,6 +31,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     implements PlanMaterialService {
 
   private final @NonNull MaterialRepository materialRepository;
+  private final @NonNull MaterialTypeRepository materialTypeRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
 
   /**
@@ -44,6 +47,10 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
           Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
               () -> new ResourceErrorException("物料主数据查询失败"));
           planMaterial.setMaterial(material);
+          MaterialType materialType = materialTypeRepository
+              .findById(planMaterial.getMaterialTypeId()).orElseThrow(
+                  () -> new ResourceErrorException("物料类别主数据查询失败"));
+          planMaterial.setMaterialType(materialType);
         }).collect(Collectors.toList());
   }
 

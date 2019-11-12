@@ -35,14 +35,9 @@ public class PlanMaterial extends BaseEntity {
   private java.lang.Long procurementPlanId;
 
   /**
-   * 物料分类编码.
+   * 物料分类id.
    */
-  private java.lang.String materialTypeCode;
-
-  /**
-   * 物料分类名称.
-   */
-  private java.lang.String materialTypeName;
+  private java.lang.Long materialTypeId;
 
   /**
    * 物料id.
@@ -104,6 +99,12 @@ public class PlanMaterial extends BaseEntity {
    * 物料追踪码.
    */
   private java.lang.String materialTrackingCode;
+
+  /**
+   * 物料类别数据.
+   */
+  @Transient
+  private MaterialType materialType;
 
   /**
    * 物料数据.
