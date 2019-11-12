@@ -7,6 +7,7 @@ import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.SysUser;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
+import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
@@ -73,9 +74,10 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
    * @return 完整的计划表
    */
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public MaterialDemandPlan findByIdToMaterial(Long id) {
     MaterialDemandPlan plan = materialPlanRepository.findById(id).orElseThrow(
-        () -> new ResourceErrorException("需求计划查询失败"));
+        () -> new ResourceNotFoundException("需求计划查询失败"));
     plan.setMaterials(planMaterialService.findAllByPlanId(id));
     return plan;
   }
@@ -87,6 +89,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
    * @param approval 审批信息
    */
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void approvalMaterialPlan(MaterialDemandPlan materialDemandPlan, Approval approval) {
     // 更新计划审核状态
     materialPlanRepository.save(materialDemandPlan);
@@ -106,7 +109,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
     notificationRepository.save(notification);
     // 获取通知接收方id
     SysUser user = sysUserRepository.findFirstByUsername(materialDemandPlan.getCreateUser())
-        .orElseThrow(() -> new ResourceErrorException("计划提报用户查询失败"));
+        .orElseThrow(() -> new ResourceNotFoundException("该计划的提报员查询失败"));
     // 检测用户是否在线发送通知
     notifyUtil.sendMessage(user.getId().toString(), notification);
   }

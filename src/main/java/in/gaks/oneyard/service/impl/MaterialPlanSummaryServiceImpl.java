@@ -4,14 +4,14 @@ import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.MaterialPlanSummary;
 import in.gaks.oneyard.model.entity.PlanMaterial;
-import in.gaks.oneyard.model.exception.ResourceErrorException;
+import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.MaterialPlanSummaryRepository;
-import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.PlanMaterialService;
 import java.util.ArrayList;
 import java.util.List;
+import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,9 +39,10 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
    * @return 完整的汇总表
    */
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public MaterialPlanSummary findByIdToMaterialSummary(Long id) {
     MaterialPlanSummary summary = materialPlanSummaryRepository.findById(id)
-        .orElseThrow(() -> new ResourceErrorException("需求汇总表查询失败"));
+        .orElseThrow(() -> new ResourceNotFoundException("需求汇总表查询失败"));
     List<MaterialDemandPlan> plans = materialPlanRepository.findAllBySummaryId(id);
     List<PlanMaterial> materials = new ArrayList<>();
     plans.forEach(plan -> {
