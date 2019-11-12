@@ -1,21 +1,26 @@
 package in.gaks.oneyard.service.impl;
 
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
+import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
+import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.PlanMaterial;
+import in.gaks.oneyard.model.entity.SysUser;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
-import in.gaks.oneyard.model.exception.ResourceNotFoundException;
+import in.gaks.oneyard.repository.ApprovalRepository;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
+import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
+import in.gaks.oneyard.repository.SysUserRepository;
 import in.gaks.oneyard.service.MaterialPlanService;
 import in.gaks.oneyard.service.PlanMaterialService;
+import in.gaks.oneyard.util.NotifyUtil;
 import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
 /**
  * .
@@ -31,7 +36,11 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
 
   private final @NonNull MaterialDemandPlanRepository materialPlanRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
+  private final @NonNull ApprovalRepository approvalRepository;
+  private final @NonNull NotificationRepository notificationRepository;
+  private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull PlanMaterialService planMaterialService;
+  private final NotifyUtil notifyUtil;
 
   /**
    * 保存/修改物料需求计划表.
@@ -71,4 +80,34 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
     return plan;
   }
 
+  /**
+   * 主管审批需求物料计划.
+   *
+   * @param materialDemandPlan 需求计划
+   * @param approval 审批信息
+   */
+  @Override
+  public void approvalMaterialPlan(MaterialDemandPlan materialDemandPlan, Approval approval) {
+    // 更新计划审核状态
+    materialPlanRepository.save(materialDemandPlan);
+    // 保存审批信息，回溯流程
+    approvalRepository.save(approval);
+    // 发送通知并存入数据库
+    Notification notification = new Notification();
+    if ("审批通过".equals(approval.getResult())) {
+      notification.setName("需求计划审批通过通知");
+      notification.setContent("您于" + materialDemandPlan.getCreateTime()
+          + "提报创建的 " + materialDemandPlan.getName() + " 审批通过了！");
+    } else {
+      notification.setName("需求计划审批退回通知");
+      notification.setContent("您于" + materialDemandPlan.getCreateTime()
+          + "提报创建的 " + materialDemandPlan.getName() + " 因为某些原因被退回了。");
+    }
+    notificationRepository.save(notification);
+    // 获取通知接收方id
+    SysUser user = sysUserRepository.findFirstByUsername(materialDemandPlan.getCreateUser())
+        .orElseThrow(() -> new ResourceErrorException("计划提报用户查询失败"));
+    // 检测用户是否在线发送通知
+    notifyUtil.sendMessage(user.getId().toString(), notification);
+  }
 }

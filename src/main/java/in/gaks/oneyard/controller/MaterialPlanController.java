@@ -2,6 +2,7 @@ package in.gaks.oneyard.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
+import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.constant.OneYard;
@@ -46,6 +47,7 @@ public class MaterialPlanController extends BaseController<MaterialDemandPlan,
     MaterialDemandPlan materialPlan = data.getObject("materialPlan", MaterialDemandPlan.class);
     List<PlanMaterial> materials = data.getJSONArray("desserts").toJavaList(PlanMaterial.class);
     Assert.notNull(materialPlan, "请求参数不合法");
+    Assert.notNull(materials, "请求参数不合法");
     materialPlanService.savePlanAndPlanMaterials(materialPlan, materials);
     return ResponseEntity.ok().build();
   }
@@ -62,4 +64,19 @@ public class MaterialPlanController extends BaseController<MaterialDemandPlan,
     return ResponseEntity.ok(materialPlanService.findByIdToMaterial(id));
   }
 
+  /**
+   * 主管审批需求物料计划.
+   *
+   * @param data 数据
+   * @return .
+   */
+  @PostMapping("/approvalMaterialPlan")
+  public HttpEntity<?> approvalMaterialPlan(@NotNull @RequestBody JSONObject data) {
+    MaterialDemandPlan materialPlan = data.getObject("materialPlan", MaterialDemandPlan.class);
+    Approval approval = data.getObject("approval", Approval.class);
+    Assert.notNull(materialPlan, "请求参数不合法");
+    Assert.notNull(approval, "请求参数不合法");
+    materialPlanService.approvalMaterialPlan(materialPlan, approval);
+    return ResponseEntity.ok().build();
+  }
 }

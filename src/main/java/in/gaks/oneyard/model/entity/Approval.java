@@ -1,6 +1,7 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
 import lombok.experimental.Accessors;
 import lombok.*;
 import javax.persistence.*;
@@ -25,7 +26,8 @@ public class Approval extends BaseEntity {
   /**
    * 审批类型 0 物料需求计划审批 1 采购计划审批.
    */
-  private java.lang.Integer approvalType;
+  @Enumerated(EnumType.ORDINAL)
+  private ApprovalTypeStatus approvalType;
 
   /**
    * 需求计划汇总表id.
