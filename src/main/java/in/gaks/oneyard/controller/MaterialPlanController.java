@@ -43,7 +43,7 @@ public class MaterialPlanController extends BaseController<MaterialDemandPlan,
    * @return 执行结果
    */
   @PostMapping("/materialPlan")
-  @VerifyParameter(required = {"materialPlan#计划为必填项", "approval#审批为必填项"})
+  @VerifyParameter(required = {"materialPlan#计划为必填项", "desserts#物料为必填项"})
   public HttpEntity<?> materialPlanCreate(@NotNull @RequestBody JSONObject data) {
     materialPlanService.savePlanAndPlanMaterials(
         data.getObject("materialPlan", MaterialDemandPlan.class),

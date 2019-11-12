@@ -52,7 +52,7 @@ public class PlanMaterial extends BaseEntity {
   /**
    * 需求日期.
    */
-  private java.time.LocalDateTime date;
+  private java.lang.String date;
 
   /**
    * 货源是否确定.
