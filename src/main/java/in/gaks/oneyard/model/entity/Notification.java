@@ -33,7 +33,7 @@ public class Notification extends BaseEntity {
   /**
    * 通知的实际内容.
    */
-  private java.lang.String content;
+  private java.lang.String message;
 
   /**
    * 接收通知的用户编号.

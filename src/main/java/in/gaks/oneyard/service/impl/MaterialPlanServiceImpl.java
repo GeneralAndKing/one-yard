@@ -3,7 +3,6 @@ package in.gaks.oneyard.service.impl;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
-import in.gaks.oneyard.model.entity.MaterialPlanSummary;
 import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.SysUser;
@@ -11,7 +10,6 @@ import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
-import in.gaks.oneyard.repository.MaterialPlanSummaryRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
@@ -104,11 +102,11 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
     Notification notification = new Notification();
     if ("审批通过".equals(approval.getResult())) {
       notification.setName("需求计划审批通过通知");
-      notification.setContent("您于" + materialDemandPlan.getCreateTime()
+      notification.setMessage("您于" + materialDemandPlan.getCreateTime()
           + "提报创建的 " + materialDemandPlan.getName() + " 审批通过了！");
     } else {
       notification.setName("需求计划审批退回通知");
-      notification.setContent("您于" + materialDemandPlan.getCreateTime()
+      notification.setMessage("您于" + materialDemandPlan.getCreateTime()
           + "提报创建的 " + materialDemandPlan.getName() + " 因为某些原因被退回了。");
     }
     notificationRepository.save(notification);

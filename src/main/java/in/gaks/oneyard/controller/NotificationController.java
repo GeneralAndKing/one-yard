@@ -29,7 +29,7 @@ public class NotificationController {
   @GetMapping("/test/{user}")
   public HttpEntity<?> broadcast(@PathVariable String user) {
     Notification notification = new Notification();
-    notification.setContent("content");
+    notification.setMessage("content");
     notification.setName("title");
     notifyUtil.sendMessage(user, notification);
     return ResponseEntity.ok().build();
