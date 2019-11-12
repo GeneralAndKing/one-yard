@@ -12,7 +12,6 @@ import in.gaks.oneyard.service.PlanMaterialService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,9 +44,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
         .orElseThrow(() -> new ResourceNotFoundException("需求汇总表查询失败"));
     List<MaterialDemandPlan> plans = materialPlanRepository.findAllBySummaryId(id);
     List<PlanMaterial> materials = new ArrayList<>();
-    plans.forEach(plan -> {
-      materials.addAll(planMaterialService.findAllByPlanId(plan.getId()));
-    });
+    plans.forEach(plan -> materials.addAll(planMaterialService.findAllByPlanId(plan.getId())));
     summary.setPlanMaterials(materials);
     return summary;
   }
@@ -77,6 +74,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
     if (Objects.nonNull(summary)) {
       return summary.getId();
     }
+    summary = new MaterialPlanSummary();
     summary.setName(summaryName);
     materialPlanSummaryRepository.save(summary);
     return summary.getId();

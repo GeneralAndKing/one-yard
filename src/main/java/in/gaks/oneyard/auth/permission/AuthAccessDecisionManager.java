@@ -1,5 +1,6 @@
 package in.gaks.oneyard.auth.permission;
 
+import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_LOGIN;
 import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_NO_AUTH;
 import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_PUBLIC;
 
@@ -31,6 +32,9 @@ public class AuthAccessDecisionManager implements AccessDecisionManager {
       //  对于不允许访问的资源
       if (ROLE_NO_AUTH.equals(needRole)) {
         throw new AccessDeniedException("权限不足");
+      }
+      if (ROLE_LOGIN.equals(needRole) && !authentication.getAuthorities().isEmpty()) {
+        return;
       }
       // 公共资源或者通过的资源
       if (ROLE_PUBLIC.equals(needRole) || authentication.getAuthorities().stream().anyMatch(

@@ -1,6 +1,7 @@
 package in.gaks.oneyard.auth.permission;
 
 import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_ADMIN;
+import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_LOGIN;
 import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_NO_AUTH;
 import static in.gaks.oneyard.model.constant.SecurityConstants.ROLE_PUBLIC;
 
@@ -71,6 +72,8 @@ public class SecurityMetadataSource implements FilterInvocationSecurityMetadataS
       // 如果当前匹配的角色中含有公共角色
       if (roleNames.contains(ROLE_PUBLIC)) {
         return SecurityConfig.createList(ROLE_PUBLIC);
+      } else if (roleNames.contains(ROLE_LOGIN)) {
+        return SecurityConfig.createList(ROLE_LOGIN);
       }
       return SecurityConfig.createListFromCommaDelimitedString(
           String.join(",", roleNames));

@@ -56,4 +56,9 @@ public final class SecurityConstants {
    */
   public static final String ROLE_ACCESS = "ROLE_ACCESS";
 
+  /**
+   * 登录角色.
+   */
+  public static final String ROLE_LOGIN = "ROLE_LOGIN";
+
 }
