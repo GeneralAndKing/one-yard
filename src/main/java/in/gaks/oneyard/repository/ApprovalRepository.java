@@ -14,7 +14,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
  * @author BugRui EchoCow Japoul
  * @date 2019年11月4日 下午10:17:20
  */
-@RepositoryRestResource(path = OneYard.AUTH)
+@RepositoryRestResource(path = OneYard.APPROVAL)
 public interface ApprovalRepository extends BaseRepository<Approval, Long> {
 
   /**

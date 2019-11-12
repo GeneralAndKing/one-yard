@@ -21,7 +21,7 @@ public final class OneYard {
 
   public static final String SYS_DEPARTMENT = "sysDepartment";
 
-  public static final String AUTH = "auth";
+  public static final String APPROVAL = "approval";
 
   public static final String INVENTORY = "inventory";
 

@@ -15,7 +15,7 @@ import org.hibernate.annotations.Where;
 
 
 /**
- * auth.
+ * approval.
  * @author BugRui EchoCow Japoul
  * @date 2019年11月4日 下午10:17:20
  *
@@ -38,7 +38,7 @@ public class Approval extends BaseEntity {
   /**
    * 需求计划汇总表id.
    */
-  private java.lang.Integer planId;
+  private java.lang.Long planId;
 
   /**
    * 审批意见（结果） （审批退回 审批通过）.
