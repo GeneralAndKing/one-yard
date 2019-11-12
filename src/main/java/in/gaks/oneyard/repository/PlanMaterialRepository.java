@@ -21,6 +21,7 @@ public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Lon
    * @param id 计划id
    * @return 物资列表
    */
+  @RestResource(path = "byPlanId")
   List<PlanMaterial> findAllByPlanId(@Param("id") Long id);
 
 
