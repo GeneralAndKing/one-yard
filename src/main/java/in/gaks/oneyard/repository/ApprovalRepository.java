@@ -25,6 +25,7 @@ public interface ApprovalRepository extends BaseRepository<Approval, Long> {
    * @return .
    */
   @RestResource(path = "byPlanIdAndApprovalType")
-  List<Approval> findByPlanIdAndApprovalType(@Param("planId") Long planId,
-      @Param("approvalType") ApprovalTypeStatus approvalType);
+  List<Approval> findAllByApprovalTypeAndPlanId(
+      @Param("approvalType") ApprovalTypeStatus approvalType,
+      @Param("planId") Long planId);
 }
