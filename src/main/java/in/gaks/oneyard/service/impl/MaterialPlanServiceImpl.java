@@ -3,6 +3,7 @@ package in.gaks.oneyard.service.impl;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
+import in.gaks.oneyard.model.entity.MaterialPlanSummary;
 import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.SysUser;
@@ -10,10 +11,12 @@ import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
+import in.gaks.oneyard.repository.MaterialPlanSummaryRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
 import in.gaks.oneyard.service.MaterialPlanService;
+import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.PlanMaterialService;
 import in.gaks.oneyard.util.NotifyUtil;
 import java.util.List;
@@ -40,6 +43,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull NotificationRepository notificationRepository;
   private final @NonNull SysUserRepository sysUserRepository;
+  private final @NonNull MaterialPlanSummaryService materialPlanSummaryService;
   private final @NonNull PlanMaterialService planMaterialService;
   private final NotifyUtil notifyUtil;
 
@@ -74,7 +78,6 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
    * @return 完整的计划表
    */
   @Override
-  @Transactional(rollbackOn = Exception.class)
   public MaterialDemandPlan findByIdToMaterial(Long id) {
     MaterialDemandPlan plan = materialPlanRepository.findById(id).orElseThrow(
         () -> new ResourceNotFoundException("需求计划查询失败"));
@@ -91,7 +94,9 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void approvalMaterialPlan(MaterialDemandPlan materialDemandPlan, Approval approval) {
-    // 更新计划审核状态
+    // 更新计划审核状态并根据时间自动汇总
+    materialDemandPlan
+        .setSummaryId(materialPlanSummaryService.summaryMaterialPlan(materialDemandPlan));
     materialPlanRepository.save(materialDemandPlan);
     // 保存审批信息，回溯流程
     approvalRepository.save(approval);
@@ -113,4 +118,5 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
     // 检测用户是否在线发送通知
     notifyUtil.sendMessage(user.getId().toString(), notification);
   }
+
 }

@@ -39,7 +39,6 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    * @return 完整的需求物资数据
    */
   @Override
-  @Transactional(rollbackOn = Exception.class)
   public List<PlanMaterial> findAllByPlanId(Long id) {
     return planMaterialRepository.findAllByPlanId(id)
         .stream().peek(planMaterial -> {

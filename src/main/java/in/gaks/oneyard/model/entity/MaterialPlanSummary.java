@@ -25,17 +25,6 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_enable = 1")
 @EqualsAndHashCode(callSuper = true)
 public class MaterialPlanSummary extends BaseEntity {
-  /**
-   * 计划状态： 0 自由 2 已删除 3 已终止.
-   */
-  @Enumerated(EnumType.ORDINAL)
-  private PlanStatus planStatus;
-
-  /**
-   * 审批状态： 0 未提交 1 审批中 2 审批通过.
-   */
-  @Enumerated(EnumType.ORDINAL)
-  private ApprovalStatus approvalStatus;
 
   /**
    * 汇总表物资清单.

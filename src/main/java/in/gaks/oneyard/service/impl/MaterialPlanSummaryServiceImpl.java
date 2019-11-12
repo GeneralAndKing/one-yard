@@ -11,6 +11,7 @@ import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.PlanMaterialService;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +40,6 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
    * @return 完整的汇总表
    */
   @Override
-  @Transactional(rollbackOn = Exception.class)
   public MaterialPlanSummary findByIdToMaterialSummary(Long id) {
     MaterialPlanSummary summary = materialPlanSummaryRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("需求汇总表查询失败"));
@@ -52,4 +52,33 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
     return summary;
   }
 
+  /**
+   * 自动汇总，若存在则返回id，不存在则创建后再返回id.
+   *
+   * @param materialDemandPlan .
+   * @return 汇总表id.
+   */
+  @Override
+  public Long summaryMaterialPlan(MaterialDemandPlan materialDemandPlan) {
+    String type = materialDemandPlan.getPlanType();
+    String year = materialDemandPlan.getMonth().substring(0, 4);
+    String summaryName = null;
+    switch (type) {
+      case "年度计划":
+        summaryName = year.concat("年份年度计划汇总");
+        break;
+      case "月度计划":
+        String month = materialDemandPlan.getMonth().substring(4, 6);
+        summaryName = year.concat("年").concat(month).concat("月份月度计划汇总");
+        break;
+      default:
+    }
+    MaterialPlanSummary summary = materialPlanSummaryRepository.findByName(summaryName);
+    if (Objects.nonNull(summary)) {
+      return summary.getId();
+    }
+    summary.setName(summaryName);
+    materialPlanSummaryRepository.save(summary);
+    return summary.getId();
+  }
 }

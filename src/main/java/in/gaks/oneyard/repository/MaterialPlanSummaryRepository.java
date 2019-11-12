@@ -24,6 +24,6 @@ public interface MaterialPlanSummaryRepository extends BaseRepository<MaterialPl
    * @return 汇总表列表
    */
   @RestResource(path = "byName")
-  List<MaterialPlanSummary> findAllByName(@Param("name") String name);
+  MaterialPlanSummary findByName(@Param("name") String name);
 
 }
