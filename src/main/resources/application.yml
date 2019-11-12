@@ -31,6 +31,9 @@ spring:
       hibernate:
         format_sql: true
   data:
+    redis:
+      repositories:
+        enabled: false
     rest:
       base-path: /rest
       default-page-size: 10
@@ -68,3 +71,4 @@ logging:
   level:
     org.springframework.security: DEBUG
     in.gaks.oneyard: DEBUG
+    org.springframework.context.support.[PostProcessorRegistrationDelegate$BeanPostProcessorChecker]: WARN
