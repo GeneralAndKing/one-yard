@@ -74,7 +74,7 @@ public class AuthController {
    * @return 结果
    */
   @VerifyParameter(
-      required = {"username|#用户名为必填项",
+      required = {"username#用户名为必填项",
           "email#邮箱为必填项",
           "phone#手机号为必填项",
           "password#密码为必填项",

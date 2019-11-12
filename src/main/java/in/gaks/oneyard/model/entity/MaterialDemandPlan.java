@@ -4,17 +4,24 @@ import in.gaks.oneyard.base.BaseEntity;
 import in.gaks.oneyard.model.constant.ApprovalStatus;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import java.util.List;
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import lombok.*;
 import org.hibernate.annotations.Where;
 
 
 /**
  * material_demand_plan.
+ *
  * @author BugRui EchoCow Japoul
  * @date 2019年11月4日 下午10:17:20
- *
  */
 @Data
 @NoArgsConstructor
@@ -51,7 +58,7 @@ public class MaterialDemandPlan extends BaseEntity {
   private java.lang.String month;
 
   /**
-   * 计划状态： 0 自由 1 已提交汇总 2 已删除 3 已终止.
+   * 计划状态： 0 自由 1 提交审批 2 已提交汇总 3 已删除 4 已终止.
    */
   @Enumerated(EnumType.ORDINAL)
   private PlanStatus planStatus;

@@ -2,12 +2,12 @@ package in.gaks.oneyard.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
+import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.PlanMaterial;
-import in.gaks.oneyard.model.constant.OneYard;
+import in.gaks.oneyard.model.helper.VerifyParameter;
 import in.gaks.oneyard.service.MaterialPlanService;
-import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,12 +43,12 @@ public class MaterialPlanController extends BaseController<MaterialDemandPlan,
    * @return 执行结果
    */
   @PostMapping("/materialPlan")
+  @VerifyParameter(required = {"materialPlan#计划为必填项", "approval#审批为必填项"})
   public HttpEntity<?> materialPlanCreate(@NotNull @RequestBody JSONObject data) {
-    MaterialDemandPlan materialPlan = data.getObject("materialPlan", MaterialDemandPlan.class);
-    List<PlanMaterial> materials = data.getJSONArray("desserts").toJavaList(PlanMaterial.class);
-    Assert.notNull(materialPlan, "请求参数不合法");
-    Assert.notNull(materials, "请求参数不合法");
-    materialPlanService.savePlanAndPlanMaterials(materialPlan, materials);
+    materialPlanService.savePlanAndPlanMaterials(
+        data.getObject("materialPlan", MaterialDemandPlan.class),
+        data.getJSONArray("desserts").toJavaList(PlanMaterial.class)
+    );
     return ResponseEntity.ok().build();
   }
 
@@ -68,15 +68,14 @@ public class MaterialPlanController extends BaseController<MaterialDemandPlan,
    * 主管审批需求物料计划.
    *
    * @param data 数据
-   * @return .
+   * @return 响应
    */
   @PostMapping("/approvalMaterialPlan")
+  @VerifyParameter(required = {"materialPlan#计划为必填项", "approval#审批为必填项"})
   public HttpEntity<?> approvalMaterialPlan(@NotNull @RequestBody JSONObject data) {
-    MaterialDemandPlan materialPlan = data.getObject("materialPlan", MaterialDemandPlan.class);
-    Approval approval = data.getObject("approval", Approval.class);
-    Assert.notNull(materialPlan, "请求参数不合法");
-    Assert.notNull(approval, "请求参数不合法");
-    materialPlanService.approvalMaterialPlan(materialPlan, approval);
+    materialPlanService.approvalMaterialPlan(
+        data.getObject("materialPlan", MaterialDemandPlan.class),
+        data.getObject("approval", Approval.class));
     return ResponseEntity.ok().build();
   }
 }

@@ -44,6 +44,6 @@ public class Notification extends BaseEntity {
    * 是否已读 0未读 1已读.
    */
   @Enumerated(EnumType.ORDINAL)
-  private NotificationStatus status;
+  private NotificationStatus status = NotificationStatus.UNREAD;
 
 }
