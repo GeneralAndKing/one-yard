@@ -58,17 +58,21 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
   @Override
   public Long summaryMaterialPlan(MaterialDemandPlan materialDemandPlan) {
     String type = materialDemandPlan.getPlanType();
+    if ("紧急计划".equals(type)) {
+      return null;
+    }
     String year = materialDemandPlan.getMonth().substring(0, 4);
     String summaryName = null;
     int sort = 0;
     switch (type) {
       case "年度计划":
-        summaryName = year.concat("年份年度计划汇总");
+        summaryName = year.concat("年年度计划汇总");
         sort = Integer.parseInt(year.concat("00"));
         break;
+      case "订单型需求计划":
       case "月度计划":
         String month = materialDemandPlan.getMonth().substring(4, 6);
-        summaryName = year.concat("年").concat(month).concat("月份月度计划汇总");
+        summaryName = year.concat("年").concat(month).concat("月份计划汇总");
         sort = Integer.parseInt(materialDemandPlan.getMonth());
         break;
       default:

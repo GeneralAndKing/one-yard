@@ -58,7 +58,7 @@ public class MaterialDemandPlan extends BaseEntity {
   private java.lang.String month;
 
   /**
-   * 计划状态： 0 自由 1 提交审批 2 已提交汇总 3 已删除 4 已终止.
+   * 计划状态： 0 自由 1 提交审批 2 已提交汇总 3 已删除 4 已进入下一阶段.
    */
   @Enumerated(EnumType.ORDINAL)
   private PlanStatus planStatus;

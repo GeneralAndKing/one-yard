@@ -24,7 +24,7 @@ public enum PlanStatus {
    */
   DELETED(3),
   /**
-   * 已终止.
+   * 已进入下一阶段.
    */
   FINALLY(4);
 

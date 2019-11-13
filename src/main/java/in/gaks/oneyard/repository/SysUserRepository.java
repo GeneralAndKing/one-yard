@@ -39,7 +39,7 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @param name 名字
    * @return 结果
    */
-  boolean existsByName(String name);
+  boolean existsByName(@Param("name") String name);
 
   /**
    * 通过用户名查询是否存在.
@@ -47,7 +47,7 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @param username 用户名
    * @return 结果
    */
-  boolean existsByUsername(String username);
+  boolean existsByUsername(@Param("username") String username);
 
   /**
    * 通过邮箱查询是否存在.
@@ -63,7 +63,7 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @param phone 手机号
    * @return 结果
    */
-  boolean existsByPhone(String phone);
+  boolean existsByPhone(@Param("phone") String phone);
 
   /**
    * 根据邮箱查询用户.
@@ -72,36 +72,38 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @return 用户
    */
   @RestResource(path = "byEmail")
-  Optional<SysUser> findFirstByEmail(String email);
+  Optional<SysUser> findFirstByEmail(@Param("email") String email);
 
   /**
    * 根据邮箱和名称查询用户.
    *
-   * @param name  名称
+   * @param name 名称
    * @param email 邮箱
    * @return 用户
    */
   @RestResource(path = "byUsernameOrEmail")
-  Optional<SysUser> findFirstByUsernameOrEmail(String name, String email);
+  Optional<SysUser> findFirstByUsernameOrEmail(@Param("name") String name,
+      @Param("email") String email);
 
   /**
    * 根据名称查询用户.
    *
-   * @param name  名称
+   * @param name 名称
    * @return 用户
    */
   @RestResource(path = "byUsername")
-  Optional<SysUser> findFirstByUsername(String name);
+  Optional<SysUser> findFirstByUsername(@Param("name") String name);
 
   /**
    * 根据邮箱和名称和手机号查询用户.
    *
-   * @param name  名称
+   * @param name 名称
    * @param email 邮箱
    * @param phone 手机号
    * @return 用户
    */
   @RestResource(path = "byUsernameOrEmailOrPhone")
-  Optional<SysUser> findFirstByUsernameOrEmailOrPhone(String name, String email, String phone);
+  Optional<SysUser> findFirstByUsernameOrEmailOrPhone(@Param("name") String name,
+      @Param("email") String email, @Param("phone") String phone);
 
 }
