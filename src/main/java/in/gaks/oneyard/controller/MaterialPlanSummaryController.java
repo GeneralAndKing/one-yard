@@ -7,12 +7,12 @@ import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -38,8 +38,8 @@ public class MaterialPlanSummaryController extends BaseController<MaterialPlanSu
    * @param id 汇总表id
    * @return 查询的数据
    */
-  @GetMapping("/getMaterialPlanSummary")
-  public HttpEntity<?> getMaterialPlan(@NotNull Long id) {
+  @GetMapping("/getMaterialPlanSummary/{id}")
+  public HttpEntity<?> getMaterialPlan(@PathVariable("id") Long id) {
     Assert.notNull(id, "请求参数不合法");
     return ResponseEntity.ok(materialPlanSummaryService.findByIdToMaterialSummary(id));
   }
