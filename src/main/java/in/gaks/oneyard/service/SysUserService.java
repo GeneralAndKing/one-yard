@@ -27,4 +27,12 @@ public interface SysUserService extends BaseService<SysUser, Long> {
    */
   SysUser findByUsername(String username);
 
+  /**
+   * 修改密码.
+   *
+   * @param name        用户名
+   * @param oldPassword 旧密码
+   * @param newPassword 新密码
+   */
+  void modifyPassword(String name, String oldPassword, String newPassword);
 }

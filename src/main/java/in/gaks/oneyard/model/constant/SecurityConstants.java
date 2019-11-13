@@ -61,4 +61,10 @@ public final class SecurityConstants {
    */
   public static final String ROLE_LOGIN = "ROLE_LOGIN";
 
+  /**
+   * 匿名用户.
+   */
+  public static final String ANONYMOUS_USER = "anonymousUser";
+
+
 }

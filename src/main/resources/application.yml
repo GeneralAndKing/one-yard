@@ -19,6 +19,9 @@ spring:
       time-between-eviction-runs-millis: 60000
       use-global-data-source-stat: true
       validation-query: select 'x'
+      removeAbandoned: true
+      removeAbandonedTimeout: 1000
+      logAbandoned: false
       stat-view-servlet:
         enabled: true
         login-password: 123456
