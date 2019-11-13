@@ -60,13 +60,16 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
     String type = materialDemandPlan.getPlanType();
     String year = materialDemandPlan.getMonth().substring(0, 4);
     String summaryName = null;
+    int sort = 0;
     switch (type) {
       case "年度计划":
         summaryName = year.concat("年份年度计划汇总");
+        sort = Integer.parseInt(year.concat("00"));
         break;
       case "月度计划":
         String month = materialDemandPlan.getMonth().substring(4, 6);
         summaryName = year.concat("年").concat(month).concat("月份月度计划汇总");
+        sort = Integer.parseInt(materialDemandPlan.getMonth());
         break;
       default:
     }
@@ -76,6 +79,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
     }
     summary = new MaterialPlanSummary();
     summary.setName(summaryName);
+    summary.setSort(sort);
     materialPlanSummaryRepository.save(summary);
     return summary.getId();
   }
