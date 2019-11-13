@@ -1,7 +1,7 @@
 package in.gaks.oneyard.model.constant;
 
 /**
- * 物料需求计划状态.
+ * 计划状态.
  *
  * @author Japoul
  * @date 2019/11/5 下午21:20
