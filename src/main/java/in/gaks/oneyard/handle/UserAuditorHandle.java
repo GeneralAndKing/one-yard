@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 /**
  * 用户自动装配.
@@ -34,8 +35,9 @@ public class UserAuditorHandle implements AuditorAware<String> {
       return Optional.of(ANONYMOUS_USER);
     }
     Object principal = context.getAuthentication().getPrincipal();
-    if (principal.getClass().isAssignableFrom(String.class)) {
-      return Optional.of(principal.toString());
+    if (principal.getClass().isAssignableFrom(User.class)) {
+      User user = (User) principal;
+      return Optional.of(user.getUsername());
     }
     return Optional.of(ANONYMOUS_USER);
   }
