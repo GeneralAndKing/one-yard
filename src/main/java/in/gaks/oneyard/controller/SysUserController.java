@@ -11,6 +11,7 @@ import in.gaks.oneyard.service.SysUserService;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
@@ -35,7 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping(OneYard.SYS_USER)
 public class SysUserController extends BaseController<SysUser, SysUserService, Long> {
 
-  private final SysUserService sysUserService;
+  private final @NonNull SysUserService sysUserService;
 
   /**
    * 获取所有.
@@ -65,6 +66,13 @@ public class SysUserController extends BaseController<SysUser, SysUserService, L
     return ResponseEntity.ok(me);
   }
 
+  /**
+   * 修改密码.
+   *
+   * @param param     接受的参数
+   * @param principal 用户信息
+   * @return 结果
+   */
   @VerifyParameter(
       required = {"oldPassword#旧密码为必填项",
           "newPassword#邮箱为必填项",
@@ -74,17 +82,16 @@ public class SysUserController extends BaseController<SysUser, SysUserService, L
           "rePassword|8-18#确认密码长度应该在8-18之间"
       }
   )
-  @PostMapping("/password/modify")
+  @PostMapping("password/modify")
   @PreAuthorize("isFullyAuthenticated()")
-  private HttpEntity<?> modifyPassword(@RequestBody JSONObject param, Principal principal) {
-    String oldPassword = param.getString("oldPassword");
+  public HttpEntity<?> modifyPassword(@RequestBody JSONObject param, Principal principal) {
     String newPassword = param.getString("newPassword");
     String rePassword = param.getString("rePassword");
     Assert.isTrue(newPassword.equals(rePassword), "两次密码不一致");
     String name = principal.getName();
     Assert.notNull(name, "无法获取当前用户信息");
     Assert.isTrue(!name.equals(ANONYMOUS_USER), "当前用户是匿名用户，无权进行此操作");
-    sysUserService.modifyPassword(name, oldPassword, newPassword);
+    sysUserService.modifyPassword(name, param.getString("oldPassword"), newPassword);
     return ResponseEntity.noContent().build();
   }
 
