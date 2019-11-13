@@ -6,7 +6,6 @@ import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.SysUser;
-import in.gaks.oneyard.model.helper.VerifyParameter;
 import in.gaks.oneyard.service.SysUserService;
 import java.security.Principal;
 import java.util.List;
@@ -73,25 +72,20 @@ public class SysUserController extends BaseController<SysUser, SysUserService, L
    * @param principal 用户信息
    * @return 结果
    */
-  @VerifyParameter(
-      required = {"oldPassword#旧密码为必填项",
-          "newPassword#邮箱为必填项",
-          "rePassword#手机号为必填项"},
-      size = {"oldPassword|8-18#旧密码长度应该在8-18之间",
-          "newPassword|8-18#新密码长度应该在8-18之间",
-          "rePassword|8-18#确认密码长度应该在8-18之间"
-      }
-  )
   @PostMapping("password/modify")
   @PreAuthorize("isFullyAuthenticated()")
   public HttpEntity<?> modifyPassword(@RequestBody JSONObject param, Principal principal) {
+    String oldPassword = param.getString("oldPassword");
     String newPassword = param.getString("newPassword");
     String rePassword = param.getString("rePassword");
+    Assert.notNull(oldPassword, "旧密码不能为空");
+    Assert.notNull(newPassword, "新密码不能为空");
+    Assert.notNull(rePassword, "重复密码不能为空");
     Assert.isTrue(newPassword.equals(rePassword), "两次密码不一致");
     String name = principal.getName();
     Assert.notNull(name, "无法获取当前用户信息");
     Assert.isTrue(!name.equals(ANONYMOUS_USER), "当前用户是匿名用户，无权进行此操作");
-    sysUserService.modifyPassword(name, param.getString("oldPassword"), newPassword);
+    sysUserService.modifyPassword(name, oldPassword, newPassword);
     return ResponseEntity.noContent().build();
   }
 
