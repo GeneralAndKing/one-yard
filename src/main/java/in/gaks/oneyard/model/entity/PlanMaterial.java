@@ -85,6 +85,11 @@ public class PlanMaterial extends BaseEntity {
   private java.time.LocalDateTime purchaseDate;
 
   /**
+   * 计划来源.
+   */
+  private java.lang.String planSource;
+
+  /**
    * 需求物料状态 0 初始 1 退回.
    */
   @Enumerated(EnumType.ORDINAL)
