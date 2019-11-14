@@ -1,8 +1,10 @@
 package in.gaks.oneyard.service.impl;
 
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
+import in.gaks.oneyard.model.constant.ApprovalStatus;
 import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
 import in.gaks.oneyard.model.constant.MaterialStatus;
+import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.MaterialPlanSummary;
@@ -10,6 +12,7 @@ import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
 import in.gaks.oneyard.model.entity.SysUser;
+import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
@@ -28,6 +31,7 @@ import java.util.Objects;
 import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.stereotype.Service;
 
 /**
@@ -111,5 +115,37 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     notificationRepository.save(notification);
     // 检测用户是否在线发送通知
     notifyUtil.sendMessage(user.getId().toString(), notification);
+  }
+
+  /**
+   * 撤回审批.
+   *
+   * @param procurementPlan 需求计划
+   * @param role 角色类型
+   */
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void withdrawApproval(ProcurementPlan procurementPlan, String role) {
+    if ("PLANER".equals(role) && procurementPlan.getPlanStatus().equals(PlanStatus.APPROVAL)
+        && procurementPlan.getApprovalStatus().equals(
+        ApprovalStatus.APPROVAL_ING)) {
+      procurementPlan.setPlanStatus(PlanStatus.FREE);
+      procurementPlan.setApprovalStatus(ApprovalStatus.NO_SUBMIT);
+      procurementPlanRepository.save(procurementPlan);
+    } else if ("SUPERVISOR".equals(role) && procurementPlan.getPlanStatus()
+        .equals(PlanStatus.PROCUREMENT_OK)
+        && procurementPlan.getApprovalStatus().equals(
+        ApprovalStatus.APPROVAL_ING)) {
+      procurementPlan.setPlanStatus(PlanStatus.APPROVAL);
+      procurementPlanRepository.save(procurementPlan);
+      Approval approval = new Approval();
+      approval.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL_ONE);
+      approval.setDescription("撤回上次审批操作.");
+      approval.setPlanId(procurementPlan.getId());
+      approval.setResult("审批结果撤回");
+      approvalRepository.save(approval);
+    } else {
+      throw (new ResourceErrorException("当前项目状态有误，刷新后再试！"));
+    }
   }
 }

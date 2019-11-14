@@ -30,4 +30,12 @@ public interface ProcurementPlanService extends BaseService<ProcurementPlan, Lon
    */
   void approvalProcurementPlan(ProcurementPlan procurementPlan, Approval approval);
 
+  /**
+   * 撤回审批.
+   *
+   * @param procurementPlan 需求计划
+   * @param role 角色类型
+   */
+  void withdrawApproval(ProcurementPlan procurementPlan, String role);
+
 }

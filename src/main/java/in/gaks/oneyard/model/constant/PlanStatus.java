@@ -24,9 +24,13 @@ public enum PlanStatus {
    */
   DELETED(3),
   /**
+   *采购主管审批通过.
+   */
+  PROCUREMENT_OK(4),
+  /**
    * 已进入下一阶段.
    */
-  FINALLY(4);
+  FINALLY(5);
 
   private int value;
 

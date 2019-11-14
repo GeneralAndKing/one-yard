@@ -65,4 +65,20 @@ public class ProcurementPlanController extends BaseController<ProcurementPlan,
         data.getObject("approval", Approval.class));
     return ResponseEntity.ok().build();
   }
+
+  /**
+   * 撤回审批.
+   *
+   * @param data 数据
+   * @return 响应
+   */
+  @PostMapping("/withdrawApproval")
+  @VerifyParameter(required = {"procurementPlan#采购计划为必填项", "role#角色类型为必填项"})
+  public HttpEntity<?> withdrawApproval(@NotNull @RequestBody JSONObject data) {
+    procurementPlanService.withdrawApproval(
+        data.getObject("procurementPlan", ProcurementPlan.class),
+        data.getObject("role", String.class)
+    );
+    return ResponseEntity.ok().build();
+  }
 }
