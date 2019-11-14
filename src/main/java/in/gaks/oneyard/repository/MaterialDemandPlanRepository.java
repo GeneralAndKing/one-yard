@@ -6,6 +6,7 @@ import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -49,11 +50,13 @@ public interface MaterialDemandPlanRepository extends BaseRepository<MaterialDem
   List<MaterialDemandPlan> findAllByCreateUser(@Param("createUser") String createUser);
 
   /**
-   * 根据部门id查询需求计划表.
+   * 根据部门id列表查询需求计划表.
    *
-   * @param departmentId 部门id
-   * @return id
+   * @param departmentIds 部门id列表
+   * @return .
    */
-  @RestResource(path = "byDepartmentId ")
-  List<MaterialDemandPlan> findAllByDepartmentId(@Param("departmentId") Integer departmentId);
+  @RestResource(path = "byDepartmentIds")
+  @Query(value = "SELECT * FROM material_demand_plan WHERE department_id IN (:departmentIds)", nativeQuery = true)
+  List<MaterialDemandPlan> getMaterialDemandPlanByDepartmentId(
+      @Param("departmentIds") List<Integer> departmentIds);
 }
