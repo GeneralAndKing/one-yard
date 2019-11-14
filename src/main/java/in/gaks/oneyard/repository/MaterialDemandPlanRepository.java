@@ -47,4 +47,13 @@ public interface MaterialDemandPlanRepository extends BaseRepository<MaterialDem
    */
   @RestResource(path = "byCreateUser")
   List<MaterialDemandPlan> findAllByCreateUser(@Param("createUser") String createUser);
+
+  /**
+   * 根据部门id查询需求计划表.
+   *
+   * @param departmentId 部门id
+   * @return id
+   */
+  @RestResource(path = "byDepartmentId ")
+  List<MaterialDemandPlan> findAllByDepartmentId(@Param("departmentId") Integer departmentId);
 }
