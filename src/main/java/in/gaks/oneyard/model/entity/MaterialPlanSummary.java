@@ -4,6 +4,7 @@ import in.gaks.oneyard.base.BaseEntity;
 import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
