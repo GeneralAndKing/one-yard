@@ -1,9 +1,13 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import lombok.*;
-import javax.persistence.*;
 import org.hibernate.annotations.Where;
 
 

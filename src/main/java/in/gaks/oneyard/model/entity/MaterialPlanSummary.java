@@ -1,12 +1,14 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
-import in.gaks.oneyard.model.constant.ApprovalStatus;
-import in.gaks.oneyard.model.constant.PlanStatus;
 import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.experimental.Accessors;
-import lombok.*;
-import javax.persistence.*;
 import org.hibernate.annotations.Where;
 
 
