@@ -27,4 +27,12 @@ public interface PlanMaterialService extends BaseService<PlanMaterial, Long> {
    * @return 完整的需求物资数据
    */
   List<PlanMaterial> findAllByProcurementPlanId(Long id);
+
+  /**
+   * 根据需求计划id查询所需部门.
+   *
+   * @param planId 需求计划id
+   */
+  String getDepartmentNameByPlanId(Long planId);
+
 }

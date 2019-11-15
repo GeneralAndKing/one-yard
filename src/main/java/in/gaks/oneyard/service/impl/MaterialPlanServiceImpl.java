@@ -45,7 +45,6 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull NotificationRepository notificationRepository;
   private final @NonNull SysUserRepository sysUserRepository;
-  private final @NonNull SysDepartmentRepository sysDepartmentRepository;
   private final @NonNull MaterialPlanSummaryService materialPlanSummaryService;
   private final @NonNull PlanMaterialService planMaterialService;
   private final NotifyUtil notifyUtil;
@@ -142,18 +141,5 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
     } else {
       throw (new ResourceErrorException("当前项目状态有误，刷新后再试！"));
     }
-  }
-
-  /**
-   * 根据需求计划id查询所需部门.
-   *
-   * @param planId 需求计划id
-   */
-  @Override
-  public String getDepartmentNameByPlanId(Long planId) {
-    Long departmentId = materialPlanRepository.findById(planId)
-        .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败")).getDepartmentId();
-    return sysDepartmentRepository.findById(departmentId)
-        .orElseThrow(() -> new ResourceNotFoundException("需求部门查询失败")).getName();
   }
 }

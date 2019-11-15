@@ -46,10 +46,5 @@ public interface MaterialPlanService extends BaseService<MaterialDemandPlan, Lon
    */
   void withdrawApproval(Long id);
 
-  /**
-   * 根据需求计划id查询所需部门.
-   *
-   * @param planId 需求计划id
-   */
-  String getDepartmentNameByPlanId(Long planId);
+
 }
