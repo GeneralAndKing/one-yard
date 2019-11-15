@@ -17,6 +17,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -71,11 +73,24 @@ public class MaterialPlanController extends BaseController<MaterialDemandPlan,
    * @return 响应
    */
   @PostMapping("/approvalMaterialPlan")
-  @VerifyParameter(required = {"materialPlan#计划为必填项", "approval#审批为必填项"})
+  @VerifyParameter(required = {"materialPlan#需求计划为必填项", "approval#审批为必填项"})
   public HttpEntity<?> approvalMaterialPlan(@NotNull @RequestBody JSONObject data) {
     materialPlanService.approvalMaterialPlan(
         data.getObject("materialPlan", MaterialDemandPlan.class),
         data.getObject("approval", Approval.class));
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * 撤回审批.
+   *
+   * @param id 需求计划id
+   * @return 响应
+   */
+  @PatchMapping("/withdrawApproval/{id}")
+  @VerifyParameter(required = {"id#需求计划id为必填项"})
+  public HttpEntity<?> withdrawApproval(@PathVariable Long id) {
+    materialPlanService.withdrawApproval(id);
     return ResponseEntity.ok().build();
   }
 }

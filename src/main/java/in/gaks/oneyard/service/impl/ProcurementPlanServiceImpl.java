@@ -48,6 +48,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
 
   private final @NonNull ProcurementPlanRepository procurementPlanRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
+  private final @NonNull PlanMaterialService planMaterialService;
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
@@ -62,9 +63,8 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
   @Override
   public ProcurementPlan findByIdToMaterials(Long id) {
     ProcurementPlan plan = procurementPlanRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("需求汇总表查询失败"));
-    List<PlanMaterial> materials = planMaterialRepository
-        .findAllByProcurementPlanIdAndStatus(id, MaterialStatus.INIT);
+        .orElseThrow(() -> new ResourceNotFoundException("采购计划查询失败"));
+    List<PlanMaterial> materials = planMaterialService.findAllByProcurementPlanId(id);
     plan.setPlanMaterials(materials);
     return plan;
   }
@@ -120,7 +120,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
   /**
    * 撤回审批.
    *
-   * @param procurementPlan 需求计划
+   * @param procurementPlan 采购计划
    * @param role 角色类型
    */
   @Override

@@ -40,7 +40,7 @@ public class MaterialDemandPlan extends BaseEntity {
   /**
    * 需求部门.
    */
-  private java.lang.Integer departmentId;
+  private java.lang.Long departmentId;
 
   /**
    * 汇总表id.
