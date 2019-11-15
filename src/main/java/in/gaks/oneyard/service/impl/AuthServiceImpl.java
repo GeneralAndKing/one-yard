@@ -10,6 +10,7 @@ import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.SysRoleRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
 import in.gaks.oneyard.service.AuthService;
+import in.gaks.oneyard.util.AvatarUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -50,6 +51,7 @@ public class AuthServiceImpl implements AuthService {
     List<SysRole> roles = new ArrayList<>(1);
     roles.add(access);
     sysUser.setRoles(roles);
+    sysUser.setIcon(AvatarUtil.avatar());
     sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
     SysUser save = sysUserRepository.save(sysUser);
     Assert.notNull(save.getId(), "注册失败");
