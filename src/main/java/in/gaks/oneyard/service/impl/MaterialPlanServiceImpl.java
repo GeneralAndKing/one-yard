@@ -59,7 +59,6 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   @Transactional(rollbackOn = Exception.class)
   public void savePlanAndPlanMaterials(MaterialDemandPlan materialPlan,
       List<PlanMaterial> materials) {
-    //判断计划基础信息不为空
     materialPlanRepository.save(materialPlan);
     //判断是否保存成功并返回了id
     if (Objects.isNull(materialPlan.getId())) {

@@ -2,9 +2,9 @@ package in.gaks.oneyard.service;
 
 import in.gaks.oneyard.base.BaseService;
 import in.gaks.oneyard.model.entity.Approval;
-import in.gaks.oneyard.model.entity.MaterialDemandPlan;
-import in.gaks.oneyard.model.entity.MaterialPlanSummary;
+import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
+import java.util.List;
 
 /**
  * .
@@ -37,5 +37,24 @@ public interface ProcurementPlanService extends BaseService<ProcurementPlan, Lon
    * @param role 角色类型
    */
   void withdrawApproval(ProcurementPlan procurementPlan, String role);
+
+  /**
+   * 保存采购计划表.
+   *
+   * @param procurementPlan 物料需求计划基础信息
+   * @param materials 物资列表
+   */
+  void savePlanAndPlanMaterials(ProcurementPlan procurementPlan,
+      List<PlanMaterial> materials);
+
+  /**
+   * 更新采购计划表.
+   *
+   * @param procurementPlan 物料需求计划基础信息
+   * @param materials 物资列表
+   */
+  void updatePlanAndPlanMaterials(ProcurementPlan procurementPlan,
+      List<PlanMaterial> materials);
+
 
 }
