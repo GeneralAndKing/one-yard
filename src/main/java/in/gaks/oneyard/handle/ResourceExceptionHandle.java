@@ -6,6 +6,7 @@ import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.model.exception.ValidationException;
 import javax.validation.ConstraintViolationException;
+import org.apache.tomcat.util.http.fileupload.FileUploadBase.FileSizeLimitExceededException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -54,7 +55,7 @@ public class ResourceExceptionHandle {
    * @param exception exception
    * @return 400
    */
-  @ExceptionHandler({ValidationException.class,
+  @ExceptionHandler({ValidationException.class, FileSizeLimitExceededException.class,
       ResourceErrorException.class, IllegalArgumentException.class})
   public HttpEntity<?> handleResourceException(Exception exception) {
     JSONObject error = new JSONObject();

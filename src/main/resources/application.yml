@@ -53,6 +53,10 @@ spring:
           socketFactory:
             class: javax.net.ssl.SSLSocketFactory
     test-connection: false
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
 server:
   servlet:
     context-path: /api

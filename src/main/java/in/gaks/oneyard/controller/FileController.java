@@ -1,5 +1,6 @@
 package in.gaks.oneyard.controller;
 
+import ch.qos.logback.core.util.FileSize;
 import com.google.common.io.Files;
 import com.qiniu.storage.model.DefaultPutRet;
 import in.gaks.oneyard.model.entity.SysUser;
@@ -37,6 +38,7 @@ public class FileController {
   private final SysUserService sysUserService;
   private final QiniuUtils qiniuUtils;
   private final QiniuProperties qiniuProperties;
+  private static final FileSize MAX_SIZE = FileSize.valueOf("10MB");
 
   /**
    * 头像上传.
@@ -52,6 +54,9 @@ public class FileController {
     SysUser user = sysUserService.findByUsername(principal.getName());
     String extension = Files.getFileExtension(
         Objects.isNull(file.getOriginalFilename()) ? "" : file.getOriginalFilename());
+    if (MAX_SIZE.getSize() < file.getSize()) {
+      throw new ResourceUploadException("头像大小不能大于10MB");
+    }
     try {
       DefaultPutRet upload  = qiniuUtils.upload(file, "/avatar/",
           user.getUsername() + "." + extension);
