@@ -222,7 +222,7 @@ public class AvatarUtil {
   }
 
   public static String avatar() {
-    return urls[r.nextInt(99)];
+    return urls[r.nextInt(199)];
   }
 
 }
