@@ -1,6 +1,9 @@
 package in.gaks.oneyard.service.impl;
 
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
+import in.gaks.oneyard.model.constant.ApprovalStatus;
+import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
+import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.Notification;
@@ -118,4 +121,24 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
     notifyUtil.sendMessage(user.getId().toString(), notification);
   }
 
+  /**
+   * 撤回审批.
+   *
+   * @param id 需求计划id
+   */
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void withdrawApproval(Long id) {
+    MaterialDemandPlan plan = materialPlanRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败"));
+    if (plan.getPlanStatus().equals(PlanStatus.APPROVAL)
+        && plan.getApprovalStatus().equals(
+        ApprovalStatus.APPROVAL_ING)) {
+      plan.setPlanStatus(PlanStatus.FREE);
+      plan.setApprovalStatus(ApprovalStatus.NO_SUBMIT);
+      materialPlanRepository.save(plan);
+    } else {
+      throw (new ResourceErrorException("当前项目状态有误，刷新后再试！"));
+    }
+  }
 }

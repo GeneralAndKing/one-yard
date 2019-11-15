@@ -124,4 +124,9 @@ public class PlanMaterial extends BaseEntity {
   @Transient
   private Material material;
 
+  /**
+   * 部门.
+   */
+  @Transient
+  private String departmentName;
 }

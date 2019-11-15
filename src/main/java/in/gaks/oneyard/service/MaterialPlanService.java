@@ -37,4 +37,11 @@ public interface MaterialPlanService extends BaseService<MaterialDemandPlan, Lon
    * @param approval 审批信息
    */
   void approvalMaterialPlan(MaterialDemandPlan materialDemandPlan, Approval approval);
+
+  /**
+   * 撤回审批.
+   *
+   * @param id 需求计划id
+   */
+  void withdrawApproval(Long id);
 }
