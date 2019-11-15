@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,12 +43,20 @@ public class SysUserController extends BaseController<SysUser, SysUserService, L
    *
    * @return 结果
    */
-  @GetMapping("all")
+  @GetMapping("/all")
   public HttpEntity<?> all() {
-    List<SysUser> all = sysUserService.findAll();
-    return ResponseEntity.ok(all.stream()
-        .map(user -> user.setPassword("xxxxxxxxxxxxxxxxxx"))
-        .collect(Collectors.toList()));
+    return ResponseEntity.ok(completeUser(sysUserService.findAll()));
+  }
+
+  /**
+   * 通过部门ids查询.
+   *
+   * @param ids ids
+   * @return ok
+   */
+  @GetMapping("/byDepartments/{ids}")
+  public HttpEntity<?> byDepartments(@PathVariable List<Long> ids) {
+    return ResponseEntity.ok(completeUser(sysUserService.searchByDepartments(ids)));
   }
 
   /**
@@ -89,4 +98,9 @@ public class SysUserController extends BaseController<SysUser, SysUserService, L
     return ResponseEntity.noContent().build();
   }
 
+  private List<SysUser> completeUser(List<SysUser> users) {
+    return users.stream()
+        .map(user -> user.setPassword("xxxxxxxxxxxxxxxxxx"))
+        .collect(Collectors.toList());
+  }
 }

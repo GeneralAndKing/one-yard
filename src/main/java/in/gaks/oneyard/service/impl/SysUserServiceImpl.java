@@ -50,4 +50,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserRepository, SysUs
   public SysUser save(SysUser sysUser) {
     return sysUserRepository.save(sysUser);
   }
+
+  @Override
+  public List<SysUser> searchByDepartments(List<Long> ids) {
+    return sysUserRepository.searchByDepartmentIds(ids);
+  }
 }
