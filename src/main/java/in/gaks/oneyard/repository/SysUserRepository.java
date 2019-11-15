@@ -34,6 +34,19 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
   List<SysUser> searchByRoleId(@Param("id") Long id);
 
   /**
+   * 通过部门的 ids 查询用户.
+   *
+   * @param ids 部门 id 列表
+   * @return 用户信息
+   */
+  @RestResource(path = "byDepartments")
+  @Query(value = "select distinct u.* from sys_user u,  sys_user_role ur "
+      + "where ur.role_id in (select r.id from sys_role r "
+      + "where r.department_id in (:ids)) and u.id = ur.user_id",
+      nativeQuery = true)
+  List<SysUser> searchByDepartmentIds(@Param("ids") List<Long> ids);
+
+  /**
    * 通过名字查询是否存在.
    *
    * @param name 名字
@@ -77,7 +90,7 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
   /**
    * 根据邮箱和名称查询用户.
    *
-   * @param name 名称
+   * @param name  名称
    * @param email 邮箱
    * @return 用户
    */
@@ -97,7 +110,7 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
   /**
    * 根据邮箱和名称和手机号查询用户.
    *
-   * @param name 名称
+   * @param name  名称
    * @param email 邮箱
    * @param phone 手机号
    * @return 用户
