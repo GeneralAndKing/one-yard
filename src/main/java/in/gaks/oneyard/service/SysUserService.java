@@ -35,4 +35,12 @@ public interface SysUserService extends BaseService<SysUser, Long> {
    * @param newPassword 新密码
    */
   void modifyPassword(String name, String oldPassword, String newPassword);
+
+  /**
+   * 保存/更新用户.
+   *
+   * @param sysUser 用户
+   * @return 结果
+   */
+  SysUser save(SysUser sysUser);
 }

@@ -3,7 +3,6 @@ package in.gaks.oneyard.handle;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
-import in.gaks.oneyard.model.exception.ResourceException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.model.exception.ValidationException;
 import javax.validation.ConstraintViolationException;
@@ -55,8 +54,8 @@ public class ResourceExceptionHandle {
    * @param exception exception
    * @return 400
    */
-  @ExceptionHandler({ResourceException.class, ValidationException.class,
-      ResourceErrorException.class})
+  @ExceptionHandler({ValidationException.class,
+      ResourceErrorException.class, IllegalArgumentException.class})
   public HttpEntity<?> handleResourceException(Exception exception) {
     JSONObject error = new JSONObject();
     error.put("error", "资源出现错误");

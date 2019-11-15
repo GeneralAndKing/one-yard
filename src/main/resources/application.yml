@@ -67,6 +67,14 @@ application:
   code:
     email-code-validity-minute: 30
     email-enable: false
+  qiniu: # 七牛云配置
+    area: 华南 # 可选值 华东 华南 华北 北美 东南亚 不填会自动判断
+    access-key: MDRca19RDHiDgv3T677skHmPmzp8_gn8QahRQLFX
+    secret-key: UKTf_UA7S3-Z7QP4kRUVraBP-eI_HsU2IfPjB5U0
+    bucket: resource-pic
+    domain: q0zlaui5t.bkt.clouddn.com
+    dir-name: oneYard
+    host: http://q0zlaui5t.bkt.clouddn.com/
 logging:
   level:
     org.springframework.security: DEBUG

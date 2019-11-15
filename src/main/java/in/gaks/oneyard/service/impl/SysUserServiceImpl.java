@@ -45,4 +45,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserRepository, SysUs
     user.setPassword(passwordEncoder.encode(newPassword));
     sysUserRepository.save(user);
   }
+
+  @Override
+  public SysUser save(SysUser sysUser) {
+    return sysUserRepository.save(sysUser);
+  }
 }
