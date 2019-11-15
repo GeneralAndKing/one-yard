@@ -32,7 +32,6 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     implements PlanMaterialService {
 
   private final @NonNull MaterialRepository materialRepository;
-  private final @NonNull MaterialPlanService materialPlanService;
   private final @NonNull MaterialTypeRepository materialTypeRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
   private final @NonNull MaterialDemandPlanRepository materialPlanRepository;
