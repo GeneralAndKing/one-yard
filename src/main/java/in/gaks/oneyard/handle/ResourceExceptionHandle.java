@@ -10,6 +10,7 @@ import org.apache.tomcat.util.http.fileupload.FileUploadBase.FileSizeLimitExceed
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -56,7 +57,7 @@ public class ResourceExceptionHandle {
    * @return 400
    */
   @ExceptionHandler({ValidationException.class, FileSizeLimitExceededException.class,
-      ResourceErrorException.class, IllegalArgumentException.class})
+      ResourceErrorException.class, IllegalArgumentException.class, ServletRequestBindingException.class})
   public HttpEntity<?> handleResourceException(Exception exception) {
     JSONObject error = new JSONObject();
     error.put("error", "资源出现错误");

@@ -40,21 +40,40 @@ public class FileController {
   private static final FileSize MAX_SIZE = FileSize.valueOf("10MB");
 
   /**
-   * 头像上传.
+   * 头像上传，用户.
+   *
+   * @param file     头像
+   * @param username 用户名
+   * @return 结果
+   */
+  @PostMapping("avatar")
+  public HttpEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file,
+      @RequestParam("user") String username) {
+    Assert.notNull(file, "文件不能为空");
+    Assert.notNull(username, "用户不能为空");
+    return upload(file, sysUserService.findByUsername(username));
+  }
+
+  /**
+   * 头像上传，自己.
    *
    * @param file      文件
    * @param principal 用户信息
    * @return 结果
    */
-  @PostMapping("avatar")
-  public HttpEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file, Principal principal) {
+  @PostMapping("avatar/self")
+  public HttpEntity<?> uploadAvatarSelf(@RequestParam("file") MultipartFile file,
+      Principal principal) {
     Assert.notNull(file, "文件不能为空");
-    SysUser user = sysUserService.findByUsername(principal.getName());
+    return upload(file, sysUserService.findByUsername(principal.getName()));
+  }
+
+  private HttpEntity<?> upload(MultipartFile file, SysUser user) {
     if (MAX_SIZE.getSize() < file.getSize()) {
       throw new ResourceUploadException("头像大小不能大于10MB");
     }
     try {
-      DefaultPutRet upload  = qiniuUtils.upload(file, "/avatar/",
+      DefaultPutRet upload = qiniuUtils.upload(file, "/avatar/",
           UUID.randomUUID().toString());
       String url = qiniuProperties.getHost() + upload.key;
       user.setIcon(url);
