@@ -43,4 +43,12 @@ public interface SysUserService extends BaseService<SysUser, Long> {
    * @return 结果
    */
   SysUser save(SysUser sysUser);
+
+  /**
+   * 根据部门 ids 查询用户.
+   *
+   * @param ids ids
+   * @return 结果
+   */
+  List<SysUser> searchByDepartments(List<Long> ids);
 }
