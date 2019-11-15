@@ -4,11 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.Approval;
-import in.gaks.oneyard.model.entity.MaterialDemandPlan;
-import in.gaks.oneyard.model.entity.MaterialPlanSummary;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
 import in.gaks.oneyard.model.helper.VerifyParameter;
-import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.ProcurementPlanService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +16,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,8 +43,8 @@ public class ProcurementPlanController extends BaseController<ProcurementPlan,
    * @param id 采购计划表id
    * @return 查询的数据
    */
-  @GetMapping("/getProcurementPlan")
-  public HttpEntity<?> getMaterialPlan(@NotNull Long id) {
+  @GetMapping("/all/{id}")
+  public HttpEntity<?> getMaterialPlan(@PathVariable Long id) {
     Assert.notNull(id, "请求参数不合法");
     return ResponseEntity.ok(procurementPlanService.findByIdToMaterials(id));
   }
