@@ -9,6 +9,7 @@ import in.gaks.oneyard.service.SysUserService;
 import in.gaks.oneyard.util.QiniuUtils;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -54,7 +55,7 @@ public class FileController {
     }
     try {
       DefaultPutRet upload  = qiniuUtils.upload(file, "/avatar/",
-          user.getUsername());
+          UUID.randomUUID().toString());
       String url = qiniuProperties.getHost() + upload.key;
       user.setIcon(url);
       return ResponseEntity.ok(sysUserService.save(user));
