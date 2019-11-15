@@ -73,10 +73,11 @@ public class QiniuUtils {
    */
   public DefaultPutRet upload(MultipartFile file, String pathChild, String fileName)
       throws IOException {
+    String name = qiniuProperties.getDirName() + pathChild + fileName;
     UploadManager uploadManager = new UploadManager(configurationQiNiu());
-    String token = createAuth().uploadToken(qiniuProperties.getBucket());
+    String token = createAuth().uploadToken(qiniuProperties.getBucket(), name);
     Response response = uploadManager
-        .put(file.getBytes(), qiniuProperties.getDirName() + pathChild + fileName, token);
+        .put(file.getBytes(), name, token);
     return new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
   }
 

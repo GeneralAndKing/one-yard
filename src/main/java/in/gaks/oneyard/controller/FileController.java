@@ -1,7 +1,6 @@
 package in.gaks.oneyard.controller;
 
 import ch.qos.logback.core.util.FileSize;
-import com.google.common.io.Files;
 import com.qiniu.storage.model.DefaultPutRet;
 import in.gaks.oneyard.model.entity.SysUser;
 import in.gaks.oneyard.model.exception.ResourceUploadException;
@@ -10,7 +9,6 @@ import in.gaks.oneyard.service.SysUserService;
 import in.gaks.oneyard.util.QiniuUtils;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -48,18 +46,15 @@ public class FileController {
    * @return 结果
    */
   @PostMapping("avatar")
-  @SuppressWarnings("all")
   public HttpEntity<?> uploadAvatar(@RequestParam("file") MultipartFile file, Principal principal) {
     Assert.notNull(file, "文件不能为空");
     SysUser user = sysUserService.findByUsername(principal.getName());
-    String extension = Files.getFileExtension(
-        Objects.isNull(file.getOriginalFilename()) ? "" : file.getOriginalFilename());
     if (MAX_SIZE.getSize() < file.getSize()) {
       throw new ResourceUploadException("头像大小不能大于10MB");
     }
     try {
       DefaultPutRet upload  = qiniuUtils.upload(file, "/avatar/",
-          user.getUsername() + "." + extension);
+          user.getUsername());
       String url = qiniuProperties.getHost() + upload.key;
       user.setIcon(url);
       return ResponseEntity.ok(sysUserService.save(user));
