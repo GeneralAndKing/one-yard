@@ -11,6 +11,7 @@ import in.gaks.oneyard.repository.MaterialRepository;
 import in.gaks.oneyard.repository.MaterialTypeRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.SysDepartmentRepository;
+import in.gaks.oneyard.service.MaterialPlanService;
 import in.gaks.oneyard.service.PlanMaterialService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -31,10 +32,9 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     implements PlanMaterialService {
 
   private final @NonNull MaterialRepository materialRepository;
-  private final @NonNull MaterialDemandPlanRepository materialDemandPlanRepository;
+  private final @NonNull MaterialPlanService materialPlanService;
   private final @NonNull MaterialTypeRepository materialTypeRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
-  private final @NonNull SysDepartmentRepository sysDepartmentRepository;
 
   /**
    * 根据需求计划id获取完整的需求物资.
@@ -46,6 +46,8 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   public List<PlanMaterial> findAllByPlanId(Long id) {
     return planMaterialRepository.findAllByPlanId(id)
         .stream().peek(planMaterial -> {
+          planMaterial.setDepartmentName(
+              materialPlanService.getDepartmentNameByPlanId(planMaterial.getPlanId()));
           Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
               () -> new ResourceNotFoundException("物料主数据查询失败"));
           planMaterial.setMaterial(material);
@@ -73,12 +75,10 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
               .findById(planMaterial.getMaterialTypeId()).orElseThrow(
                   () -> new ResourceNotFoundException("物料类别主数据查询失败"));
           planMaterial.setMaterialType(materialType);
-          Long departmentId = materialDemandPlanRepository.findById(planMaterial.getPlanId())
-              .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败")).getDepartmentId();
-          String departmentName = sysDepartmentRepository.findById(departmentId)
-              .orElseThrow(() -> new ResourceNotFoundException("需求部门查询失败")).getName();
-          planMaterial.setDepartmentName(departmentName);
+          planMaterial.setDepartmentName(
+              materialPlanService.getDepartmentNameByPlanId(planMaterial.getPlanId()));
         }).collect(Collectors.toList());
   }
+
 
 }

@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * .
+ *
  * @author Japoul
  * @date 2019/11/2 下午11:00
  */
@@ -44,4 +45,11 @@ public interface MaterialPlanService extends BaseService<MaterialDemandPlan, Lon
    * @param id 需求计划id
    */
   void withdrawApproval(Long id);
+
+  /**
+   * 根据需求计划id查询所需部门.
+   *
+   * @param planId 需求计划id
+   */
+  String getDepartmentNameByPlanId(Long planId);
 }
