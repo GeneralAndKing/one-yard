@@ -157,7 +157,8 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     if (Objects.isNull(procurementPlan.getId())) {
       updatePlanAndPlanMaterials(procurementPlan, materials);
     }
-    String type = materialDemandPlanRepository.findById(materials.get(0).getPlanId())
+    String type = materialDemandPlanRepository
+        .findById(materials.get(materials.size() - 1).getPlanId())
         .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败")).getPlanType();
     if ("年度计划".equals(type)) {
       procurementPlan.setPlanType("年度采购计划");

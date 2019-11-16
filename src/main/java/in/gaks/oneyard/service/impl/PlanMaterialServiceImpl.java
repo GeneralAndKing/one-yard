@@ -112,7 +112,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   /**
    * 退回需求.
    *
-   * @param flag true 退回一条物资 false 退回一个计划
+   * @param flag true：整个计划，false：当前物资
    * @param planMaterial 需求物资
    */
   @Override
@@ -121,7 +121,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     Notification notification = new Notification();
     MaterialDemandPlan materialPlan = materialPlanRepository.findById(planMaterial.getPlanId())
         .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败"));
-    if (flag) {
+    if (!flag) {
       //设置退回状态
       planMaterial.setPlanId(null);
       planMaterial.setStatus(MaterialStatus.BACK);
