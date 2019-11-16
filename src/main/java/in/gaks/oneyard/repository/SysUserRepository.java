@@ -42,7 +42,8 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
   @RestResource(path = "byDepartments")
   @Query(value = "select distinct u.* from sys_user u,  sys_user_role ur "
       + "where ur.role_id in (select r.id from sys_role r "
-      + "where r.department_id in (:ids)) and u.id = ur.user_id",
+      + "where r.department_id in (:ids) and r.is_enable = true) "
+      + "and u.id = ur.user_id and u.is_enable = true and ur.is_enable = true",
       nativeQuery = true)
   List<SysUser> searchByDepartmentIds(@Param("ids") List<Long> ids);
 

@@ -33,6 +33,19 @@ public interface SysRoleRepository extends BaseRepository<SysRole, Long> {
   List<SysRole> searchByDepartmentId(@Param("id") Long id);
 
   /**
+   * 根据部门号查询角色.
+   *
+   * @param ids 部门号
+   * @return 角色
+   */
+  @RestResource(path = "byDepartments")
+  @Query(value = "select r.* from sys_role r, sys_department d "
+      + "where d.id in (:ids) and r.department_id = d.id "
+      + "and r.is_enable = 1 and d.is_enable = 1",
+      nativeQuery = true)
+  List<SysRole> searchByDepartmentIds(@Param("ids") List<Long> ids);
+
+  /**
    * 根据用户查询橘色.
    *
    * @param id 用户
