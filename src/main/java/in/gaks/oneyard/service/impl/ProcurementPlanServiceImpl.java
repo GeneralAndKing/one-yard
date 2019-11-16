@@ -3,11 +3,8 @@ package in.gaks.oneyard.service.impl;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.constant.ApprovalStatus;
 import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
-import in.gaks.oneyard.model.constant.MaterialStatus;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
-import in.gaks.oneyard.model.entity.MaterialDemandPlan;
-import in.gaks.oneyard.model.entity.MaterialPlanSummary;
 import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
@@ -16,22 +13,18 @@ import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
-import in.gaks.oneyard.repository.MaterialPlanSummaryRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.ProcurementPlanRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
-import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.PlanMaterialService;
 import in.gaks.oneyard.service.ProcurementPlanService;
 import in.gaks.oneyard.util.NotifyUtil;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import net.bytebuddy.implementation.bytecode.Throw;
 import org.springframework.stereotype.Service;
 
 /**
@@ -48,10 +41,11 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
 
   private final @NonNull ProcurementPlanRepository procurementPlanRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
-  private final @NonNull PlanMaterialService planMaterialService;
+  private final @NonNull MaterialDemandPlanRepository materialDemandPlanRepository;
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
+  private final @NonNull PlanMaterialService planMaterialService;
   private final NotifyUtil notifyUtil;
 
   /**
@@ -147,5 +141,60 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     } else {
       throw (new ResourceErrorException("当前项目状态有误，刷新后再试！"));
     }
+  }
+
+  /**
+   * 保存采购计划表.
+   *
+   * @param procurementPlan 物料需求计划基础信息
+   * @param materials 物资列表
+   */
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void savePlanAndPlanMaterials(ProcurementPlan procurementPlan,
+      List<PlanMaterial> materials) {
+    //判断如果是更新则调用更新方法
+    if (Objects.isNull(procurementPlan.getId())) {
+      updatePlanAndPlanMaterials(procurementPlan, materials);
+    }
+    String type = materialDemandPlanRepository.findById(materials.get(0).getPlanId())
+        .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败")).getPlanType();
+    if ("年度计划".equals(type)) {
+      procurementPlan.setPlanType("年度采购计划");
+    } else {
+      procurementPlan.setPlanType("月度采购计划");
+    }
+    procurementPlanRepository.save(procurementPlan);
+    //判断是否保存成功并返回了id
+    if (Objects.isNull(procurementPlan.getId())) {
+      throw new ResourceErrorException("采购计划保存失败");
+    }
+    Long planId = procurementPlan.getId();
+    //循环保存
+    materials.forEach(material -> {
+      material.setProcurementPlanId(planId);
+      planMaterialRepository.save(material);
+    });
+  }
+
+  /**
+   * 更新采购计划表.
+   *
+   * @param procurementPlan 物料需求计划基础信息
+   * @param materials 物资列表
+   */
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updatePlanAndPlanMaterials(ProcurementPlan procurementPlan,
+      List<PlanMaterial> materials) {
+    procurementPlanRepository.save(procurementPlan);
+    Long planId = procurementPlan.getId();
+    //循环保存
+    materials.forEach(material -> {
+      if (Objects.isNull(material.getId())) {
+        material.setProcurementPlanId(planId);
+        planMaterialRepository.save(material);
+      }
+    });
   }
 }

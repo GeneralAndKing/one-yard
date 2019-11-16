@@ -4,6 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.Approval;
+import in.gaks.oneyard.model.entity.MaterialDemandPlan;
+import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
 import in.gaks.oneyard.model.helper.VerifyParameter;
 import in.gaks.oneyard.service.ProcurementPlanService;
@@ -76,6 +78,21 @@ public class ProcurementPlanController extends BaseController<ProcurementPlan,
     procurementPlanService.withdrawApproval(
         data.getObject("procurementPlan", ProcurementPlan.class),
         data.getObject("role", String.class)
+    );
+    return ResponseEntity.ok().build();
+  }
+
+  /**
+   * 保存/修改采购计划表.
+   *
+   * @return 执行结果
+   */
+  @PostMapping("/procurementPlan")
+  @VerifyParameter(required = {"procurementPlan#计划为必填项", "desserts#物料为必填项"})
+  public HttpEntity<?> materialPlanCreate(@NotNull @RequestBody JSONObject data) {
+    procurementPlanService.savePlanAndPlanMaterials(
+        data.getObject("procurementPlan", ProcurementPlan.class),
+        data.getJSONArray("desserts").toJavaList(PlanMaterial.class)
     );
     return ResponseEntity.ok().build();
   }
