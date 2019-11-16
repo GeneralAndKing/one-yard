@@ -1,6 +1,7 @@
 package in.gaks.oneyard.service;
 
 import in.gaks.oneyard.base.BaseService;
+import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import java.util.List;
 
@@ -34,5 +35,13 @@ public interface PlanMaterialService extends BaseService<PlanMaterial, Long> {
    * @param planId 需求计划id
    */
   String getDepartmentNameByPlanId(Long planId);
+
+  /**
+   * 退回需求.
+   *
+   * @param flag true 退回一条物资 false 退回一个计划
+   * @param planMaterial 需求物资
+   */
+  void backPlanOrMaterial(boolean flag, PlanMaterial planMaterial, Approval approve);
 
 }
