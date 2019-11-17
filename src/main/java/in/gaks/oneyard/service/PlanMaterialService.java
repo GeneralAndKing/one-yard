@@ -42,12 +42,13 @@ public interface PlanMaterialService extends BaseService<PlanMaterial, Long> {
    *
    * @param flag true 退回一条物资 false 退回一个计划
    * @param planMaterial 需求物资
+   * @param approve 审批意见
    */
   void backPlanOrMaterial(boolean flag, PlanMaterial planMaterial, Approval approve);
 
 
   /**
-   * 物料合并
+   * 物料合并.
    * @param planMaterial 合并后的物料
    * @param ids 待合并的ids
    * @return 合并后的物料

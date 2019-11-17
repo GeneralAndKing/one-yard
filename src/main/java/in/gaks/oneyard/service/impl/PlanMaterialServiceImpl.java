@@ -131,6 +131,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    *
    * @param flag true：整个计划，false：当前物资
    * @param planMaterial0 需求物资
+   * @param approve 审批意见
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -192,14 +193,20 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     notifyUtil.sendMessage(user.getId().toString(), notification);
   }
 
+  /**
+   * 合并物料.
+   *
+   * @param planMaterial 合并后的物料
+   * @param ids 待合并的ids
+   */
   @Override
   @Transactional(rollbackOn = Exception.class)
   public PlanMaterial mergeMaterialPlan(PlanMaterial planMaterial, List<Long> ids) {
 
     List<PlanMaterial> all = planMaterialRepository.findAllById(ids);
-    for (PlanMaterial item :
-            all) {
+    for (PlanMaterial item : all) {
       item.setStatus(MaterialStatus.MERGE);
+      item.setProcurementPlanId(null);
     }
     planMaterialRepository.saveAll(all);
     return planMaterialRepository.save(planMaterial);

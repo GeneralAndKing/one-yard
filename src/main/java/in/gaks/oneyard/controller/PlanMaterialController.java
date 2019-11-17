@@ -49,9 +49,15 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
     return ResponseEntity.ok().build();
   }
 
+  /**
+   * 合并数据.
+   *
+   * @return 执行结果
+   */
   @PostMapping("/mergeMaterialPlan")
-  public HttpEntity<?> mergeMaterialPlan(@NotNull @RequestBody JSONObject data){
-    PlanMaterial planMaterial = planMaterialService.mergeMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
+  public HttpEntity<?> mergeMaterialPlan(@NotNull @RequestBody JSONObject data) {
+    PlanMaterial planMaterial = planMaterialService
+        .mergeMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
             data.getJSONArray("ids").toJavaList(Long.class));
     return ResponseEntity.ok(planMaterial);
   }

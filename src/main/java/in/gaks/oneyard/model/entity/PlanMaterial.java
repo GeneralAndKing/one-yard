@@ -89,7 +89,7 @@ public class PlanMaterial extends BaseEntity {
   /**
    * 采购日期.
    */
-  private java.time.LocalDateTime purchaseDate;
+  private java.lang.String purchaseDate;
 
   /**
    * 计划来源.
