@@ -4,10 +4,8 @@ import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.Approval;
-import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.helper.VerifyParameter;
-import in.gaks.oneyard.service.MaterialPlanService;
 import in.gaks.oneyard.service.PlanMaterialService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -16,10 +14,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,5 +47,12 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
         data.getObject("approve", Approval.class)
     );
     return ResponseEntity.ok().build();
+  }
+
+  @PostMapping("/mergeMaterialPlan")
+  public HttpEntity<?> mergeMaterialPlan(@NotNull @RequestBody JSONObject data){
+    PlanMaterial planMaterial = planMaterialService.mergeMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
+            data.getJSONArray("ids").toJavaList(Long.class));
+    return ResponseEntity.ok(planMaterial);
   }
 }

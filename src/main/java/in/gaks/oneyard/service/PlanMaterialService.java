@@ -45,4 +45,13 @@ public interface PlanMaterialService extends BaseService<PlanMaterial, Long> {
    */
   void backPlanOrMaterial(boolean flag, PlanMaterial planMaterial, Approval approve);
 
+
+  /**
+   * 物料合并
+   * @param planMaterial 合并后的物料
+   * @param ids 待合并的ids
+   * @return 合并后的物料
+   */
+  PlanMaterial mergeMaterialPlan(PlanMaterial planMaterial,List<Long> ids);
+
 }
