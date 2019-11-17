@@ -20,11 +20,14 @@ import in.gaks.oneyard.repository.MaterialRepository;
 import in.gaks.oneyard.repository.MaterialTypeRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
+import in.gaks.oneyard.repository.ProcurementPlanRepository;
 import in.gaks.oneyard.repository.SysDepartmentRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
 import in.gaks.oneyard.service.PlanMaterialService;
 import in.gaks.oneyard.util.NotifyUtil;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.NonNull;
@@ -46,6 +49,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   private final @NonNull MaterialRepository materialRepository;
   private final @NonNull MaterialTypeRepository materialTypeRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
+  private final @NonNull ProcurementPlanRepository procurementPlanRepository;
   private final @NonNull MaterialDemandPlanRepository materialPlanRepository;
   private final @NonNull SysDepartmentRepository sysDepartmentRepository;
   private final @NonNull ApprovalRepository approvalRepository;
@@ -61,9 +65,18 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    */
   @Override
   public List<PlanMaterial> findAllByPlanId(Long id) {
+    List<Long> procurementIds = new ArrayList<>();
+    procurementPlanRepository
+        .findAllByPlanStatusAndApprovalStatus(PlanStatus.FINALLY, ApprovalStatus.APPROVAL_OK)
+        .forEach(p -> {
+          procurementIds.add(p.getId());
+        });
     return planMaterialRepository
         .findAllByPlanIdAndStatusAndProcurementPlanIdIsNull(id, MaterialStatus.INIT)
         .stream().peek(planMaterial -> {
+          Long inTransitNum = 0L;
+          Long occupiedNum = 0L;
+
           planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
           Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
               () -> new ResourceNotFoundException("物料主数据查询失败"));
@@ -72,6 +85,36 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
               .findById(planMaterial.getMaterialTypeId()).orElseThrow(
                   () -> new ResourceNotFoundException("物料类别主数据查询失败"));
           planMaterial.setMaterialType(materialType);
+
+          //若没有在正在进行的采购计划则表示该物资已占库存数为0
+          if (procurementIds.size() != 0) {
+            //获取已占库存
+            List<Long> nums = planMaterialRepository
+                .searchByProcurementPlanIdsAndSupplyMode(procurementIds,
+                    planMaterial.getMaterialId(), "采购");
+            if (Objects.nonNull(nums)) {
+              for (Long n : nums) {
+                occupiedNum += n;
+              }
+            }
+          }
+
+          //若没有在正在进行的采购计划则表示在途数量为0
+          if (procurementIds.size() != 0) {
+            //获取在途数量
+            List<Long> nums = planMaterialRepository
+                .searchByProcurementPlanIdsAndSupplyMode(procurementIds,
+                    planMaterial.getMaterialId(), "采购");
+            if (Objects.nonNull(nums)) {
+              for (Long n : nums) {
+                inTransitNum += n;
+              }
+            }
+          }
+          planMaterial.setAvailableNum(planMaterial.getNumber() - occupiedNum + inTransitNum);
+          planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
+          planMaterial.setOccupiedNum(occupiedNum);
+          planMaterial.setInTransitNum(inTransitNum);
         }).collect(Collectors.toList());
   }
 
@@ -84,17 +127,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   @Override
   @Deprecated
   public List<PlanMaterial> findAllByProcurementPlanId(Long id) {
-    return planMaterialRepository.findAllByProcurementPlanIdAndStatus(id, MaterialStatus.INIT)
-        .stream().peek(planMaterial -> {
-          Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
-              () -> new ResourceNotFoundException("物料主数据查询失败"));
-          planMaterial.setMaterial(material);
-          MaterialType materialType = materialTypeRepository
-              .findById(planMaterial.getMaterialTypeId()).orElseThrow(
-                  () -> new ResourceNotFoundException("物料类别主数据查询失败"));
-          planMaterial.setMaterialType(materialType);
-          planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
-        }).collect(Collectors.toList());
+    return planMaterialRepository.findAllByProcurementPlanIdAndStatus(id, MaterialStatus.INIT);
   }
 
   /**

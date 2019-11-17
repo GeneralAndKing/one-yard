@@ -129,4 +129,22 @@ public class PlanMaterial extends BaseEntity {
    */
   @Transient
   private String departmentName;
+
+  /**
+   * 在途数量.
+   */
+  @Transient
+  private Long inTransitNum;
+
+  /**
+   * 可用库存.
+   */
+  @Transient
+  private Long availableNum;
+
+  /**
+   * 已占库存.
+   */
+  @Transient
+  private Long occupiedNum;
 }
