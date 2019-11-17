@@ -147,11 +147,14 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    * 退回需求.
    *
    * @param flag true：整个计划，false：当前物资
-   * @param planMaterial 需求物资
+   * @param planMaterial0 需求物资
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void backPlanOrMaterial(boolean flag, PlanMaterial planMaterial, Approval approve) {
+  public void backPlanOrMaterial(boolean flag, PlanMaterial planMaterial0, Approval approve) {
+    //统一对象
+    PlanMaterial planMaterial = planMaterialRepository.findById(planMaterial0.getId())
+        .orElseThrow(() -> new ResourceNotFoundException("找不到对应物资，可能已被删除！"));
     Notification notification = new Notification();
     MaterialDemandPlan materialPlan = materialPlanRepository.findById(planMaterial.getPlanId())
         .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败"));
@@ -174,9 +177,10 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
       //设置通知参数
       notification.setName("需求物资退回通知");
       notification.setMessage("您于《" + materialPlan.getName()
-          + "》中提报的需求物资被采购部门退回了。物资部分详细信息为："
-          + "物资类别及编号：[" + materialType.getCode() + "]" + materialType.getName() + ",物料名称及编号：["
-          + material.getCode() + "]" + material.getName() + "需求数量：" + planMaterial.getNumber()
+          + "》中提报的需求物资被采购部门退回了，请重新草拟计划提报。物资部分详细信息为："
+          + "<br/>物资类别及编号：[" + materialType.getCode() + "]" + materialType.getName()
+          + "<br/>物料名称及编号：["
+          + material.getCode() + "]" + material.getName() + "<br/>需求数量：" + planMaterial.getNumber()
       );
     } else {
       materialPlan.setSummaryId(null);
@@ -191,7 +195,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
           + "提报创建的需求计划 《" + materialPlan.getName() + "》 因为某些原因被采购部门退回了。");
     }
     //保存退回信息至审批
-    approve.setPlanId(planMaterial.getPlanId());
+    approve.setPlanId(planMaterial0.getPlanId());
     approve.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL_ONE);
     approvalRepository.save(approve);
 
