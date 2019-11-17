@@ -4,6 +4,7 @@ import in.gaks.oneyard.base.BaseService;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
+import in.gaks.oneyard.model.entity.dto.ProcurementPlanDto;
 import java.util.List;
 
 /**
@@ -20,7 +21,7 @@ public interface ProcurementPlanService extends BaseService<ProcurementPlan, Lon
    * @param id 汇总表id
    * @return 汇总表
    */
-  ProcurementPlan findByIdToMaterials(Long id);
+  List<ProcurementPlanDto> findByIdToMaterials(Long id);
 
   /**
    * 采购主管/财务审批采购计划.

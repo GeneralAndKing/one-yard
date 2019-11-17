@@ -9,6 +9,7 @@ import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
 import in.gaks.oneyard.model.entity.SysUser;
+import in.gaks.oneyard.model.entity.dto.ProcurementPlanDto;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
@@ -17,9 +18,11 @@ import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.ProcurementPlanRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
+import in.gaks.oneyard.repository.dto.ProcurementPlanDtoRepository;
 import in.gaks.oneyard.service.PlanMaterialService;
 import in.gaks.oneyard.service.ProcurementPlanService;
 import in.gaks.oneyard.util.NotifyUtil;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.transaction.Transactional;
@@ -40,12 +43,12 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     implements ProcurementPlanService {
 
   private final @NonNull ProcurementPlanRepository procurementPlanRepository;
+  private final @NonNull ProcurementPlanDtoRepository procurementPlanDtoRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
   private final @NonNull MaterialDemandPlanRepository materialDemandPlanRepository;
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
-  private final @NonNull PlanMaterialService planMaterialService;
   private final NotifyUtil notifyUtil;
 
   /**
@@ -55,12 +58,50 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * @return 完整的汇总表
    */
   @Override
-  public ProcurementPlan findByIdToMaterials(Long id) {
-    ProcurementPlan plan = procurementPlanRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("采购计划查询失败"));
-    List<PlanMaterial> materials = planMaterialService.findAllByProcurementPlanId(id);
-    plan.setPlanMaterials(materials);
-    return plan;
+  public List<ProcurementPlanDto> findByIdToMaterials(Long id) {
+    List<ProcurementPlanDto> plans = procurementPlanDtoRepository.searchInfoById(id);
+    if (Objects.isNull(plans)) {
+      throw new ResourceNotFoundException("找不到对应的数据！");
+    }
+    List<Long> procurementIds = new ArrayList<>();
+    procurementPlanRepository
+        .findAllByPlanStatusAndApprovalStatus(PlanStatus.FINALLY, ApprovalStatus.APPROVAL_OK)
+        .forEach(p -> {
+          procurementIds.add(p.getId());
+        });
+    plans.forEach(plan -> {
+      Long inTransitNum = 0L;
+      Long occupiedNum = 0L;
+      //若没有在正在进行的采购计划则表示在途数量为0
+      if (procurementIds.size() != 0) {
+        //获取在途数量
+        List<Long> nums = planMaterialRepository
+            .searchByProcurementPlanIdsAndSupplyMode(procurementIds, plan.getMaterialId(), "采购");
+        if (Objects.nonNull(nums)) {
+          for (Long n : nums) {
+            inTransitNum += n;
+          }
+        }
+      }
+      plan.setInTransitNum(inTransitNum);
+
+      //若没有在正在进行的采购计划则表示该物资已占库存数为0
+      if (procurementIds.size() != 0) {
+        //获取已占库存
+        List<Long> nums = planMaterialRepository
+            .searchByProcurementPlanIdsAndSupplyMode(procurementIds, plan.getMaterialId(), "采购");
+        if (Objects.nonNull(nums)) {
+          for (Long n : nums) {
+            occupiedNum += n;
+          }
+        }
+      }
+      plan.setOccupiedNum(occupiedNum);
+      //设置可用库存
+      plan.setAvailableNum(plan.getNumber() - occupiedNum + inTransitNum);
+
+    });
+    return plans;
   }
 
   /**
@@ -157,6 +198,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     if (Objects.isNull(procurementPlan.getId())) {
       updatePlanAndPlanMaterials(procurementPlan, materials);
     }
+    //如果是创建计划表则检测是否已经被生成了
     String type = materialDemandPlanRepository
         .findById(materials.get(materials.size() - 1).getPlanId())
         .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败")).getPlanType();
@@ -170,10 +212,25 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     if (Objects.isNull(procurementPlan.getId())) {
       throw new ResourceErrorException("采购计划保存失败");
     }
-    Long planId = procurementPlan.getId();
+    Long procurementPlanId = procurementPlan.getId();
     //循环保存
     materials.forEach(material -> {
-      material.setProcurementPlanId(planId);
+      //判断信息是否填写完成
+      if (Objects.isNull(material.getSupplyMode())) {
+        throw new ResourceErrorException("信息未全部填写完成，请全部填写完成后再试！");
+      }
+      if (Objects.nonNull(material.getId())) {
+        //判断是否已经被生成了采购计划
+        Long id = planMaterialRepository.findById(material.getId())
+            .orElseThrow(() -> new ResourceNotFoundException("需求物料未找到")).getProcurementPlanId();
+        if (Objects.nonNull(id)) {
+          throw new ResourceErrorException("当前信息已过期，请刷新后再试。");
+        }
+      }
+      //判断供应方式为采购的才生成采购计划
+      if ("采购".equals(material.getSupplyMode()) && Objects.nonNull(material.getPurchaseDate())) {
+        material.setProcurementPlanId(procurementPlanId);
+      }
       planMaterialRepository.save(material);
     });
   }

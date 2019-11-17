@@ -5,7 +5,9 @@ import in.gaks.oneyard.model.constant.ApprovalStatus;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
+import in.gaks.oneyard.model.entity.SysRole;
 import java.util.List;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -39,4 +41,5 @@ public interface ProcurementPlanRepository extends BaseRepository<ProcurementPla
    */
   @RestResource(path = "byCreateUser")
   List<ProcurementPlan> findAllByCreateUser(@Param("createUser") String createUser);
+
 }

@@ -22,7 +22,6 @@ import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.SysDepartmentRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
-import in.gaks.oneyard.service.MaterialPlanService;
 import in.gaks.oneyard.service.PlanMaterialService;
 import in.gaks.oneyard.util.NotifyUtil;
 import java.util.List;
@@ -62,7 +61,8 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    */
   @Override
   public List<PlanMaterial> findAllByPlanId(Long id) {
-    return planMaterialRepository.findAllByPlanId(id)
+    return planMaterialRepository
+        .findAllByPlanIdAndStatusAndProcurementPlanIdIsNull(id, MaterialStatus.INIT)
         .stream().peek(planMaterial -> {
           planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
           Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
@@ -82,6 +82,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    * @return 完整的需求物资数据
    */
   @Override
+  @Deprecated
   public List<PlanMaterial> findAllByProcurementPlanId(Long id) {
     return planMaterialRepository.findAllByProcurementPlanIdAndStatus(id, MaterialStatus.INIT)
         .stream().peek(planMaterial -> {

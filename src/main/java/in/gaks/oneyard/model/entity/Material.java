@@ -42,6 +42,11 @@ public class Material extends BaseEntity {
   private java.lang.Long number;
 
   /**
+   * 物料最低库存数量.
+   */
+  private java.lang.Long lowNumber;
+
+  /**
    * 规格.
    */
   private java.lang.String specifications;

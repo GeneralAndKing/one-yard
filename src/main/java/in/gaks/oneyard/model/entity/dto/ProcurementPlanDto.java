@@ -7,6 +7,7 @@ import in.gaks.oneyard.model.constant.PlanStatus;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,7 +18,6 @@ import org.springframework.data.annotation.Immutable;
 
 /**
  * 视图查询.
- *
  *
  * @author <a href="https://echocow.cn">EchoCow</a>
  * @date 2019/11/16 下午2:27
@@ -138,9 +138,25 @@ public class ProcurementPlanDto extends BaseEntity {
   private String materialName;
   private String materialSpecifications;
   private Long materialNumber;
+  private Long materialLowNumber;
   private String materialSize;
   private String materialUnit;
   private Long materialProcurementLeadTime;
   private String materialTypeName;
   private String materialTypeCode;
+  /**
+   * 在途数量.
+   */
+  @Transient
+  private Long inTransitNum;
+  /**
+   * 可用库存.
+   */
+  @Transient
+  private Long availableNum;
+  /**
+   * 已占库存.
+   */
+  @Transient
+  private Long occupiedNum;
 }
