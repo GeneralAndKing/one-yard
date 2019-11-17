@@ -1,38 +1,21 @@
 package in.gaks.oneyard.service.impl;
 
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
-import in.gaks.oneyard.model.constant.ApprovalStatus;
-import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
-import in.gaks.oneyard.model.constant.MaterialStatus;
-import in.gaks.oneyard.model.constant.NotificationStatus;
-import in.gaks.oneyard.model.constant.PlanStatus;
-import in.gaks.oneyard.model.entity.Approval;
-import in.gaks.oneyard.model.entity.Material;
-import in.gaks.oneyard.model.entity.MaterialDemandPlan;
-import in.gaks.oneyard.model.entity.MaterialType;
-import in.gaks.oneyard.model.entity.Notification;
-import in.gaks.oneyard.model.entity.PlanMaterial;
-import in.gaks.oneyard.model.entity.SysUser;
+import in.gaks.oneyard.model.constant.*;
+import in.gaks.oneyard.model.entity.*;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
-import in.gaks.oneyard.repository.ApprovalRepository;
-import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
-import in.gaks.oneyard.repository.MaterialRepository;
-import in.gaks.oneyard.repository.MaterialTypeRepository;
-import in.gaks.oneyard.repository.NotificationRepository;
-import in.gaks.oneyard.repository.PlanMaterialRepository;
-import in.gaks.oneyard.repository.ProcurementPlanRepository;
-import in.gaks.oneyard.repository.SysDepartmentRepository;
-import in.gaks.oneyard.repository.SysUserRepository;
+import in.gaks.oneyard.repository.*;
 import in.gaks.oneyard.service.PlanMaterialService;
 import in.gaks.oneyard.util.NotifyUtil;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 
 /**
  * .
@@ -207,5 +190,18 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     notificationRepository.save(notification);
     // 检测用户是否在线发送通知
     notifyUtil.sendMessage(user.getId().toString(), notification);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public PlanMaterial mergeMaterialPlan(PlanMaterial planMaterial, List<Long> ids) {
+
+    List<PlanMaterial> all = planMaterialRepository.findAllById(ids);
+    for (PlanMaterial item :
+            all) {
+      item.setStatus(MaterialStatus.MERGE);
+    }
+    planMaterialRepository.saveAll(all);
+    return planMaterialRepository.save(planMaterial);
   }
 }
