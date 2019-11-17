@@ -14,7 +14,11 @@ public enum MaterialStatus {
   /**
    * 退回.
    */
-  BACK(1);
+  BACK(1),
+  /**
+   * 合并.
+   */
+  MERGE(2);
 
   private int value;
 
