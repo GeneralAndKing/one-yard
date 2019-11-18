@@ -103,14 +103,14 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
     approvalRepository.save(approval);
     // 发送通知并存入数据库
     Notification notification = new Notification();
-    if ("审批通过".equals(approval.getResult())) {
+    if ("部门主管审批通过".equals(approval.getResult())) {
       notification.setName("需求计划审批通过通知");
       notification.setMessage("您于" + materialDemandPlan.getCreateTime()
-          + "提报创建的 " + materialDemandPlan.getName() + " 审批通过了！");
+          + "提报创建的 " + materialDemandPlan.getName() + " 由部门主管审批通过了！");
     } else {
       notification.setName("需求计划审批退回通知");
       notification.setMessage("您于" + materialDemandPlan.getCreateTime()
-          + "提报创建的需求计划 《" + materialDemandPlan.getName() + " 》因为某些原因被退回了。");
+          + "提报创建的需求计划 《" + materialDemandPlan.getName() + " 》因为某些原因被主管退回了。");
     }
     // 获取通知接收方id
     SysUser user = sysUserRepository.findFirstByUsername(materialDemandPlan.getCreateUser())
