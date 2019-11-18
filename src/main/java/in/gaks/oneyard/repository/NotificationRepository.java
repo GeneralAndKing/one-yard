@@ -18,9 +18,9 @@ import org.springframework.data.rest.core.annotation.RestResource;
 public interface NotificationRepository extends BaseRepository<Notification, Long> {
 
   /**
-   * 通过恢复查询.
+   * 通过回复查询.
    *
-   * @param receiverId 恢复
+   * @param receiverId 回复
    * @return 结果
    */
   @RestResource(path = "byReceiverId")
