@@ -61,6 +61,6 @@ public interface MaterialDemandPlanRepository extends BaseRepository<MaterialDem
       nativeQuery = true)
   List<MaterialDemandPlan> getMaterialDemandPlanByDepartmentId(
       @Param("departmentIds") List<Integer> departmentIds,
-      @Param("approvalStatus") ApprovalStatus approvalStatus,
-      @Param("planStatus") PlanStatus planStatus);
+      @Param("approvalStatus") Long approvalStatus,
+      @Param("planStatus") Long planStatus);
 }
