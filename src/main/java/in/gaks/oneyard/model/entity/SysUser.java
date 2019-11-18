@@ -1,6 +1,5 @@
 package in.gaks.oneyard.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import in.gaks.oneyard.base.BaseEntity;
 import in.gaks.oneyard.model.constant.Status;
 import java.util.ArrayList;
@@ -38,7 +37,6 @@ public class SysUser extends BaseEntity {
 
   private String username;
 
-  @JsonIgnore
   private String password;
 
   @Enumerated(EnumType.ORDINAL)
