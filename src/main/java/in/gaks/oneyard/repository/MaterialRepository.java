@@ -10,6 +10,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
  * Repository.
+ *
  * @author BugRui EchoCow Japoul
  * @date 2019年11月4日 下午10:17:20
  */
@@ -26,4 +27,11 @@ public interface MaterialRepository extends BaseRepository<Material, Long> {
   @RestResource(path = "byTypeId")
   List<Material> findByTypeId(@Param("typeId") Long typeId);
 
+  /**
+   * 查询是否 code 存在.
+   *
+   * @param code code
+   * @return 结果
+   */
+  boolean existsByCode(@Param("code") String code);
 }
