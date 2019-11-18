@@ -3,6 +3,7 @@ package in.gaks.oneyard.service.impl;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.constant.*;
 import in.gaks.oneyard.model.entity.*;
+import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.*;
 import in.gaks.oneyard.service.PlanMaterialService;
@@ -210,5 +211,27 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     }
     planMaterialRepository.saveAll(all);
     return planMaterialRepository.save(planMaterial);
+  }
+
+  /**
+   * 拆分物料.
+   *
+   * @param planMaterial 被拆分的物料
+   * @param newPlanMaterials 拆分成的物料列表
+   */
+  @Override
+  public void splitMaterialPlan(PlanMaterial planMaterial, List<PlanMaterial> newPlanMaterials) {
+    if (Objects.isNull(planMaterial.getId())) {
+      throw new ResourceErrorException("被拆分的物料id不能为空！");
+    }
+    PlanMaterial pm = planMaterialRepository.findById(planMaterial.getId())
+        .orElseThrow(() -> new ResourceNotFoundException("未找到指定需求物料数据！"));
+    if (Objects.nonNull(pm.getProcurementPlanId()) || !pm.getStatus().equals(MaterialStatus.INIT)) {
+      throw new ResourceErrorException("数据可能已经被更改，请刷新后再试！");
+    }
+    pm.setStatus(MaterialStatus.SPLIT);
+    pm.setIsEnable(false);
+    planMaterialRepository.save(pm);
+    planMaterialRepository.saveAll(newPlanMaterials);
   }
 }

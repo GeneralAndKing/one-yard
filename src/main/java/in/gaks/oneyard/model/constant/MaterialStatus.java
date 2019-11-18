@@ -18,7 +18,11 @@ public enum MaterialStatus {
   /**
    * 合并.
    */
-  MERGE(2);
+  MERGE(2),
+  /**
+   * 拆分
+   */
+  SPLIT(3);
 
   private int value;
 

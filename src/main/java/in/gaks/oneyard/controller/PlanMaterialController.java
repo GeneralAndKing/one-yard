@@ -55,10 +55,25 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
    * @return 执行结果
    */
   @PostMapping("/mergeMaterialPlan")
+  @VerifyParameter(required = {"planMaterial#物料为必填项", "ids#合并的物料id为必填项"})
   public HttpEntity<?> mergeMaterialPlan(@NotNull @RequestBody JSONObject data) {
     PlanMaterial planMaterial = planMaterialService
         .mergeMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
             data.getJSONArray("ids").toJavaList(Long.class));
     return ResponseEntity.ok(planMaterial);
+  }
+
+  /**
+   * 拆分数据.
+   *
+   * @return 执行结果
+   */
+  @PostMapping("/splitMaterialPlan")
+  @VerifyParameter(required = {"planMaterial#被拆分的物料为必填项", "newPlanMaterials#拆分成的物料列表为必填项"})
+  public HttpEntity<?> splitMaterialPlan(@NotNull @RequestBody JSONObject data) {
+    planMaterialService
+        .splitMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
+            data.getJSONArray("newPlanMaterials").toJavaList(PlanMaterial.class));
+    return ResponseEntity.ok().build();
   }
 }
