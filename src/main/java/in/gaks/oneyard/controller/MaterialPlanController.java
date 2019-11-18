@@ -88,7 +88,6 @@ public class MaterialPlanController extends BaseController<MaterialDemandPlan,
    * @return 响应
    */
   @PatchMapping("/withdrawApproval/{id}")
-  @VerifyParameter(required = {"id#需求计划id为必填项"})
   public HttpEntity<?> withdrawApproval(@PathVariable Long id) {
     materialPlanService.withdrawApproval(id);
     return ResponseEntity.ok().build();
