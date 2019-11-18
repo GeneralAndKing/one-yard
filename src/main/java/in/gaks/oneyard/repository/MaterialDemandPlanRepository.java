@@ -56,7 +56,11 @@ public interface MaterialDemandPlanRepository extends BaseRepository<MaterialDem
    * @return .
    */
   @RestResource(path = "byDepartmentIds")
-  @Query(value = "SELECT * FROM material_demand_plan WHERE department_id IN (:departmentIds)", nativeQuery = true)
+  @Query(value = "SELECT * FROM material_demand_plan WHERE department_id IN (:departmentIds) "
+      + "and approval_status = (:approvalStatus) and plan_status = (:planStatus)",
+      nativeQuery = true)
   List<MaterialDemandPlan> getMaterialDemandPlanByDepartmentId(
-      @Param("departmentIds") List<Integer> departmentIds);
+      @Param("departmentIds") List<Integer> departmentIds,
+      @Param("approvalStatus") ApprovalStatus approvalStatus,
+      @Param("planStatus") PlanStatus planStatus);
 }
