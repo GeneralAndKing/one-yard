@@ -46,7 +46,7 @@ public interface SysRoleRepository extends BaseRepository<SysRole, Long> {
   List<SysRole> searchByDepartmentIds(@Param("ids") List<Long> ids);
 
   /**
-   * 根据用户查询橘色.
+   * 根据用户查询角色.
    *
    * @param id 用户
    * @return 角色
@@ -59,7 +59,7 @@ public interface SysRoleRepository extends BaseRepository<SysRole, Long> {
   List<SysRole> searchByUser(@Param("id") Long id);
 
   /**
-   * 根据权限查询橘色.
+   * 根据权限查询角色.
    *
    * @param id id
    * @return 角色
