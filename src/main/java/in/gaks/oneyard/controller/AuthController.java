@@ -81,8 +81,8 @@ public class AuthController {
           "rePassword#确认密码为必填项",
           "code#验证码为必填项"},
       size = {"phone|11-11#手机号长度只能为11位",
-          "password|8-18#密码长度应该在8-18之间",
-          "rePassword|8-18#确认密码长度应该在8-18之间"
+          "password|8-48#密码长度应该在8-48之间",
+          "rePassword|8-48#确认密码长度应该在8-48之间"
       }
   )
   @PostMapping("/register")
@@ -138,8 +138,8 @@ public class AuthController {
           "rePassword#确认密码为必填项",
           "code#验证码为必填项"},
       size = {
-          "password|8-18#密码长度应该在8-18之间",
-          "rePassword|8-18#确认密码长度应该在8-18之间"
+          "password|8-48#密码长度应该在8-48之间",
+          "rePassword|8-48#确认密码长度应该在8-48之间"
       }
   )
   @PostMapping("/forget")

@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
@@ -27,7 +26,6 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 public class Oauth2ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
   private final TokenStore redisTokenStore;
-  private final DefaultTokenServices tokenServices;
   private final FilterInvocationSecurityMetadataSource securityMetadataSource;
   private final AuthAccessDecisionManager authAccessDecisionManager;
   private final ApiFilter apiFilter;
@@ -36,8 +34,7 @@ public class Oauth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
   public void configure(ResourceServerSecurityConfigurer resources) {
     // 设置资源服务器的 id
     resources.resourceId("gak")
-        .tokenStore(redisTokenStore)
-        .tokenServices(tokenServices);
+        .tokenStore(redisTokenStore);
   }
 
   @Override

@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 
 /**
  * 授权服务器配置.
@@ -25,6 +26,7 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
 
   private final AuthenticationManager authenticationManager;
   private final TokenStore redisTokenStore;
+  private final JwtAccessTokenConverter jwtAccessTokenConverter;
   private final UserDetailsService userDetailsService;
   private final SecurityProperties securityProperties;
 
@@ -44,7 +46,8 @@ public class Oauth2AuthorizationServerConfig extends AuthorizationServerConfigur
   public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
     endpoints.authenticationManager(this.authenticationManager)
         .userDetailsService(userDetailsService)
-        .tokenStore(redisTokenStore);
+        .tokenStore(redisTokenStore)
+        .accessTokenConverter(jwtAccessTokenConverter);
   }
 
   @Override
