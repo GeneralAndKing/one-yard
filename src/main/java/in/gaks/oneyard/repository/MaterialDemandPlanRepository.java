@@ -63,4 +63,12 @@ public interface MaterialDemandPlanRepository extends BaseRepository<MaterialDem
       @Param("departmentIds") List<Integer> departmentIds,
       @Param("approvalStatus") Long approvalStatus,
       @Param("planStatus") Long planStatus);
+
+  /**
+   * 需求计划总数.
+   *
+   * @return 数量
+   */
+  @RestResource(path = "count")
+  Long countAllByPlanStatusNotNull();
 }

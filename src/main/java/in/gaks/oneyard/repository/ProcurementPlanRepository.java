@@ -5,9 +5,7 @@ import in.gaks.oneyard.model.constant.ApprovalStatus;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
-import in.gaks.oneyard.model.entity.SysRole;
 import java.util.List;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
@@ -42,4 +40,12 @@ public interface ProcurementPlanRepository extends BaseRepository<ProcurementPla
   @RestResource(path = "byCreateUser")
   List<ProcurementPlan> findAllByCreateUser(@Param("createUser") String createUser);
 
+  /**
+   * 通过计划状态获取数量.
+   *
+   * @param planStatus 计划状态
+   * @return 结果
+   */
+  @RestResource(path = "count")
+  Long countByPlanStatus(@Param("planStatus") PlanStatus planStatus);
 }
