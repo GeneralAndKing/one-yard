@@ -193,17 +193,9 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
   public void savePlanAndPlanMaterials(ProcurementPlan procurementPlan,
       List<PlanMaterial> materials) {
     //判断如果是更新则调用更新方法
-    if (Objects.isNull(procurementPlan.getId())) {
+    if (Objects.nonNull(procurementPlan.getId())) {
       updatePlanAndPlanMaterials(procurementPlan, materials);
-    }
-    //如果是创建计划表则检测是否已经被生成了
-    String type = materialDemandPlanRepository
-        .findById(materials.get(materials.size() - 1).getPlanId())
-        .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败")).getPlanType();
-    if ("年度计划".equals(type)) {
-      procurementPlan.setPlanType("年度采购计划");
-    } else {
-      procurementPlan.setPlanType("月度采购计划");
+      return;
     }
     procurementPlanRepository.save(procurementPlan);
     //判断是否保存成功并返回了id
