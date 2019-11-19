@@ -60,7 +60,6 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
           Long inTransitNum = 0L;
           Long occupiedNum = 0L;
 
-          planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
           Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
               () -> new ResourceNotFoundException("物料主数据查询失败"));
           planMaterial.setMaterial(material);
@@ -89,8 +88,11 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
               }
             }
           }
+          planMaterial.setDepartmentName(null);
+          if (Objects.nonNull(planMaterial.getPlanId())) {
+            planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
+          }
           planMaterial.setAvailableNum(planMaterial.getNumber() - occupiedNum + inTransitNum);
-          planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
           planMaterial.setOccupiedNum(occupiedNum);
           planMaterial.setInTransitNum(inTransitNum);
         }).collect(Collectors.toList());
@@ -231,7 +233,6 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     pm.setStatus(MaterialStatus.SPLIT);
     pm.setIsEnable(false);
     newPlanMaterials.add(pm);
-    planMaterialRepository.save(pm);
     planMaterialRepository.saveAll(newPlanMaterials);
   }
 }
