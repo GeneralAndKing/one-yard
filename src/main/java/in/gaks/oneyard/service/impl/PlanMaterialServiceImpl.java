@@ -92,9 +92,12 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
           if (Objects.nonNull(planMaterial.getPlanId())) {
             planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
           }
-          planMaterial.setAvailableNum(planMaterial.getNumber() - occupiedNum + inTransitNum);
           planMaterial.setOccupiedNum(occupiedNum);
           planMaterial.setInTransitNum(inTransitNum);
+
+          //设置可用库存
+          planMaterial.setAvailableNum(
+              material.getNumber() - occupiedNum - material.getLowNumber() + inTransitNum);
         }).collect(Collectors.toList());
   }
 
