@@ -231,7 +231,6 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
       throw new ResourceErrorException("数据可能已经被更改，请刷新后再试！");
     }
     pm.setStatus(MaterialStatus.SPLIT);
-    pm.setIsEnable(false);
     newPlanMaterials.add(pm);
     planMaterialRepository.saveAll(newPlanMaterials);
   }
