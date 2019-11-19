@@ -2,6 +2,7 @@ package in.gaks.oneyard.repository;
 
 import in.gaks.oneyard.base.BaseRepository;
 import in.gaks.oneyard.model.constant.OneYard;
+import in.gaks.oneyard.model.constant.Status;
 import in.gaks.oneyard.model.entity.SysUser;
 import java.util.List;
 import java.util.Optional;
@@ -119,5 +120,14 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
   @RestResource(path = "byUsernameOrEmailOrPhone")
   Optional<SysUser> findFirstByUsernameOrEmailOrPhone(@Param("name") String name,
       @Param("email") String email, @Param("phone") String phone);
+
+  /**
+   * 查询用户状态正常的用户数目.
+   *
+   * @param status 状态
+   * @return 用户数
+   */
+  @RestResource(path = "count")
+  long countAllByStatus(@Param("status") Status status);
 
 }

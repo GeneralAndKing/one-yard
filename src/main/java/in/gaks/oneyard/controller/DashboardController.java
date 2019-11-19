@@ -37,8 +37,28 @@ public class DashboardController {
    */
   @GetMapping("/api")
   public HttpEntity<?> apiNumber() {
+    return redisNumber("api-num=*");
+  }
+
+  /**
+   * 授权次数.
+   *
+   * @return 结果
+   */
+  @GetMapping("/auth")
+  public HttpEntity<?> authNumber() {
+    return redisNumber("auth-num=*");
+  }
+
+  /**
+   * 获取指定keys的大小.
+   *
+   * @param keysName keys
+   * @return 结果
+   */
+  private HttpEntity<?> redisNumber(String keysName) {
     ListOperations<String, String> operation = redisTemplate.opsForList();
-    Set<String> keys = operation.getOperations().keys("api-num=*");
+    Set<String> keys = operation.getOperations().keys(keysName);
     if (Objects.isNull(keys)) {
       keys = Sets.newConcurrentHashSet();
     }

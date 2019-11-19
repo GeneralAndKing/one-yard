@@ -34,4 +34,12 @@ public interface MaterialRepository extends BaseRepository<Material, Long> {
    * @return 结果
    */
   boolean existsByCode(@Param("code") String code);
+
+  /**
+   * 查询数量.
+   *
+   * @return 结果
+   */
+  @RestResource(path = "count")
+  long countByCodeNotNull();
 }
