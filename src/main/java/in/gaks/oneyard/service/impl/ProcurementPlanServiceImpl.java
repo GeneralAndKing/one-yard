@@ -3,6 +3,7 @@ package in.gaks.oneyard.service.impl;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.constant.ApprovalStatus;
 import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
+import in.gaks.oneyard.model.constant.MaterialStatus;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.Notification;
@@ -84,15 +85,12 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
       }
       plan.setInTransitNum(inTransitNum);
 
-      //若没有在正在进行的采购计划则表示该物资已占库存数为0
-      if (procurementIds.size() != 0) {
-        //获取已占库存
-        List<Long> nums = planMaterialRepository
-            .searchByProcurementPlanIdsAndSupplyMode(procurementIds, plan.getMaterialId(), "采购");
-        if (Objects.nonNull(nums)) {
-          for (Long n : nums) {
-            occupiedNum += n;
-          }
+      //获取已占库存
+      List<PlanMaterial> planMaterials = planMaterialRepository
+          .findAllBySupplyModeAndStatus("库存供应", MaterialStatus.INIT);
+      if (Objects.nonNull(planMaterials)) {
+        for (PlanMaterial p : planMaterials) {
+          occupiedNum += p.getNumber();
         }
       }
       plan.setOccupiedNum(occupiedNum);

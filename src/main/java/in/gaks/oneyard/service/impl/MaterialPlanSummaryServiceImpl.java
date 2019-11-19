@@ -7,6 +7,7 @@ import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.MaterialPlanSummaryRepository;
+import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.PlanMaterialService;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
     implements MaterialPlanSummaryService {
 
   private final @NonNull MaterialPlanSummaryRepository materialPlanSummaryRepository;
-  private final @NonNull MaterialDemandPlanRepository materialPlanRepository;
+  private final @NonNull PlanMaterialRepository planMaterialRepository;
   private final @NonNull PlanMaterialService planMaterialService;
 
   /**
@@ -42,9 +43,10 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
   public MaterialPlanSummary findByIdToMaterialSummary(Long id) {
     MaterialPlanSummary summary = materialPlanSummaryRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("需求汇总表查询失败"));
-    List<MaterialDemandPlan> plans = materialPlanRepository.findAllBySummaryId(id);
-    List<PlanMaterial> materials = new ArrayList<>();
-    plans.forEach(plan -> materials.addAll(planMaterialService.findAllByPlanId(plan.getId())));
+    List<PlanMaterial> materials = planMaterialRepository.findAllBySummaryId(id);
+    if (Objects.isNull(materials)) {
+      throw new ResourceNotFoundException("汇总表中的需求物料查询失败");
+    }
     summary.setPlanMaterials(materials);
     return summary;
   }

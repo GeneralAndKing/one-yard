@@ -43,11 +43,6 @@ public class MaterialDemandPlan extends BaseEntity {
   private java.lang.Long departmentId;
 
   /**
-   * 汇总表id.
-   */
-  private java.lang.Long summaryId;
-
-  /**
    * 需求人员.
    */
   private java.lang.String needPeople;

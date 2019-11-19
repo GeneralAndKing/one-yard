@@ -70,19 +70,14 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
                   () -> new ResourceNotFoundException("物料类别主数据查询失败"));
           planMaterial.setMaterialType(materialType);
 
-          //若没有在正在进行的采购计划则表示该物资已占库存数为0
-          if (procurementIds.size() != 0) {
-            //获取已占库存
-            List<Long> nums = planMaterialRepository
-                .searchByProcurementPlanIdsAndSupplyMode(procurementIds,
-                    planMaterial.getMaterialId(), "采购");
-            if (Objects.nonNull(nums)) {
-              for (Long n : nums) {
-                occupiedNum += n;
-              }
+          //获取已占库存
+          List<PlanMaterial> planMaterials = planMaterialRepository
+              .findAllBySupplyModeAndStatus("库存供应", MaterialStatus.INIT);
+          if (Objects.nonNull(planMaterials)) {
+            for (PlanMaterial p : planMaterials) {
+              occupiedNum += p.getNumber();
             }
           }
-
           //若没有在正在进行的采购计划则表示在途数量为0
           if (procurementIds.size() != 0) {
             //获取在途数量
@@ -168,7 +163,11 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
           + material.getCode() + "]" + material.getName() + "<br/>需求数量：" + planMaterial.getNumber()
       );
     } else {
-      materialPlan.setSummaryId(null);
+      //从汇总表中删除
+      List<PlanMaterial> planMaterials = planMaterialRepository
+          .findAllByPlanId(materialPlan.getId());
+      planMaterials.forEach(planMaterial1 -> planMaterial1.setSummaryId(null));
+      planMaterialRepository.saveAll(planMaterials);
       materialPlan.setApprovalStatus(ApprovalStatus.APPROVAL_NO);
       materialPlan.setPlanStatus(PlanStatus.FREE);
 
@@ -220,6 +219,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    * @param newPlanMaterials 拆分成的物料列表
    */
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void splitMaterialPlan(PlanMaterial planMaterial, List<PlanMaterial> newPlanMaterials) {
     if (Objects.isNull(planMaterial.getId())) {
       throw new ResourceErrorException("被拆分的物料id不能为空！");
@@ -231,6 +231,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     }
     pm.setStatus(MaterialStatus.SPLIT);
     pm.setIsEnable(false);
+    newPlanMaterials.add(pm);
     planMaterialRepository.save(pm);
     planMaterialRepository.saveAll(newPlanMaterials);
   }

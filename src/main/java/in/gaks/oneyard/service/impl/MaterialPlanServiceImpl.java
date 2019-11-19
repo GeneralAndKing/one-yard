@@ -95,15 +95,17 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void approvalMaterialPlan(MaterialDemandPlan materialDemandPlan, Approval approval) {
-    // 更新计划审核状态并根据时间自动汇总
-    materialDemandPlan
-        .setSummaryId(materialPlanSummaryService.summaryMaterialPlan(materialDemandPlan));
-    materialPlanRepository.save(materialDemandPlan);
     // 保存审批信息，回溯流程
     approvalRepository.save(approval);
     // 发送通知并存入数据库
     Notification notification = new Notification();
     if ("部门主管审批通过".equals(approval.getResult())) {
+      // 更新计划审核状态并根据时间自动汇总
+      List<PlanMaterial> planMaterials = planMaterialRepository
+          .findAllByPlanId(materialDemandPlan.getId());
+      planMaterials.forEach(planMaterial -> planMaterial
+          .setSummaryId(materialPlanSummaryService.summaryMaterialPlan(materialDemandPlan)));
+      planMaterialRepository.saveAll(planMaterials);
       notification.setName("需求计划审批通过通知");
       notification.setMessage("您于" + materialDemandPlan.getCreateTime()
           + "提报创建的 " + materialDemandPlan.getName() + " 由部门主管审批通过了！");
@@ -112,6 +114,9 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
       notification.setMessage("您于" + materialDemandPlan.getCreateTime()
           + "提报创建的需求计划 《" + materialDemandPlan.getName() + " 》因为某些原因被主管退回了。");
     }
+    //保存需求计划表
+    materialPlanRepository.save(materialDemandPlan);
+
     // 获取通知接收方id
     SysUser user = sysUserRepository.findFirstByUsername(materialDemandPlan.getCreateUser())
         .orElseThrow(() -> new ResourceNotFoundException("该计划的提报员查询失败"));

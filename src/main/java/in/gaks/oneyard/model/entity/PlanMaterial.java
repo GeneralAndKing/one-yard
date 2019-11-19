@@ -42,6 +42,11 @@ public class PlanMaterial extends BaseEntity {
   private java.lang.Long procurementPlanId;
 
   /**
+   * 汇总表id.
+   */
+  private java.lang.Long summaryId;
+
+  /**
    * 物料分类id.
    */
   private java.lang.Long materialTypeId;

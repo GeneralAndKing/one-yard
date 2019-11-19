@@ -64,4 +64,13 @@ public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Lon
       nativeQuery = true)
   List<Long> searchByProcurementPlanIdsAndSupplyMode(@Param("ids") List<Long> ids,
       @Param("id") Long id, @Param("supplyMode") String supplyMode);
+
+  /**
+   * 根据汇总id查询所有物资.
+   *
+   * @param id 汇总id
+   */
+  List<PlanMaterial> findAllBySummaryId(@Param("id") Long id);
+
+  List<PlanMaterial> findAllBySupplyModeAndStatus(String mode, MaterialStatus status);
 }
