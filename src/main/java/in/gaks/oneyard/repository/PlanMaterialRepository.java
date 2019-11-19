@@ -36,7 +36,7 @@ public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Lon
    * @param status 状态
    * @return 物资列表
    */
-  List<PlanMaterial> findAllByPlanIdAndStatusAndProcurementPlanIdIsNull(@Param("id") Long id,
+  List<PlanMaterial> findAllBySummaryIdAndStatusAndProcurementPlanIdIsNull(@Param("id") Long id,
       @Param("status") MaterialStatus status);
 
   /**
@@ -72,5 +72,12 @@ public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Lon
    */
   List<PlanMaterial> findAllBySummaryId(@Param("id") Long id);
 
+  /**
+   * 根据供应方式和物资状态查询.
+   *
+   * @param mode 供应方式
+   * @param status 物资状态
+   * @return .
+   */
   List<PlanMaterial> findAllBySupplyModeAndStatus(String mode, MaterialStatus status);
 }

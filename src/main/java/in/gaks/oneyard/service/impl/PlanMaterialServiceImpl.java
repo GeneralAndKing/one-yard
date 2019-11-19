@@ -49,14 +49,13 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    */
   @Override
   public List<PlanMaterial> findAllByPlanId(Long id) {
+    //获取物料库存管理准备
     List<Long> procurementIds = new ArrayList<>();
     procurementPlanRepository
         .findAllByPlanStatusAndApprovalStatus(PlanStatus.FINALLY, ApprovalStatus.APPROVAL_OK)
-        .forEach(p -> {
-          procurementIds.add(p.getId());
-        });
+        .forEach(p -> procurementIds.add(p.getId()));
     return planMaterialRepository
-        .findAllByPlanIdAndStatusAndProcurementPlanIdIsNull(id, MaterialStatus.INIT)
+        .findAllBySummaryIdAndStatusAndProcurementPlanIdIsNull(id, MaterialStatus.INIT)
         .stream().peek(planMaterial -> {
           Long inTransitNum = 0L;
           Long occupiedNum = 0L;
