@@ -43,7 +43,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
   public MaterialPlanSummary findByIdToMaterialSummary(Long id) {
     MaterialPlanSummary summary = materialPlanSummaryRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("需求汇总表查询失败"));
-    List<PlanMaterial> materials = planMaterialService.findAllByPlanId(id);
+    List<PlanMaterial> materials = planMaterialService.findAllByPlanId(id, false);
     if (Objects.isNull(materials)) {
       throw new ResourceNotFoundException("汇总表中的需求物料查询失败");
     }

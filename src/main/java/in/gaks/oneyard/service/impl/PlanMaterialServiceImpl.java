@@ -45,60 +45,67 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    * 根据需求计划id获取完整的需求物资.
    *
    * @param id 计划表id
+   * @param type 调用该方法的类型 true 需求计划 false 汇总表
    * @return 完整的需求物资数据
    */
   @Override
-  public List<PlanMaterial> findAllByPlanId(Long id) {
+  public List<PlanMaterial> findAllByPlanId(Long id, boolean type) {
     //获取物料库存管理准备
     List<Long> procurementIds = new ArrayList<>();
     procurementPlanRepository
         .findAllByPlanStatusAndApprovalStatus(PlanStatus.FINALLY, ApprovalStatus.APPROVAL_OK)
         .forEach(p -> procurementIds.add(p.getId()));
-    return planMaterialRepository
-        .findAllBySummaryIdAndStatusAndProcurementPlanIdIsNull(id, MaterialStatus.INIT)
-        .stream().peek(planMaterial -> {
-          Long inTransitNum = 0L;
-          Long occupiedNum = 0L;
+    List<PlanMaterial> pMaterials = new ArrayList<>();
+    if (type) {
+      pMaterials = planMaterialRepository
+          .findAllByPlanId(id);
+    } else {
+      pMaterials = planMaterialRepository
+          .findAllBySummaryIdAndStatusAndProcurementPlanIdIsNull(id, MaterialStatus.INIT);
+    }
+    return pMaterials.stream().peek(planMaterial -> {
+      Long inTransitNum = 0L;
+      Long occupiedNum = 0L;
 
-          Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
-              () -> new ResourceNotFoundException("物料主数据查询失败"));
-          planMaterial.setMaterial(material);
-          MaterialType materialType = materialTypeRepository
-              .findById(planMaterial.getMaterialTypeId()).orElseThrow(
-                  () -> new ResourceNotFoundException("物料类别主数据查询失败"));
-          planMaterial.setMaterialType(materialType);
+      Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
+          () -> new ResourceNotFoundException("物料主数据查询失败"));
+      planMaterial.setMaterial(material);
+      MaterialType materialType = materialTypeRepository
+          .findById(planMaterial.getMaterialTypeId()).orElseThrow(
+              () -> new ResourceNotFoundException("物料类别主数据查询失败"));
+      planMaterial.setMaterialType(materialType);
 
-          //获取已占库存
-          List<PlanMaterial> planMaterials = planMaterialRepository
-              .findAllBySupplyModeAndStatus("库存供应", MaterialStatus.INIT);
-          if (Objects.nonNull(planMaterials)) {
-            for (PlanMaterial p : planMaterials) {
-              occupiedNum += p.getNumber();
-            }
+      //获取已占库存
+      List<PlanMaterial> planMaterials = planMaterialRepository
+          .findAllBySupplyModeAndStatus("库存供应", MaterialStatus.INIT);
+      if (Objects.nonNull(planMaterials)) {
+        for (PlanMaterial p : planMaterials) {
+          occupiedNum += p.getNumber();
+        }
+      }
+      //若没有在正在进行的采购计划则表示在途数量为0
+      if (procurementIds.size() != 0) {
+        //获取在途数量
+        List<Long> nums = planMaterialRepository
+            .searchByProcurementPlanIdsAndSupplyMode(procurementIds,
+                planMaterial.getMaterialId(), "采购");
+        if (Objects.nonNull(nums)) {
+          for (Long n : nums) {
+            inTransitNum += n;
           }
-          //若没有在正在进行的采购计划则表示在途数量为0
-          if (procurementIds.size() != 0) {
-            //获取在途数量
-            List<Long> nums = planMaterialRepository
-                .searchByProcurementPlanIdsAndSupplyMode(procurementIds,
-                    planMaterial.getMaterialId(), "采购");
-            if (Objects.nonNull(nums)) {
-              for (Long n : nums) {
-                inTransitNum += n;
-              }
-            }
-          }
-          planMaterial.setDepartmentName(null);
-          if (Objects.nonNull(planMaterial.getPlanId())) {
-            planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
-          }
-          planMaterial.setOccupiedNum(occupiedNum);
-          planMaterial.setInTransitNum(inTransitNum);
+        }
+      }
+      planMaterial.setDepartmentName(null);
+      if (Objects.nonNull(planMaterial.getPlanId())) {
+        planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
+      }
+      planMaterial.setOccupiedNum(occupiedNum);
+      planMaterial.setInTransitNum(inTransitNum);
 
-          //设置可用库存
-          planMaterial.setAvailableNum(
-              material.getNumber() - occupiedNum - material.getLowNumber() + inTransitNum);
-        }).collect(Collectors.toList());
+      //设置可用库存
+      planMaterial.setAvailableNum(
+          material.getNumber() - occupiedNum - material.getLowNumber() + inTransitNum);
+    }).collect(Collectors.toList());
   }
 
   /**
@@ -226,7 +233,8 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public List<PlanMaterial> splitMaterialPlan(PlanMaterial planMaterial, List<PlanMaterial> newPlanMaterials) {
+  public List<PlanMaterial> splitMaterialPlan(PlanMaterial planMaterial,
+      List<PlanMaterial> newPlanMaterials) {
     if (Objects.isNull(planMaterial.getId())) {
       throw new ResourceErrorException("被拆分的物料id不能为空！");
     }
@@ -237,7 +245,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     }
     pm.setStatus(MaterialStatus.SPLIT);
     pm.setIsEnable(false);
-    newPlanMaterials.add(0,pm);
+    newPlanMaterials.add(0, pm);
     return planMaterialRepository.saveAll(newPlanMaterials);
   }
 }

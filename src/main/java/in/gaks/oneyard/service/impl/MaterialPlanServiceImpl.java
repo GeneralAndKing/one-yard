@@ -82,7 +82,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   public MaterialDemandPlan findByIdToMaterial(Long id) {
     MaterialDemandPlan plan = materialPlanRepository.findById(id).orElseThrow(
         () -> new ResourceNotFoundException("需求计划查询失败"));
-    plan.setMaterials(planMaterialService.findAllByPlanId(id));
+    plan.setMaterials(planMaterialService.findAllByPlanId(id, true));
     return plan;
   }
 

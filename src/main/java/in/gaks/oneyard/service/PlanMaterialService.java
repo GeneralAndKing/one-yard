@@ -17,9 +17,10 @@ public interface PlanMaterialService extends BaseService<PlanMaterial, Long> {
    * 根据计划id获取完整的需求物资.
    *
    * @param id 计划表id
+   * @param type 调用该方法的类型
    * @return 完整的需求物资数据
    */
-  List<PlanMaterial> findAllByPlanId(Long id);
+  List<PlanMaterial> findAllByPlanId(Long id, boolean type);
 
   /**
    * 根据采购计划id获取完整的需求物资.
