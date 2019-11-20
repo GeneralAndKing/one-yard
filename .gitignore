@@ -34,3 +34,4 @@ out/
 ### docker compose ###
 /docker/mysql/
 /docker/redis/
+/logs/
