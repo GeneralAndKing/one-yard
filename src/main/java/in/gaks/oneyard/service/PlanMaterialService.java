@@ -62,6 +62,7 @@ public interface PlanMaterialService extends BaseService<PlanMaterial, Long> {
    *
    * @param planMaterial 被拆分的物料
    * @param newPlanMaterials 拆分成的物料列表
+   * @return 拆分后的物料List
    */
-  void splitMaterialPlan(PlanMaterial planMaterial, List<PlanMaterial> newPlanMaterials);
+  List<PlanMaterial> splitMaterialPlan(PlanMaterial planMaterial, List<PlanMaterial> newPlanMaterials);
 }

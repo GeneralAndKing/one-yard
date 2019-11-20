@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 /**
  * 需求物料接口.
  *
@@ -29,7 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RepositoryRestController
 @RequestMapping(OneYard.PLAN_MATERIAL)
 public class PlanMaterialController extends BaseController<PlanMaterial,
-    PlanMaterialService, Long> {
+        PlanMaterialService, Long> {
 
   private final @NonNull PlanMaterialService planMaterialService;
 
@@ -42,9 +44,9 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
   @VerifyParameter(required = {"flag#退回类型为必填项", "planMaterial#计划为必填项", "approve#物料为必填项"})
   public HttpEntity<?> backPlanOrMaterial(@NotNull @RequestBody JSONObject data) {
     planMaterialService.backPlanOrMaterial(
-        data.getObject("flag", Boolean.class),
-        data.getObject("planMaterial", PlanMaterial.class),
-        data.getObject("approve", Approval.class)
+            data.getObject("flag", Boolean.class),
+            data.getObject("planMaterial", PlanMaterial.class),
+            data.getObject("approve", Approval.class)
     );
     return ResponseEntity.ok().build();
   }
@@ -58,8 +60,8 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
   @VerifyParameter(required = {"planMaterial#物料为必填项", "ids#合并的物料id为必填项"})
   public HttpEntity<?> mergeMaterialPlan(@NotNull @RequestBody JSONObject data) {
     PlanMaterial planMaterial = planMaterialService
-        .mergeMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
-            data.getJSONArray("ids").toJavaList(Long.class));
+            .mergeMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
+                    data.getJSONArray("ids").toJavaList(Long.class));
     return ResponseEntity.ok(planMaterial);
   }
 
@@ -71,9 +73,9 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
   @PostMapping("/splitMaterialPlan")
   @VerifyParameter(required = {"planMaterial#被拆分的物料为必填项", "newPlanMaterials#拆分成的物料列表为必填项"})
   public HttpEntity<?> splitMaterialPlan(@NotNull @RequestBody JSONObject data) {
-    planMaterialService
-        .splitMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
-            data.getJSONArray("newPlanMaterials").toJavaList(PlanMaterial.class));
-    return ResponseEntity.ok().build();
+    List<PlanMaterial> planMaterials = planMaterialService
+            .splitMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
+                    data.getJSONArray("newPlanMaterials").toJavaList(PlanMaterial.class));
+    return ResponseEntity.ok(planMaterials);
   }
 }

@@ -226,7 +226,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void splitMaterialPlan(PlanMaterial planMaterial, List<PlanMaterial> newPlanMaterials) {
+  public List<PlanMaterial> splitMaterialPlan(PlanMaterial planMaterial, List<PlanMaterial> newPlanMaterials) {
     if (Objects.isNull(planMaterial.getId())) {
       throw new ResourceErrorException("被拆分的物料id不能为空！");
     }
@@ -236,7 +236,8 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
       throw new ResourceErrorException("数据可能已经被更改，请刷新后再试！");
     }
     pm.setStatus(MaterialStatus.SPLIT);
-    newPlanMaterials.add(pm);
-    planMaterialRepository.saveAll(newPlanMaterials);
+    pm.setIsEnable(false);
+    newPlanMaterials.add(0,pm);
+    return planMaterialRepository.saveAll(newPlanMaterials);
   }
 }
