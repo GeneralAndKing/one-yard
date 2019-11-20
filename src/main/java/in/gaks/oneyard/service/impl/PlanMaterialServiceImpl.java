@@ -106,9 +106,11 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    *
    * @param id 计划表id
    * @return 完整的需求物资数据
+   * @since 1.0.0
+   * @deprecated 因某些问题而被废弃
    */
   @Override
-  @Deprecated
+  @Deprecated(since = "1.0.0")
   public List<PlanMaterial> findAllByProcurementPlanId(Long id) {
     return planMaterialRepository.findAllByProcurementPlanIdAndStatus(id, MaterialStatus.INIT);
   }

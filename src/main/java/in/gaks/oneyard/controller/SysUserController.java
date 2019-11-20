@@ -7,6 +7,7 @@ import in.gaks.oneyard.base.BaseController;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.SysUser;
 import in.gaks.oneyard.service.SysUserService;
+import in.gaks.oneyard.util.CommonUtil;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,7 +66,7 @@ public class SysUserController extends BaseController<SysUser, SysUserService, L
    * @param principal 登录授权
    * @return 响应
    */
-  @GetMapping("me")
+  @GetMapping("/me")
   @PreAuthorize("isFullyAuthenticated()")
   public HttpEntity<?> me(Principal principal) {
     JSONObject me = new JSONObject();
@@ -81,7 +82,7 @@ public class SysUserController extends BaseController<SysUser, SysUserService, L
    * @param principal 用户信息
    * @return 结果
    */
-  @PostMapping("password/modify")
+  @PostMapping("/password/modify")
   @PreAuthorize("isFullyAuthenticated()")
   public HttpEntity<?> modifyPassword(@RequestBody JSONObject param, Principal principal) {
     String oldPassword = param.getString("oldPassword");
@@ -96,6 +97,25 @@ public class SysUserController extends BaseController<SysUser, SysUserService, L
     Assert.isTrue(!name.equals(ANONYMOUS_USER), "当前用户是匿名用户，无权进行此操作");
     sysUserService.modifyPassword(name, oldPassword, newPassword);
     return ResponseEntity.noContent().build();
+  }
+
+  /**
+   * 用户设置.
+   *
+   * @param user      用户信息
+   * @param principal 授权信息
+   * @return 结果
+   */
+  @PostMapping("/setting")
+  @PreAuthorize("isFullyAuthenticated()")
+  public HttpEntity<?> setting(@RequestBody SysUser user, Principal principal) {
+    String name = principal.getName();
+    Assert.notNull(name, "无法获取当前用户信息");
+    Assert.isTrue(!name.equals(ANONYMOUS_USER), "当前用户是匿名用户，无权进行此操作");
+    Assert.isTrue(name.equals(user.getUsername()), "修改用户与当前登录用户信息不匹配");
+    SysUser sysUser = sysUserService.findByUsername(name);
+    CommonUtil.copyNonNullProperties(user, sysUser);
+    return ResponseEntity.ok(sysUserService.save(sysUser));
   }
 
   private List<SysUser> completeUser(List<SysUser> users) {

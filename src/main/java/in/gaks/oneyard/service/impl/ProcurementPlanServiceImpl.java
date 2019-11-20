@@ -14,7 +14,6 @@ import in.gaks.oneyard.model.entity.dto.ProcurementPlanDto;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
-import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.ProcurementPlanRepository;
@@ -45,7 +44,6 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
   private final @NonNull ProcurementPlanRepository procurementPlanRepository;
   private final @NonNull ProcurementPlanDtoRepository procurementPlanDtoRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
-  private final @NonNull MaterialDemandPlanRepository materialDemandPlanRepository;
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
@@ -66,9 +64,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     List<Long> procurementIds = new ArrayList<>();
     procurementPlanRepository
         .findAllByPlanStatusAndApprovalStatus(PlanStatus.FINALLY, ApprovalStatus.APPROVAL_OK)
-        .forEach(p -> {
-          procurementIds.add(p.getId());
-        });
+        .forEach(p -> procurementIds.add(p.getId()));
     plans.forEach(plan -> {
       Long inTransitNum = 0L;
       Long occupiedNum = 0L;
@@ -106,7 +102,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 采购主管/财务审批采购计划.
    *
    * @param procurementPlan 需求计划
-   * @param approval 审批信息
+   * @param approval        审批信息
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -154,7 +150,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 撤回审批.
    *
    * @param procurementPlan 采购计划
-   * @param role 角色类型
+   * @param role            角色类型
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -178,7 +174,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
       approval.setResult("审批结果撤回");
       approvalRepository.save(approval);
     } else {
-      throw (new ResourceErrorException("当前项目状态有误，刷新后再试！"));
+      throw new ResourceErrorException("当前项目状态有误，刷新后再试！");
     }
   }
 
@@ -186,7 +182,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 保存采购计划表.
    *
    * @param procurementPlan 物料需求计划基础信息
-   * @param materials 物资列表
+   * @param materials       物资列表
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -229,7 +225,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 更新采购计划表.
    *
    * @param procurementPlan 物料需求计划基础信息
-   * @param materials 物资列表
+   * @param materials       物资列表
    */
   @Override
   @Transactional(rollbackOn = Exception.class)

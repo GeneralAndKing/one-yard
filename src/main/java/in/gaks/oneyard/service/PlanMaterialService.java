@@ -26,8 +26,10 @@ public interface PlanMaterialService extends BaseService<PlanMaterial, Long> {
    *
    * @param id 计划表id
    * @return 完整的需求物资数据
+   * @since 1.0.0
+   * @deprecated 因某些问题而被废弃
    */
-  @Deprecated
+  @Deprecated(since = "1.0.0")
   List<PlanMaterial> findAllByProcurementPlanId(Long id);
 
   /**
