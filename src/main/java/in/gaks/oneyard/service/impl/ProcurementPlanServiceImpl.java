@@ -102,7 +102,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 采购主管/财务审批采购计划.
    *
    * @param procurementPlan 需求计划
-   * @param approval        审批信息
+   * @param approval 审批信息
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -150,7 +150,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 撤回审批.
    *
    * @param procurementPlan 采购计划
-   * @param role            角色类型
+   * @param role 角色类型
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -182,7 +182,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 保存采购计划表.
    *
    * @param procurementPlan 物料需求计划基础信息
-   * @param materials       物资列表
+   * @param materials 物资列表
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -217,6 +217,9 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
       if ("采购".equals(material.getSupplyMode()) && Objects.nonNull(material.getPurchaseDate())) {
         material.setProcurementPlanId(procurementPlanId);
       }
+      if ("库存供应".equals(material.getSupplyMode())) {
+        material.setStatus(MaterialStatus.INVENTORY);
+      }
       planMaterialRepository.save(material);
     });
   }
@@ -225,7 +228,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 更新采购计划表.
    *
    * @param procurementPlan 物料需求计划基础信息
-   * @param materials       物资列表
+   * @param materials 物资列表
    */
   @Override
   @Transactional(rollbackOn = Exception.class)

@@ -22,8 +22,11 @@ public enum MaterialStatus {
   /**
    * 拆分
    */
-  SPLIT(3);
-
+  SPLIT(3),
+  /**
+   * 库存
+   */
+  INVENTORY(4);
   private int value;
 
   MaterialStatus(int status) {
