@@ -25,6 +25,10 @@ public class ApplicationStarter implements ApplicationRunner {
 
   @Value("${server.servlet.context-path}")
   private String apiBasePath;
+  @Value("${spring.datasource.url}")
+  private String url;
+  @Value("${spring.datasource.username}")
+  private String username;
 
   @Override
   public void run(ApplicationArguments args) {
@@ -33,6 +37,8 @@ public class ApplicationStarter implements ApplicationRunner {
     } else {
       log.info("Spring security did not start!");
     }
+    log.info("Database url is: {}.", url);
+    log.info("Database user is: {}.", username);
     log.info("Api base path is: {}.", apiBasePath);
     log.info("Rest base path is: {}{}.", apiBasePath, repositoryRestProperties.getBasePath());
   }

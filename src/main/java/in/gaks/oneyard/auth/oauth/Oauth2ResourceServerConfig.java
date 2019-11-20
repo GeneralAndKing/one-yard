@@ -51,7 +51,12 @@ public class Oauth2ResourceServerConfig extends ResourceServerConfigurerAdapter 
           }
         })
         .anyRequest()
-        .authenticated();
+        .authenticated()
+        .and()
+        .cors()
+        .and()
+        .csrf()
+        .disable();
   }
 
 

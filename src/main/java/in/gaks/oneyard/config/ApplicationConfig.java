@@ -25,7 +25,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 @Configuration
 @EnableWebSocket
 @RequiredArgsConstructor
-@EnableHypermediaSupport(type = { EnableHypermediaSupport.HypermediaType.HAL })
+@EnableHypermediaSupport(type = {EnableHypermediaSupport.HypermediaType.HAL})
 public class ApplicationConfig implements WebMvcConfigurer, AsyncConfigurer {
 
   private final HateoasPageableHandlerMethodArgumentResolver pageableResolver;
