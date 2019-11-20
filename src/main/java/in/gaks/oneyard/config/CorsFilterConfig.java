@@ -33,7 +33,7 @@ public class CorsFilterConfig implements Filter {
         "POST, GET, PUT, PATCH, OPTIONS, DELETE");
     // application/x-www-form-urlencoded, multipart/form-data 或 text/plain
     response.setHeader(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS,
-        "Origin, X-Requested-With, Content-Type, Accept, authorization");
+        "Origin, X-Requested-With, Content-Type, Accept, Authorization");
     response.setHeader(HttpHeaders.ACCESS_CONTROL_MAX_AGE, "3600");
     chain.doFilter(req, res);
   }
