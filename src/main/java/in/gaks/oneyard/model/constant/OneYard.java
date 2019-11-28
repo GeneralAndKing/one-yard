@@ -17,6 +17,8 @@ public final class OneYard {
 
   public static final String SYS_USER_ROLE = "sysUserRole";
 
+  public static final String SYS_LOG = "sysLog";
+
   public static final String SYS_PERMISSION = "sysPermission";
 
   public static final String SYS_DEPARTMENT = "sysDepartment";

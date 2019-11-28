@@ -2,6 +2,7 @@ package in.gaks.oneyard.config;
 
 import java.util.concurrent.Executor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.config.MethodInvokingFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -11,6 +12,7 @@ import org.springframework.hateoas.config.EnableHypermediaSupport;
 import org.springframework.scheduling.annotation.AsyncConfigurer;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
@@ -59,5 +61,18 @@ public class ApplicationConfig implements WebMvcConfigurer, AsyncConfigurer {
     return new ServerEndpointExporter();
   }
 
+  /**
+   * 添加 SecurityContextHolder 上下文传递支持.
+   *
+   * @return MethodInvokingFactoryBean
+   */
+  @Bean
+  public MethodInvokingFactoryBean methodInvokingFactoryBean() {
+    MethodInvokingFactoryBean methodInvokingFactoryBean = new MethodInvokingFactoryBean();
+    methodInvokingFactoryBean.setTargetClass(SecurityContextHolder.class);
+    methodInvokingFactoryBean.setTargetMethod("setStrategyName");
+    methodInvokingFactoryBean.setArguments(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+    return methodInvokingFactoryBean;
+  }
 
 }
