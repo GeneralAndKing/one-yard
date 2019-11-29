@@ -12,9 +12,13 @@ public enum ApprovalTypeStatus {
    */
   MATERIAL_APPROVAL(0),
   /**
-   * 采购计划第一次审批.
+   * 采购计划审批.
    */
-  PROCUREMENT_APPROVAL(1);
+  PROCUREMENT_APPROVAL(1),
+  /**
+   * 采购订单审批
+   */
+  PROCUREMENT_ORDER_APPROVAL(2);
 
   private int value;
 

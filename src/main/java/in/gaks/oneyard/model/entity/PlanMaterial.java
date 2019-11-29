@@ -118,6 +118,11 @@ public class PlanMaterial extends BaseEntity {
   private java.lang.String materialTrackingCode;
 
   /**
+   * 是否被订单占用.
+   */
+  private java.lang.Boolean isUseOrder = false;
+
+  /**
    * 物料类别数据.
    */
   @Transient
