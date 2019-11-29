@@ -116,23 +116,19 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     //根据审批环节和审批意见发送不同的通知信息
     String res = approval.getResult();
     ApprovalTypeStatus type = approval.getApprovalType();
-    if ("审批通过".equals(res)
-        && type.equals(ApprovalTypeStatus.PROCUREMENT_APPROVAL_ONE)) {
+    if ("采购主管审批通过".equals(res)) {
       notification.setName("采购计划主管审批通过通知");
       notification.setMessage("您于" + procurementPlan.getCreateTime()
           + "生成提交的采购计划《 " + procurementPlan.getName() + "》被主管审批通过了！");
-    } else if ("审批退回".equals(res)
-        && type.equals(ApprovalTypeStatus.PROCUREMENT_APPROVAL_ONE)) {
+    } else if ("采购主管审批退回".equals(res)) {
       notification.setName("采购计划主管审批退回通知");
       notification.setMessage("您于" + procurementPlan.getCreateTime()
           + "生成提交的采购计划《" + procurementPlan.getName() + " 》因为某些原因被主管退回了。");
-    } else if ("审批通过".equals(res)
-        && type.equals(ApprovalTypeStatus.PROCUREMENT_APPROVAL_TWO)) {
+    } else if ("财务审批通过".equals(res)) {
       notification.setName("采购计划财务审批通过通知");
       notification.setMessage("您于" + procurementPlan.getCreateTime()
           + "生成提交的采购计划《" + procurementPlan.getName() + " 》被财务部门审批通过了！");
-    } else if ("审批退回".equals(res)
-        && type.equals(ApprovalTypeStatus.PROCUREMENT_APPROVAL_TWO)) {
+    } else if ("财务审批退回".equals(res)) {
       notification.setName("采购计划财务审批退回通知");
       notification.setMessage("您于" + procurementPlan.getCreateTime()
           + "生成提交的采购计划《" + procurementPlan.getName() + " 》因为某些原因被财务部门退回了。");
@@ -168,10 +164,10 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
       procurementPlan.setPlanStatus(PlanStatus.APPROVAL);
       procurementPlanRepository.save(procurementPlan);
       Approval approval = new Approval();
-      approval.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL_ONE);
+      approval.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL);
       approval.setDescription("撤回上次审批操作.");
       approval.setPlanId(procurementPlan.getId());
-      approval.setResult("审批结果撤回");
+      approval.setResult("采购主管审批结果撤回");
       approvalRepository.save(approval);
     } else {
       throw new ResourceErrorException("当前项目状态有误，刷新后再试！");

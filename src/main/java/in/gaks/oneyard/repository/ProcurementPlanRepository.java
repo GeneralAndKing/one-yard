@@ -48,4 +48,6 @@ public interface ProcurementPlanRepository extends BaseRepository<ProcurementPla
    */
   @RestResource(path = "count")
   Long countByPlanStatus(@Param("planStatus") PlanStatus planStatus);
+
+
 }

@@ -193,7 +193,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     }
     //保存退回信息至审批
     approve.setPlanId(planMaterial0.getPlanId());
-    approve.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL_ONE);
+    approve.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL);
     approvalRepository.save(approve);
 
     // 获取通知接收方id
