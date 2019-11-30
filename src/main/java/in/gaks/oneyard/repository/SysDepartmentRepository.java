@@ -26,7 +26,7 @@ public interface SysDepartmentRepository extends BaseRepository<SysDepartment, L
    */
   @RestResource(path = "byRoles")
   @Query(value = "select d.* from sys_role r, sys_department d "
-      + "where r.id in (:ids) and r.department_id = d.id",
+      + "where r.id in (:ids) and r.department_id = d.id and d.is_enable = 1 and r.is_enable = 1",
       nativeQuery = true)
   List<SysDepartment> searchByRoles(@Param("ids") List<Long> ids);
 

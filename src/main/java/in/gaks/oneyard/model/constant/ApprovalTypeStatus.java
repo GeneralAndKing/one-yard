@@ -16,7 +16,7 @@ public enum ApprovalTypeStatus {
    */
   PROCUREMENT_APPROVAL(1),
   /**
-   * 采购订单审批
+   * 采购订单审批.
    */
   PROCUREMENT_ORDER_APPROVAL(2);
 

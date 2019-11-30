@@ -43,4 +43,10 @@ public final class OneYard {
 
   public static final String NOTIFICATION = "notification";
 
+  public static final String ORDER_TERMS = "orderTerms";
+
+  public static final String PROCUREMENT_MATERIAL = "procurementMaterial";
+
+  public static final String PROCUREMENT_ORDER = "procurementOrder";
+
 }
