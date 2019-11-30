@@ -24,7 +24,7 @@ public interface ProcurementPlanDtoRepository extends BaseRepository<Procurement
    * @return 结果
    */
   @RestResource(path = "infoById")
-  @Query(value = "select * from pm_info where procurement_plan_id = :id", nativeQuery = true)
+  @Query(value = "select * from pm_info where procurement_plan_id = :id ", nativeQuery = true)
   List<ProcurementPlanDto> searchInfoById(@Param("id") Long id);
 
 }
