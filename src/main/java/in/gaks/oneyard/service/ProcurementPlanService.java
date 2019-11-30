@@ -57,5 +57,10 @@ public interface ProcurementPlanService extends BaseService<ProcurementPlan, Lon
   void updatePlanAndPlanMaterials(ProcurementPlan procurementPlan,
       List<PlanMaterial> materials);
 
-
+  /**
+   * 获取紧急采购计划id.
+   *
+   * @return .
+   */
+  Long getUrgentProcurementId();
 }

@@ -240,4 +240,24 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
       }
     });
   }
+
+  /**
+   * 获取紧急采购计划id.
+   */
+  @Override
+  public Long getUrgentProcurementId() {
+    ProcurementPlan procurementPlan = procurementPlanRepository.findByPlanType("紧急采购计划");
+    // 紧急采购计划若存在则返回采购计划id
+    if (Objects.nonNull(procurementPlan)) {
+      return procurementPlan.getId();
+    }
+    // 若不存在则创建后再返回采购计划id
+    procurementPlan = new ProcurementPlan();
+    procurementPlan.setName("**紧急采购计划**");
+    procurementPlan.setPlanType("紧急采购计划");
+    procurementPlan.setApprovalStatus(ApprovalStatus.APPROVAL_OK);
+    procurementPlan.setPlanStatus(PlanStatus.FINALLY);
+    procurementPlanRepository.save(procurementPlan);
+    return procurementPlan.getId();
+  }
 }

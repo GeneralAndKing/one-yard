@@ -49,5 +49,11 @@ public interface ProcurementPlanRepository extends BaseRepository<ProcurementPla
   @RestResource(path = "count")
   Long countByPlanStatus(@Param("planStatus") PlanStatus planStatus);
 
-
+  /**
+   * 根据名字查询采购计划.
+   *
+   * @param planType 名称
+   * @return .
+   */
+  ProcurementPlan findByPlanType(@Param("planType") String planType);
 }

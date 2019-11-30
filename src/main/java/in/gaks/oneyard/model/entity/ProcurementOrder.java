@@ -1,6 +1,8 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import in.gaks.oneyard.model.constant.ApprovalStatus;
+import in.gaks.oneyard.model.constant.ProcurementOrderPlanStatus;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -55,13 +57,15 @@ public class ProcurementOrder extends BaseEntity {
   private java.lang.String procurementDate;
 
   /**
-   * 计划状态： 0 自由 1 提交审批  2 提交至汇总 3 已删除 4 已进入下一阶段.
+   * 计划状态： 待提交，提交审批，已关闭，未完成，已完成，已变更，已生效，已作废.
    */
-  private java.lang.String planStatus;
+  @Enumerated(EnumType.ORDINAL)
+  private ProcurementOrderPlanStatus planStatus;
 
   /**
    * 审批状态： 0 未提交 1 审批中 2 审批退回 3 审批通过 4已失效.
    */
-  private java.lang.String approvalStatus;
+  @Enumerated(EnumType.ORDINAL)
+  private ApprovalStatus approvalStatus;
 
 }

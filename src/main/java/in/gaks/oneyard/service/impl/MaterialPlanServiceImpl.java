@@ -2,7 +2,6 @@ package in.gaks.oneyard.service.impl;
 
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.constant.ApprovalStatus;
-import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
@@ -15,11 +14,11 @@ import in.gaks.oneyard.repository.ApprovalRepository;
 import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
-import in.gaks.oneyard.repository.SysDepartmentRepository;
 import in.gaks.oneyard.repository.SysUserRepository;
 import in.gaks.oneyard.service.MaterialPlanService;
 import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.PlanMaterialService;
+import in.gaks.oneyard.service.ProcurementPlanService;
 import in.gaks.oneyard.util.NotifyUtil;
 import java.util.List;
 import java.util.Objects;
@@ -47,6 +46,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull MaterialPlanSummaryService materialPlanSummaryService;
   private final @NonNull PlanMaterialService planMaterialService;
+  private final @NonNull ProcurementPlanService procurementPlanService;
   private final NotifyUtil notifyUtil;
 
   /**
@@ -103,6 +103,11 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
       // 更新计划审核状态并根据时间自动汇总
       List<PlanMaterial> planMaterials = planMaterialRepository
           .findAllByPlanId(materialDemandPlan.getId());
+      // 紧急计划自动进入紧急采购计划
+      if ("紧急计划".equals(materialDemandPlan.getPlanType())) {
+        planMaterials.forEach(planMaterial -> planMaterial
+            .setProcurementPlanId(procurementPlanService.getUrgentProcurementId()));
+      }
       planMaterials.forEach(planMaterial -> planMaterial
           .setSummaryId(materialPlanSummaryService.summaryMaterialPlan(materialDemandPlan)));
       planMaterialRepository.saveAll(planMaterials);
