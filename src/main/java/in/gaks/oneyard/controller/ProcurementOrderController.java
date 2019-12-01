@@ -75,11 +75,10 @@ public class ProcurementOrderController extends BaseController<ProcurementOrder,
   @VerifyParameter(required = {"procurementOrder#订单为必填项", "procurementMaterials#采购物料为必填项",
       "orderTerms#订单条款为必填项"})
   public HttpEntity<?> materialOrderCreate(@NotNull @RequestBody JSONObject data) {
-    procurementOrderService.saveProcurementOrder(
+    return ResponseEntity.ok(procurementOrderService.saveProcurementOrder(
         data.getObject("procurementOrder", ProcurementOrder.class),
         data.getJSONArray("procurementMaterials").toJavaList(ProcurementMaterial.class),
         data.getJSONArray("orderTerms").toJavaList(OrderTerms.class)
-    );
-    return ResponseEntity.ok().build();
+    ));
   }
 }

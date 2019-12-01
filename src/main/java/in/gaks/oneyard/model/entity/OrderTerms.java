@@ -37,7 +37,7 @@ public class OrderTerms extends BaseEntity {
   /**
    * 订单id.
    */
-  private java.lang.Integer orderId;
+  private java.lang.Long orderId;
 
   /**
    * 条款类型.

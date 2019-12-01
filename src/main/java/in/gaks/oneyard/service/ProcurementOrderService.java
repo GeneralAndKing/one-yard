@@ -38,6 +38,6 @@ public interface ProcurementOrderService extends BaseService<ProcurementOrder, L
    * @param materials 采购物料
    * @param orderTerms 订单条款
    */
-  void saveProcurementOrder(ProcurementOrder procurementOrder,
+  String saveProcurementOrder(ProcurementOrder procurementOrder,
       List<ProcurementMaterial> materials, List<OrderTerms> orderTerms);
 }

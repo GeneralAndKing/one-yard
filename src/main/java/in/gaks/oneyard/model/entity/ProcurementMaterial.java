@@ -30,7 +30,7 @@ public class ProcurementMaterial extends BaseEntity {
   /**
    * 订单id.
    */
-  private java.lang.Integer orderId;
+  private java.lang.Long orderId;
 
   /**
    * 物料id.
@@ -111,6 +111,11 @@ public class ProcurementMaterial extends BaseEntity {
    * 收料部门.
    */
   private java.lang.String materialReceivingDepartment;
+
+  /**
+   * 关联需求物料id.
+   */
+  private java.lang.Long planMaterialId;
 
   /**
    * 订单物料状态.

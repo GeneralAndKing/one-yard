@@ -30,7 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * 汇总表事务处理.
+ * 采购计划表事务处理.
  *
  * @author Japoul
  * @date 2019/11/2 下午11:01

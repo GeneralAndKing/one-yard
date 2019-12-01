@@ -130,4 +130,12 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
   @RestResource(path = "count")
   long countAllByStatus(@Param("status") Status status);
 
+  /**
+   * 根据用户名称列表返回对应的头像url.
+   *
+   * @param username username列表
+   * @return 返回头像url列表
+   */
+  @RestResource(path = "getHead")
+  List<String> getUserHeadImgUrl(@Param("username") List<String> username);
 }
