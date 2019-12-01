@@ -1,13 +1,13 @@
 package in.gaks.oneyard.repository;
 
 import in.gaks.oneyard.base.BaseRepository;
-import in.gaks.oneyard.model.entity.OrderTerms;
 import in.gaks.oneyard.model.constant.OneYard;
-import in.gaks.oneyard.model.entity.ProcurementMaterial;
-import java.util.List;
+import in.gaks.oneyard.model.entity.OrderTerms;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
+
+import java.util.List;
 
 /**
  * Repository.
@@ -25,6 +25,6 @@ public interface OrderTermsRepository extends BaseRepository<OrderTerms, Long> {
    * @return .
    */
   @RestResource(path = "byOrderId")
-  List<OrderTerms> findAllByOrderId(@Param("orderId") Long orderId);
+  List<OrderTerms> findAllByOrderId(@Param("orderId") Integer orderId);
 
 }
