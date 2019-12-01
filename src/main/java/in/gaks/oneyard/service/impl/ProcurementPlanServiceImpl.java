@@ -256,7 +256,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     procurementPlan.setName("**紧急采购计划**");
     procurementPlan.setPlanType("紧急采购计划");
     procurementPlan.setApprovalStatus(ApprovalStatus.APPROVAL_OK);
-    procurementPlan.setPlanStatus(PlanStatus.FINALLY);
+    procurementPlan.setPlanStatus(PlanStatus.PROCUREMENT_OK);
     procurementPlanRepository.save(procurementPlan);
     return procurementPlan.getId();
   }
