@@ -7,6 +7,7 @@ import in.gaks.oneyard.model.entity.ProcurementMaterial;
 import java.util.List;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
  * Repository.
@@ -23,6 +24,7 @@ public interface OrderTermsRepository extends BaseRepository<OrderTerms, Long> {
    * @param orderId 订单id
    * @return .
    */
+  @RestResource(path = "byOrderId")
   List<OrderTerms> findAllByOrderId(@Param("orderId") Long orderId);
 
 }
