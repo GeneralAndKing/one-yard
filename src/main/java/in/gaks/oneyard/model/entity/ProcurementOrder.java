@@ -42,12 +42,12 @@ public class ProcurementOrder extends BaseEntity {
   private java.lang.String code;
 
   /**
-   * .
+   * 供应商.
    */
   private java.lang.String supplier;
 
   /**
-   * .
+   * 采购部门.
    */
   private java.lang.String procurementDepartment;
 
