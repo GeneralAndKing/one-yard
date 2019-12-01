@@ -90,6 +90,6 @@ public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Lon
   @RestResource(path = "byProcurementPlanId")
   @Query(value = "select pm.* from plan_material pm "
       + "where pm.procurement_plan_id = (:procurementPlanId) and pm.is_use_order = 0 "
-      + "and pm.supply_mode = `采购` and pm.is_enable = 1 and pm.status = 0 ", nativeQuery = true)
+      + "and pm.supply_mode = '采购' and pm.is_enable = 1 and pm.status = 0 ", nativeQuery = true)
   List<PlanMaterial> getAllByProcurementPlanId(@Param("procurementPlanId") Long procurementPlanId);
 }
