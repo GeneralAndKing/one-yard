@@ -6,6 +6,7 @@ import in.gaks.oneyard.model.constant.OneYard;
 import java.util.List;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 /**
  * Repository.
@@ -23,6 +24,7 @@ public interface ProcurementOrderRepository extends BaseRepository<ProcurementOr
    * @param approvalStatus 审批状态
    * @return 订单列表
    */
+  @RestResource(path = "byStatus")
   List<ProcurementOrder> findAllByPlanStatusAndApprovalStatus(
       @Param("planStatus") String planStatus,
       @Param("approvalStatus") String approvalStatus);
