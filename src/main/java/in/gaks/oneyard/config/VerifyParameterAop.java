@@ -55,7 +55,8 @@ public class VerifyParameterAop {
         .getMethod(joinPoint.getSignature().getName(), JSONObject.class);
     param = (JSONObject) joinPoint.getArgs()[0];
     VerifyParameter annotation = method.getAnnotation(VerifyParameter.class);
-    check(annotation.required(), (condition, value) -> Objects.nonNull(value), () -> " 为必填项！");
+    check(annotation.required(), (condition, value) -> Objects.nonNull(value)
+        && !value.toString().isBlank(), () -> " 为必填项！");
     check(annotation.range(), (condition, value) -> value instanceof Long
             && ((Long) value > getRangeLeft(condition)
             && (Long) value < getRangeRight(condition)),
