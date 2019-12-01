@@ -2,8 +2,6 @@ package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -77,12 +75,12 @@ public class ProcurementMaterial extends BaseEntity {
   /**
    * 单价.
    */
-  private Object unitPrice;
+  private Double unitPrice;
 
   /**
    * 含税单价（包含税费的单价）.
    */
-  private Object taxableUnitPrice;
+  private Double taxableUnitPrice;
 
   /**
    * 税率 x%.
@@ -92,17 +90,17 @@ public class ProcurementMaterial extends BaseEntity {
   /**
    * 税额（总共交多少税）.
    */
-  private Object taxAmount;
+  private Double taxAmount;
 
   /**
    * 总价（不含税）.
    */
-  private Object totalPrice;
+  private Double totalPrice;
 
   /**
    * 含税总价（税费+总价）.
    */
-  private Object taxTotalPrice;
+  private Double taxTotalPrice;
 
   /**
    * 是否是赠品.

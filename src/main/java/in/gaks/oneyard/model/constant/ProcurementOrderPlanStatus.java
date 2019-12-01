@@ -23,11 +23,11 @@ public enum ProcurementOrderPlanStatus {
   /**
    * 未完成.
    */
-  IMCOMPLETE("未完成"),
+  UNFINISHED("未完成"),
   /**
    * 已完成.
    */
-  COMPLETE("已完成"),
+  FINISHED("已完成"),
   /**
    * 已变更.
    */

@@ -41,8 +41,8 @@ public class LogAdviceHandle implements ResponseBodyAdvice {
     HttpServletRequest httpServletRequest = ((ServletServerHttpRequest) request)
         .getServletRequest();
     int status = ((ServletServerHttpResponse) response).getServletResponse().getStatus();
-    sysLog.setArgs(
-        StringUtils.left(gson.toJson(httpServletRequest.getParameterMap()), 1000))
+    sysLog
+        .setArgs(StringUtils.left(gson.toJson(httpServletRequest.getParameterMap()), 1000))
         .setBrowser(httpServletRequest.getHeader("User-Agent"))
         .setSource(httpServletRequest.getRemoteAddr())
         .setUrl(httpServletRequest.getRequestURI())

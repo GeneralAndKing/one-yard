@@ -52,9 +52,14 @@ public class ProcurementOrder extends BaseEntity {
   private java.lang.String procurementDepartment;
 
   /**
-   * .
+   * 采购日期.
    */
   private java.lang.String procurementDate;
+
+  /**
+   * 交货日期.
+   */
+  private java.lang.String deliveryDate;
 
   /**
    * 计划状态： 待提交，提交审批，已关闭，未完成，已完成，已变更，已生效，已作废.
