@@ -4,12 +4,12 @@ import in.gaks.oneyard.base.BaseRepository;
 import in.gaks.oneyard.model.constant.MaterialStatus;
 import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.PlanMaterial;
-import in.gaks.oneyard.model.entity.ProcurementPlan;
-import java.util.List;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
+
+import java.util.List;
 
 /**
  * Repository.
@@ -48,6 +48,13 @@ public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Lon
    */
   List<PlanMaterial> findAllByProcurementPlanIdAndStatus(@Param("id") Long id,
       @Param("materialStatus") MaterialStatus materialStatus);
+
+  /**
+   * 根据采购计划id查询所需物料
+   * @param id 采购计划id
+   * @return
+   */
+  List<PlanMaterial> findAllByProcurementPlanId(@Param("id") Long id);
 
   /**
    * 根据采购计划id和物料id以及供应方式查询在途数量.
