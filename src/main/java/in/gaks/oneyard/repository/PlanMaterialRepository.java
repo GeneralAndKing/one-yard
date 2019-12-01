@@ -80,4 +80,16 @@ public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Lon
    * @return .
    */
   List<PlanMaterial> findAllBySupplyModeAndStatus(String mode, MaterialStatus status);
+
+  /**
+   * 根据采购计划id获取采购订单选单所需的物料.
+   *
+   * @param procurementPlanId 采购计划id
+   * @return .
+   */
+  @RestResource(path = "byProcurementPlanId")
+  @Query(value = "select pm.* from plan_material pm "
+      + "where pm.procurement_plan_id = (:procurementPlanId) and pm.is_use_order = 0 "
+      + "and pm.supply_mode = `采购` and pm.is_enable = 1 and pm.status = 0 ", nativeQuery = true)
+  List<PlanMaterial> getAllByProcurementPlanId(@Param("procurementPlanId") Long procurementPlanId);
 }
