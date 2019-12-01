@@ -137,5 +137,8 @@ public interface SysUserRepository extends BaseRepository<SysUser, Long> {
    * @return 返回头像url列表
    */
   @RestResource(path = "getHead")
+  @Query(value = "select u.icon from sys_user u "
+      + "where u.username in (:username) and u.is_enable = 1 ",
+      nativeQuery = true)
   List<String> getUserHeadImgUrl(@Param("username") List<String> username);
 }
