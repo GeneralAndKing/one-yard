@@ -57,11 +57,10 @@ public class ProcurementOrderController extends BaseController<ProcurementOrder,
    * @return 响应
    */
   @PostMapping("/withdrawApproval")
-  @VerifyParameter(required = {"procurementOrder#采购订单为必填项", "role#角色类型为必填项"})
+  @VerifyParameter(required = {"procurementOrderId#采购订单id为必填项"})
   public HttpEntity<?> withdrawApproval(@NotNull @RequestBody JSONObject data) {
     procurementOrderService.withdrawApproval(
-        data.getObject("procurementOrder", ProcurementOrder.class),
-        data.getObject("role", String.class)
+        data.getObject("procurementOrderId", Long.class)
     );
     return ResponseEntity.ok().build();
   }
