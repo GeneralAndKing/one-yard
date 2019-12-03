@@ -51,6 +51,8 @@ allprojects {
         set('junt5Version', '5.6.0-M1')
         set('druidVersion', '1.1.21')
         set('qiniuVersion', '7.2.27')
+        set('h2Version', '1.4.200')
+        set('mockitoVersion', '3.2.0')
     }
 
 }
@@ -98,7 +100,8 @@ dependencies {
     testImplementation(
             'org.springframework.security:spring-security-test',
             'org.junit.jupiter:junit-jupiter-api',
-            'org.junit.jupiter:junit-jupiter-params'
+            'org.junit.jupiter:junit-jupiter-params',
+            "com.h2database:h2:${h2Version}"
     )
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
     runtimeOnly 'mysql:mysql-connector-java'

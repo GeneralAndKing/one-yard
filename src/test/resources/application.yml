@@ -1,0 +1,72 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:one-yard
+    username: gak
+    password: Gak.123456
+    driver-class-name: org.h2.Driver
+  jpa:
+    open-in-view: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true
+  h2:
+    console:
+      enabled: true
+  data:
+    redis:
+      repositories:
+        enabled: false
+    rest:
+      base-path: /rest
+      default-page-size: 10
+      default-media-type: application/json
+  mail:
+    host: smtp.exmail.qq.com
+    port: 465
+    username: lessonCloud@japoul.cn
+    password: lessonC2019
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            required: true
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+    test-connection: false
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
+server:
+  servlet:
+    context-path: /api
+
+application:
+  security:
+    enable: false
+    client-id: gak
+    client-secret: $2a$12$cLJL7vsJLzM07g83pV7FBeosMxwi0TWm1N70GskkmG2CIcWCFbLYK
+    access-token-validity-hour: 24
+    refresh-token-validity-hour: 24
+  code:
+    email-code-validity-minute: 30
+    email-enable: false
+  qiniu: # 七牛云配置
+    area: 华南 # 可选值 华东 华南 华北 北美 东南亚 不填会自动判断
+    access-key: MDRca19RDHiDgv3T677skHmPmzp8_gn8QahRQLFX
+    secret-key: UKTf_UA7S3-Z7QP4kRUVraBP-eI_HsU2IfPjB5U0
+    bucket: resource-pic
+    domain: q0zlaui5t.bkt.clouddn.com
+    dir-name: oneYard
+    host: http://q0zlaui5t.bkt.clouddn.com/
+logging:
+  level:
+    org.springframework.security: DEBUG
+    in.gaks.oneyard: DEBUG
+    org.springframework.context.support.[PostProcessorRegistrationDelegate$BeanPostProcessorChecker]: WARN
+  file: logs/one-yard.log

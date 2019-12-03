@@ -39,7 +39,7 @@ public class ApplicationConfig implements WebMvcConfigurer, AsyncConfigurer {
    */
   @Bean
   @Primary
-  public PagedResourcesAssembler myPagedResourcesAssembler() {
+  public PagedResourcesAssembler<?> myPagedResourcesAssembler() {
     PagedResourcesAssembler<Object> pagedResourcesAssembler = new PagedResourcesAssembler<>(
         pageableResolver, null);
     pagedResourcesAssembler.setForceFirstAndLastRels(true);
