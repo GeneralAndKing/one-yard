@@ -1,6 +1,9 @@
 package in.gaks.oneyard.service.impl;
 
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
+import in.gaks.oneyard.model.constant.ApprovalStatus;
+import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
+import in.gaks.oneyard.model.constant.ProcurementOrderPlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.OrderTerms;
 import in.gaks.oneyard.model.entity.PlanMaterial;
@@ -58,15 +61,22 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   }
 
   /**
-   * 撤回审批.
+   * 撤回审批请求.
    *
-   * @param procurementOrder 需求订单
-   * @param role 角色类型
+   * @param procurementOrderId 采购订单id
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void withdrawApproval(ProcurementOrder procurementOrder, String role) {
-
+  public void withdrawApproval(Long procurementOrderId) {
+    ProcurementOrder p = procurementOrderRepository.findById(procurementOrderId)
+        .orElseThrow(() -> new ResourceNotFoundException("找不到对应的采购订单"));
+    if (!p.getApprovalStatus().equals(ApprovalStatus.APPROVAL_ING)
+        || !p.getPlanStatus().equals(ProcurementOrderPlanStatus.APPROVAL)) {
+      throw new ResourceErrorException("该采购订单状态发生改变，不可撤回，请刷新后再试！");
+    }
+    p.setApprovalStatus(ApprovalStatus.NO_SUBMIT);
+    p.setPlanStatus(ProcurementOrderPlanStatus.NO_SUBMIT);
+    procurementOrderRepository.save(p);
   }
 
   /**
@@ -92,10 +102,12 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     // 给待采购物资赋值订单id 并让其绑定的物料变为已占用
     for (ProcurementMaterial material : materials) {
       material.setOrderId(procurementOrderId);
+      // 若关联id不为空则检测是否被占用
       if (Objects.nonNull(material.getPlanMaterialId())) {
         PlanMaterial planMaterial = planMaterialRepository.findById(material.getPlanMaterialId())
             .orElseThrow(() ->
                 new ResourceNotFoundException("找不到绑定的需求物料"));
+        // 判断如果该物料已经被占用了则不保存该物料
         if (planMaterial.getIsUseOrder()) {
           msg = "部分数据已经被其他采购订单占用，生成的订单数据可能不完整！";
           continue;
@@ -103,9 +115,45 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
         planMaterial.setIsUseOrder(true);
         planMaterialRepository.save(planMaterial);
       }
+      // 新增物料直接保存进待采购物料中，通过检测的也保存
+      procurementMaterialRepository.save(material);
     }
     orderTerms.forEach(orderTerm -> orderTerm.setOrderId(procurementOrderId));
     orderTermsRepository.saveAll(orderTerms);
     return msg;
+  }
+
+  /**
+   * 删除采购订单的明细信息（物料）.
+   *
+   * @param procurementMaterialId 待采购物料id
+   */
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void deleteProcurementMaterial(Long procurementMaterialId) {
+    ProcurementMaterial procurementMaterial = procurementMaterialRepository
+        .findById(procurementMaterialId)
+        .orElseThrow(() -> new ResourceNotFoundException("找不到该待采购物料"));
+    // 判断删除时状态是否正确
+    ProcurementOrder procurementOrder = procurementOrderRepository
+        .findById(procurementMaterial.getOrderId())
+        .orElseThrow(() -> new ResourceNotFoundException("查询采购订单失败"));
+    if (procurementOrder.getApprovalStatus().equals(ApprovalStatus.APPROVAL_ING)
+        || procurementOrder.getApprovalStatus().equals(ApprovalStatus.APPROVAL_OK)
+        || procurementOrder.getPlanStatus().equals(ProcurementOrderPlanStatus.EFFECTIVE)) {
+      throw new ResourceErrorException("当前订单状态不对");
+    }
+    // 若 planMaterialId 不为空说明是选单的数据，需接触关联
+    if (Objects.nonNull(procurementMaterial.getPlanMaterialId())) {
+      PlanMaterial planMaterial = planMaterialRepository
+          .findById(procurementMaterial.getPlanMaterialId())
+          .orElseThrow(() -> new ResourceNotFoundException("找不到关联的需求物料信息"));
+      // 接触关联需求物料的占用
+      planMaterial.setIsUseOrder(false);
+      planMaterialRepository.save(planMaterial);
+    }
+    procurementMaterial.setOrderId(null);
+    procurementMaterial.setIsEnable(false);
+    procurementMaterialRepository.save(procurementMaterial);
   }
 }

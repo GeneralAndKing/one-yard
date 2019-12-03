@@ -26,10 +26,9 @@ public interface ProcurementOrderService extends BaseService<ProcurementOrder, L
   /**
    * 撤回审批.
    *
-   * @param procurementOrder 需求订单
-   * @param role 角色类型
+   * @param procurementOrderId 采购订单
    */
-  void withdrawApproval(ProcurementOrder procurementOrder, String role);
+  void withdrawApproval(Long procurementOrderId);
 
   /**
    * 保存采购订单表.
@@ -37,7 +36,15 @@ public interface ProcurementOrderService extends BaseService<ProcurementOrder, L
    * @param procurementOrder 采购订单
    * @param materials 采购物料
    * @param orderTerms 订单条款
+   * @return .
    */
   String saveProcurementOrder(ProcurementOrder procurementOrder,
       List<ProcurementMaterial> materials, List<OrderTerms> orderTerms);
+
+  /**
+   * 删除采购订单的明细信息（物料）.
+   *
+   * @param procurementMaterialId 待采购物料id
+   */
+  void deleteProcurementMaterial(Long procurementMaterialId);
 }
