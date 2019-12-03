@@ -53,7 +53,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
    * 保存/修改物料需求计划表.
    *
    * @param materialPlan 物料需求计划基础信息
-   * @param materials 需求的物资列表
+   * @param materials 需求的物资列表n
    */
   @Override
   @Transactional(rollbackOn = Exception.class)

@@ -39,7 +39,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
-  private final NotifyUtil notifyUtil;
+  private final @NonNull NotifyUtil notifyUtil;
 
   /**
    * 根据需求计划id获取完整的需求物资.
@@ -55,7 +55,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
     procurementPlanRepository
         .findAllByPlanStatusAndApprovalStatus(PlanStatus.FINALLY, ApprovalStatus.APPROVAL_OK)
         .forEach(p -> procurementIds.add(p.getId()));
-    List<PlanMaterial> pMaterials = new ArrayList<>();
+    List<PlanMaterial> pMaterials;
     if (type) {
       pMaterials = planMaterialRepository
           .findAllByPlanId(id);

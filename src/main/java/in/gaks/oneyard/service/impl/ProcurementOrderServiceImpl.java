@@ -2,7 +2,6 @@ package in.gaks.oneyard.service.impl;
 
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.constant.ApprovalStatus;
-import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
 import in.gaks.oneyard.model.constant.ProcurementOrderPlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.OrderTerms;
@@ -46,7 +45,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
-  private final NotifyUtil notifyUtil;
+  private final @NonNull NotifyUtil notifyUtil;
 
   /**
    * 采购部门主管审批采购订单.
@@ -96,9 +95,6 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     procurementOrderRepository.save(procurementOrder);
     // 获取订单id并检测
     Long procurementOrderId = procurementOrder.getId();
-    if (Objects.isNull(procurementOrderId)) {
-      throw new ResourceErrorException("采购订单保存失败");
-    }
     // 给待采购物资赋值订单id 并让其绑定的物料变为已占用
     for (ProcurementMaterial material : materials) {
       material.setOrderId(procurementOrderId);
@@ -138,9 +134,9 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     ProcurementOrder procurementOrder = procurementOrderRepository
         .findById(procurementMaterial.getOrderId())
         .orElseThrow(() -> new ResourceNotFoundException("查询采购订单失败"));
-    if (procurementOrder.getApprovalStatus().equals(ApprovalStatus.APPROVAL_ING)
-        || procurementOrder.getApprovalStatus().equals(ApprovalStatus.APPROVAL_OK)
-        || procurementOrder.getPlanStatus().equals(ProcurementOrderPlanStatus.EFFECTIVE)) {
+    if (ApprovalStatus.APPROVAL_ING.equals(procurementOrder.getApprovalStatus())
+        || ApprovalStatus.APPROVAL_OK.equals(procurementOrder.getApprovalStatus())
+        || ProcurementOrderPlanStatus.EFFECTIVE.equals(procurementOrder.getPlanStatus())) {
       throw new ResourceErrorException("当前订单状态不对");
     }
     // 若 planMaterialId 不为空说明是选单的数据，需接触关联

@@ -5,12 +5,9 @@ import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.MaterialPlanSummary;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
-import in.gaks.oneyard.repository.MaterialDemandPlanRepository;
 import in.gaks.oneyard.repository.MaterialPlanSummaryRepository;
-import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.PlanMaterialService;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import lombok.NonNull;
@@ -30,7 +27,6 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
     implements MaterialPlanSummaryService {
 
   private final @NonNull MaterialPlanSummaryRepository materialPlanSummaryRepository;
-  private final @NonNull PlanMaterialRepository planMaterialRepository;
   private final @NonNull PlanMaterialService planMaterialService;
 
   /**
