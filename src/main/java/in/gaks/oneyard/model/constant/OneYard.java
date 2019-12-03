@@ -49,4 +49,5 @@ public final class OneYard {
 
   public static final String PROCUREMENT_ORDER = "procurementOrder";
 
+  public static final String CHANGE_HISTORY = "changeHistory";
 }
