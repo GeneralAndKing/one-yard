@@ -50,13 +50,6 @@ public interface PlanMaterialRepository extends BaseRepository<PlanMaterial, Lon
       @Param("materialStatus") MaterialStatus materialStatus);
 
   /**
-   * 根据采购计划id查询所需物料
-   * @param id 采购计划id
-   * @return
-   */
-  List<PlanMaterial> findAllByProcurementPlanId(@Param("id") Long id);
-
-  /**
    * 根据采购计划id和物料id以及供应方式查询在途数量.
    *
    * @param ids 采购计划id

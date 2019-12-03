@@ -25,6 +25,6 @@ public interface OrderTermsRepository extends BaseRepository<OrderTerms, Long> {
    * @return .
    */
   @RestResource(path = "byOrderId")
-  List<OrderTerms> findAllByOrderId(@Param("orderId") Integer orderId);
+  List<OrderTerms> findAllByOrderId(@Param("orderId") Long orderId);
 
 }

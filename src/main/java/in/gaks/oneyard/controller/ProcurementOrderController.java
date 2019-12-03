@@ -80,4 +80,19 @@ public class ProcurementOrderController extends BaseController<ProcurementOrder,
         data.getJSONArray("orderTerms").toJavaList(OrderTerms.class)
     ));
   }
+
+  /**
+   * 删除采购订单的明细信息（物料）.
+   *
+   * @param data 数据
+   * @return 响应
+   */
+  @PostMapping("/deleteProcurementMaterial")
+  @VerifyParameter(required = {"procurementMaterialId#采购订单明细信息物料id为必填项"})
+  public HttpEntity<?> deleteProcurementMaterial(@NotNull @RequestBody JSONObject data) {
+    procurementOrderService.deleteProcurementMaterial(
+        data.getObject("procurementMaterialId", Long.class)
+    );
+    return ResponseEntity.ok().build();
+  }
 }
