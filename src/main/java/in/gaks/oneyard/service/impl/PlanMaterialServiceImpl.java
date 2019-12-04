@@ -44,7 +44,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   /**
    * 根据需求计划id获取完整的需求物资.
    *
-   * @param id 计划表id
+   * @param id   计划表id
    * @param type 调用该方法的类型 true 需求计划 false 汇总表
    * @return 完整的需求物资数据
    */
@@ -89,9 +89,9 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
         List<Long> nums = planMaterialRepository
             .searchByProcurementPlanIdsAndSupplyMode(procurementIds,
                 planMaterial.getMaterialId(), "采购");
-        if (Objects.nonNull(nums)) {
+        if (!nums.isEmpty()) {
           for (Long n : nums) {
-            inTransitNum += n;
+            inTransitNum += (Objects.isNull(n) ? Long.valueOf(0) : n);
           }
         }
       }
@@ -137,9 +137,9 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   /**
    * 退回需求.
    *
-   * @param flag true：整个计划，false：当前物资
+   * @param flag          true：整个计划，false：当前物资
    * @param planMaterial0 需求物资
-   * @param approve 审批意见
+   * @param approve       审批意见
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -203,12 +203,11 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
    * 合并物料.
    *
    * @param planMaterial 合并后的物料
-   * @param ids 待合并的ids
+   * @param ids          待合并的ids
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
   public PlanMaterial mergeMaterialPlan(PlanMaterial planMaterial, List<Long> ids) {
-
     List<PlanMaterial> all = planMaterialRepository.findAllById(ids);
     for (PlanMaterial item : all) {
       item.setStatus(MaterialStatus.MERGE);
@@ -221,7 +220,7 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
   /**
    * 拆分物料.
    *
-   * @param planMaterial 被拆分的物料
+   * @param planMaterial     被拆分的物料
    * @param newPlanMaterials 拆分成的物料列表
    */
   @Override
