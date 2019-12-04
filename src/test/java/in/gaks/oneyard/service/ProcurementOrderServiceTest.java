@@ -68,37 +68,22 @@ class ProcurementOrderServiceTest {
         planMaterialRepository, orderTermsRepository,
         approvalRepository, sysUserRepository,
         notificationRepository, notifyUtil);
-    ProcurementOrder order1 = new ProcurementOrder()
-        .setApprovalStatus(ApprovalStatus.APPROVAL_ING)
-        .setPlanStatus(ProcurementOrderPlanStatus.APPROVAL);
-    procurementOrderRepository.save(order1);
-    ProcurementOrder order2 = new ProcurementOrder()
-        .setApprovalStatus(ApprovalStatus.APPROVAL_OK)
-        .setPlanStatus(ProcurementOrderPlanStatus.CLOSE);
-    procurementOrderRepository.save(order2);
-
-    ProcurementMaterial material = new ProcurementMaterial();
-    material.setOrderId(order1.getId());
-    procurementMaterialRepository.save(material);
   }
 
   @Test
-  @Tag("正确")
+  @Tag("正常")
   @DisplayName("采购部门主管审批采购订单")
   void approvalProcurementOrderTest() {
     // TODO: 测试用例
-    ProcurementOrder order = new ProcurementOrder();
-    Approval approval = new Approval();
-    procurementOrderService.approvalProcurementOrder(order, approval);
+    procurementOrderService.approvalProcurementOrder(new ProcurementOrder(), new Approval());
   }
 
   @Test
   @DisplayName("撤回审批请求")
-  @Tag("正确")
+  @Tag("正常")
   void withdrawApprovalTest() {
-    ProcurementOrder exist = procurementOrderRepository.findAll().get(0);
-    procurementOrderService.withdrawApproval(exist.getId());
-    Optional<ProcurementOrder> orderOptional = procurementOrderRepository.findById(exist.getId());
+    procurementOrderService.withdrawApproval(1L);
+    Optional<ProcurementOrder> orderOptional = procurementOrderRepository.findById(1L);
     assertTrue(orderOptional.isPresent());
     ProcurementOrder order = orderOptional.get();
     assertEquals(ApprovalStatus.NO_SUBMIT, order.getApprovalStatus());
@@ -107,7 +92,7 @@ class ProcurementOrderServiceTest {
 
   @Test
   @Tag("异常")
-  @DisplayName("撤回审批请求资源未找到异常情况 ╯°□°）╯")
+  @DisplayName("撤回审批请求资源未找到异常 ╯°□°）╯")
   void withdrawApprovalTestResourceNotFoundException() {
     ResourceNotFoundException exception = assertThrows(
         ResourceNotFoundException.class, () -> procurementOrderService.withdrawApproval(1000L));
@@ -116,20 +101,18 @@ class ProcurementOrderServiceTest {
 
   @Test
   @Tag("异常")
-  @DisplayName("撤回审批请求资源错误异常情况 ╯°□°）╯")
+  @DisplayName("撤回审批请求资源错误异常 ╯°□°）╯")
   void withdrawApprovalTestResourceErrorException() {
-    ProcurementOrder order = procurementOrderRepository.findAll().get(1);
     ResourceErrorException exception = assertThrows(ResourceErrorException.class,
-        () -> procurementOrderService.withdrawApproval(order.getId()));
+        () -> procurementOrderService.withdrawApproval(2L));
     assertEquals("该采购订单状态发生改变，不可撤回，请刷新后再试！", exception.getMessage());
   }
 
   @Test
-  @Tag("正确")
+  @Tag("正常")
   @DisplayName("保存采购订单表")
   void saveProcurementOrderTest() {
-    PlanMaterial planMaterial = new PlanMaterial();
-    planMaterialRepository.save(planMaterial);
+    PlanMaterial planMaterial = planMaterialRepository.getOne(1L);
     ProcurementOrder order = new ProcurementOrder();
     ProcurementMaterial material1 = new ProcurementMaterial();
     material1.setPlanMaterialId(planMaterial.getId());
@@ -143,7 +126,7 @@ class ProcurementOrderServiceTest {
 
   @Test
   @Tag("异常")
-  @DisplayName("保存采购订单表资源未找到异常")
+  @DisplayName("保存采购订单表资源未找到异常 ╯°□°）╯")
   void saveProcurementOrderTestResourceErrorException() {
     ProcurementOrder order = new ProcurementOrder();
     ProcurementMaterial material = new ProcurementMaterial();
@@ -155,31 +138,41 @@ class ProcurementOrderServiceTest {
   }
 
   @Test
-  @Tag("正确")
+  @Tag("正常")
   @DisplayName("删除采购订单的明细信息（物料）")
   void deleteProcurementMaterialTest() {
-
+    procurementOrderService.deleteProcurementMaterial(6L);
   }
 
   @Test
   @Tag("异常")
-  @DisplayName("删除采购订单的明细信息（物料）资源错误异常")
+  @DisplayName("删除采购订单的明细信息（物料）资源未找到异常 ╯°□°）╯")
+  void deleteProcurementMaterialTestResourceNotFoundException() {
+    ResourceNotFoundException exception1 = assertThrows(ResourceNotFoundException.class,
+        () -> procurementOrderService.deleteProcurementMaterial(1000L));
+    assertEquals("找不到该待采购物料", exception1.getMessage());
+
+    ResourceNotFoundException exception2 = assertThrows(ResourceNotFoundException.class,
+        () -> procurementOrderService.deleteProcurementMaterial(1L));
+    assertEquals("查询采购订单失败", exception2.getMessage());
+
+    ResourceNotFoundException exception3 = assertThrows(ResourceNotFoundException.class,
+        () -> procurementOrderService.deleteProcurementMaterial(2L));
+    assertEquals("找不到关联的需求物料信息", exception3.getMessage());
+  }
+
+  @Test
+  @Tag("异常")
+  @DisplayName("删除采购订单的明细信息（物料）资源错误异常 ╯°□°）╯")
   void deleteProcurementMaterialTestResourceErrorException() {
-    ProcurementMaterial material = procurementMaterialRepository.findAll().get(0);
-    ProcurementOrder order = procurementOrderRepository.findAll().get(0);
-    order.setApprovalStatus(ApprovalStatus.APPROVAL_ING);
-    material.setOrderId(order.getId());
-    procurementMaterialRepository.save(material);
-    assertThrows(ResourceErrorException.class,
-        () -> procurementOrderService.deleteProcurementMaterial(material.getId()));
-    order.setApprovalStatus(ApprovalStatus.APPROVAL_OK);
-    procurementMaterialRepository.save(material);
-    assertThrows(ResourceErrorException.class,
-        () -> procurementOrderService.deleteProcurementMaterial(material.getId()));
-    order.setApprovalStatus(null);
-    order.setPlanStatus(ProcurementOrderPlanStatus.EFFECTIVE);
-    procurementMaterialRepository.save(material);
-    assertThrows(ResourceErrorException.class,
-        () -> procurementOrderService.deleteProcurementMaterial(material.getId()));
+    ResourceErrorException exception1 = assertThrows(ResourceErrorException.class,
+        () -> procurementOrderService.deleteProcurementMaterial(3L));
+    assertEquals("当前订单状态不对", exception1.getMessage());
+    ResourceErrorException exception2 = assertThrows(ResourceErrorException.class,
+        () -> procurementOrderService.deleteProcurementMaterial(4L));
+    assertEquals("当前订单状态不对", exception2.getMessage());
+    ResourceErrorException exception3 = assertThrows(ResourceErrorException.class,
+        () -> procurementOrderService.deleteProcurementMaterial(5L));
+    assertEquals("当前订单状态不对", exception3.getMessage());
   }
 }
