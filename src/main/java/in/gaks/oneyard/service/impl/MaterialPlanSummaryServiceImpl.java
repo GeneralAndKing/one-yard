@@ -3,12 +3,10 @@ package in.gaks.oneyard.service.impl;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.entity.MaterialDemandPlan;
 import in.gaks.oneyard.model.entity.MaterialPlanSummary;
-import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.MaterialPlanSummaryRepository;
 import in.gaks.oneyard.service.MaterialPlanSummaryService;
 import in.gaks.oneyard.service.PlanMaterialService;
-import java.util.List;
 import java.util.Objects;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +37,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
   public MaterialPlanSummary findByIdToMaterialSummary(Long id) {
     MaterialPlanSummary summary = materialPlanSummaryRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("需求汇总表查询失败"));
-    List<PlanMaterial> materials = planMaterialService.findAllByPlanId(id, false);
-    if (Objects.isNull(materials)) {
-      throw new ResourceNotFoundException("汇总表中的需求物料查询失败");
-    }
-    summary.setPlanMaterials(materials);
-    return summary;
+    return summary.setPlanMaterials(planMaterialService.findAllByPlanId(id, false));
   }
 
   /**

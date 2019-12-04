@@ -47,11 +47,15 @@ class SysUserServiceTest {
   }
 
   @Test
+  @Tag("正常")
+  @DisplayName("根据用户名获取信息")
   void findByUsername() {
     assertNotNull(sysUserService.findByUsername("admin"));
   }
 
   @Test
+  @Tag("正常")
+  @DisplayName("修改密码")
   void modifyPassword() {
     sysUserService.modifyPassword("admin", "123456789", "987654321");
     SysUser admin = sysUserRepository.findFirstByUsername("admin").orElse(null);
@@ -60,6 +64,8 @@ class SysUserServiceTest {
   }
 
   @Test
+  @Tag("异常")
+  @DisplayName("修改密码资源错误异常")
   void modifyPasswordResourceErrorException() {
     ResourceErrorException exception = assertThrows(ResourceErrorException.class,
         () -> sysUserService.modifyPassword("admin", "987654321", "987654321"));
@@ -67,6 +73,8 @@ class SysUserServiceTest {
   }
 
   @Test
+  @Tag("正常")
+  @DisplayName("保存")
   void save() {
     SysUser test = sysUserService.save(new SysUser().setUsername("test"));
     assertEquals("test", test.getUsername());
@@ -74,6 +82,8 @@ class SysUserServiceTest {
   }
 
   @Test
+  @Tag("正常")
+  @DisplayName("根据部门查询用户")
   void searchByDepartments() {
     // 这里使用 h2 数据库无法测试，因为关联表是由我们自己维护的，所以必然报错
     // 节约时间就不去处理了

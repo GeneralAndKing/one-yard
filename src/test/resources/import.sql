@@ -22,3 +22,9 @@ INSERT INTO `sys_user_role` (id, name, user_id, role_id, sort, create_time, crea
 
 -- SysUserServiceTest 测试数据
 INSERT INTO `sys_department` (id, name, description, code, sort, create_time, create_user, modify_time, modify_user, remark, is_enable) VALUES (1, '系统', null, '01', 1, '2019-11-02 17:11:40', null, '2019-11-02 17:11:40', null, null, 1);
+
+-- MaterialPlanSummaryServiceTest 测试数据
+INSERT INTO `material_plan_summary` (id, name, sort, create_time, create_user, modify_time, modify_user, remark, is_enable) VALUES (1, '2019年05月份计划汇总', 201905, '2019-11-18 17:07:23', 'fgr@qq.com', '2019-11-18 17:07:23', 'fgr@qq.com', null, 1);
+INSERT INTO `material_demand_plan` (id, name, plan_type, department_id, need_people, month, plan_status, approval_status, is_budget_plan, sort, create_time, create_user, modify_idea, modify_time, modify_user, remark, is_enable) VALUES (1, '20191119提报扳手等订单型需求计划', '紧急计划', 3, '刘传锦', '201905', 2, 2, 1, 1, '2019-11-18 16:58:17', 'japoul@163.com', null, '2019-11-18 18:28:18', 'fgr@qq.com', null, 1);
+INSERT INTO `material_demand_plan` (id, name, plan_type, department_id, need_people, month, plan_status, approval_status, is_budget_plan, sort, create_time, create_user, modify_idea, modify_time, modify_user, remark, is_enable) VALUES (2, '20191119提报扳手等订单型需求计划', '年度计划', 3, '刘传锦', '201905', 2, 2, 1, 1, '2019-11-18 16:58:17', 'japoul@163.com', null, '2019-11-18 18:28:18', 'fgr@qq.com', null, 1);
+INSERT INTO `material_demand_plan` (id, name, plan_type, department_id, need_people, month, plan_status, approval_status, is_budget_plan, sort, create_time, create_user, modify_idea, modify_time, modify_user, remark, is_enable) VALUES (3, '20191119提报扳手等订单型需求计划', '月度计划', 3, '刘传锦', '201905', 2, 2, 1, 1, '2019-11-18 16:58:17', 'japoul@163.com', null, '2019-11-18 18:28:18', 'fgr@qq.com', null, 1);
