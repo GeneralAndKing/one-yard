@@ -47,7 +47,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
-  private final NotifyUtil notifyUtil;
+  private final @NonNull NotifyUtil notifyUtil;
 
   /**
    * 根据id获取完整的需求计划表.
@@ -102,7 +102,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 采购主管/财务审批采购计划.
    *
    * @param procurementPlan 需求计划
-   * @param approval 审批信息
+   * @param approval        审批信息
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -115,7 +115,6 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     Notification notification = new Notification();
     //根据审批环节和审批意见发送不同的通知信息
     String res = approval.getResult();
-    ApprovalTypeStatus type = approval.getApprovalType();
     if ("采购主管审批通过".equals(res)) {
       notification.setName("采购计划主管审批通过通知");
       notification.setMessage("您于" + procurementPlan.getCreateTime()
@@ -146,20 +145,18 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 撤回审批.
    *
    * @param procurementPlan 采购计划
-   * @param role 角色类型
+   * @param role            角色类型
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void withdrawApproval(ProcurementPlan procurementPlan, String role) {
     if ("PLANER".equals(role) && procurementPlan.getPlanStatus().equals(PlanStatus.APPROVAL)
-        && procurementPlan.getApprovalStatus().equals(
-        ApprovalStatus.APPROVAL_ING)) {
+        && procurementPlan.getApprovalStatus().equals(ApprovalStatus.APPROVAL_ING)) {
       procurementPlan.setPlanStatus(PlanStatus.FREE).setApprovalStatus(ApprovalStatus.NO_SUBMIT);
       procurementPlanRepository.save(procurementPlan);
-    } else if ("SUPERVISOR".equals(role) && procurementPlan.getPlanStatus()
-        .equals(PlanStatus.PROCUREMENT_OK)
-        && procurementPlan.getApprovalStatus().equals(
-        ApprovalStatus.APPROVAL_ING)) {
+    } else if ("SUPERVISOR".equals(role)
+        && procurementPlan.getPlanStatus().equals(PlanStatus.PROCUREMENT_OK)
+        && procurementPlan.getApprovalStatus().equals(ApprovalStatus.APPROVAL_ING)) {
       procurementPlan.setPlanStatus(PlanStatus.APPROVAL);
       procurementPlanRepository.save(procurementPlan);
       Approval approval = new Approval();
@@ -177,7 +174,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 保存采购计划表.
    *
    * @param procurementPlan 物料需求计划基础信息
-   * @param materials 物资列表
+   * @param materials       物资列表
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -189,10 +186,6 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
       return;
     }
     procurementPlanRepository.save(procurementPlan);
-    //判断是否保存成功并返回了id
-    if (Objects.isNull(procurementPlan.getId())) {
-      throw new ResourceErrorException("采购计划保存失败");
-    }
     Long procurementPlanId = procurementPlan.getId();
     //循环保存
     materials.forEach(material -> {
@@ -223,7 +216,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 更新采购计划表.
    *
    * @param procurementPlan 物料需求计划基础信息
-   * @param materials 物资列表
+   * @param materials       物资列表
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
