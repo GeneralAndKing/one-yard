@@ -80,8 +80,7 @@ public class MaterialPlanSummaryServiceImpl extends BaseServiceImpl<MaterialPlan
       return summary.getId();
     }
     summary = new MaterialPlanSummary();
-    summary.setName(summaryName);
-    summary.setSort(sort);
+    summary.setName(summaryName).setSort(sort);
     materialPlanSummaryRepository.save(summary);
     return summary.getId();
   }

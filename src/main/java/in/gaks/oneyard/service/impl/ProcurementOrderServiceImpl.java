@@ -73,8 +73,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
         || !p.getPlanStatus().equals(ProcurementOrderPlanStatus.APPROVAL)) {
       throw new ResourceErrorException("该采购订单状态发生改变，不可撤回，请刷新后再试！");
     }
-    p.setApprovalStatus(ApprovalStatus.NO_SUBMIT);
-    p.setPlanStatus(ProcurementOrderPlanStatus.NO_SUBMIT);
+    p.setApprovalStatus(ApprovalStatus.NO_SUBMIT)
+        .setPlanStatus(ProcurementOrderPlanStatus.NO_SUBMIT);
     procurementOrderRepository.save(p);
   }
 
@@ -148,8 +148,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
       planMaterial.setIsUseOrder(false);
       planMaterialRepository.save(planMaterial);
     }
-    procurementMaterial.setOrderId(null);
-    procurementMaterial.setIsEnable(false);
+    procurementMaterial.setOrderId(null).setIsEnable(false);
     procurementMaterialRepository.save(procurementMaterial);
   }
 }
