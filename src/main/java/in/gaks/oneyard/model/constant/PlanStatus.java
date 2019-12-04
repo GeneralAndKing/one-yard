@@ -12,7 +12,7 @@ public enum PlanStatus {
    */
   FREE(0),
   /**
-   * 提交审批.
+   * 提交审批/待采购主管审批.
    */
   APPROVAL(1),
   /**
@@ -24,11 +24,11 @@ public enum PlanStatus {
    */
   DELETED(3),
   /**
-   *采购主管审批通过.
+   *待财务进行审批.
    */
   PROCUREMENT_OK(4),
   /**
-   * 已进入下一阶段.
+   * 进入采购订单阶段.
    */
   FINALLY(5);
 

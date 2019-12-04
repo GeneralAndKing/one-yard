@@ -104,13 +104,14 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
       planMaterials.forEach(planMaterial -> planMaterial
           .setSummaryId(materialPlanSummaryService.summaryMaterialPlan(materialDemandPlan)));
       planMaterialRepository.saveAll(planMaterials);
-      notification.setName("需求计划审批通过通知");
       notification.setMessage("您于" + materialDemandPlan.getCreateTime()
-          + "提报创建的 " + materialDemandPlan.getName() + " 由部门主管审批通过了！");
+          + "提报创建的 " + materialDemandPlan.getName() + " 由部门主管审批通过了！")
+          .setName("需求计划审批通过通知");
+      ;
     } else {
-      notification.setName("需求计划审批退回通知");
       notification.setMessage("您于" + materialDemandPlan.getCreateTime()
-          + "提报创建的需求计划 《" + materialDemandPlan.getName() + " 》因为某些原因被主管退回了。");
+          + "提报创建的需求计划 《" + materialDemandPlan.getName() + " 》因为某些原因被主管退回了。")
+          .setName("需求计划审批退回通知");
     }
     //保存需求计划表
     materialPlanRepository.save(materialDemandPlan);
@@ -136,8 +137,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
         .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败"));
     if (ApprovalStatus.APPROVAL_ING.equals(plan.getApprovalStatus())
         && PlanStatus.APPROVAL.equals(plan.getPlanStatus())) {
-      plan.setPlanStatus(PlanStatus.FREE);
-      plan.setApprovalStatus(ApprovalStatus.NO_SUBMIT);
+      plan.setPlanStatus(PlanStatus.FREE).setApprovalStatus(ApprovalStatus.NO_SUBMIT);
       materialPlanRepository.save(plan);
     } else {
       throw new ResourceErrorException("当前项目状态有误，刷新后再试！");

@@ -99,12 +99,11 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
       if (Objects.nonNull(planMaterial.getPlanId())) {
         planMaterial.setDepartmentName(getDepartmentNameByPlanId(planMaterial.getPlanId()));
       }
-      planMaterial.setOccupiedNum(occupiedNum);
-      planMaterial.setInTransitNum(inTransitNum);
-
-      //设置可用库存
-      planMaterial.setAvailableNum(
-          material.getNumber() - occupiedNum - material.getLowNumber() + inTransitNum);
+      // 设置已占库存、在途物资、可用库存
+      planMaterial.setOccupiedNum(occupiedNum)
+          .setInTransitNum(inTransitNum)
+          .setAvailableNum(
+              material.getNumber() - occupiedNum - material.getLowNumber() + inTransitNum);
     }).collect(Collectors.toList());
   }
 
@@ -153,10 +152,8 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
         .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败"));
     if (!flag) {
       //设置退回状态
-      planMaterial.setPlanId(null);
-      planMaterial.setStatus(MaterialStatus.BACK);
+      planMaterial.setPlanId(null).setStatus(MaterialStatus.BACK);
       planMaterialRepository.save(planMaterial);
-
       //获取对应的物料数据发送通知
       Material material = materialRepository.findById(planMaterial.getMaterialId()).orElseThrow(
           () -> new ResourceNotFoundException("物料主数据查询失败"));
@@ -168,39 +165,35 @@ public class PlanMaterialServiceImpl extends BaseServiceImpl<PlanMaterialReposit
       approve.setResult("采购部门退回一条物资需求");
 
       //设置通知参数
-      notification.setName("需求物资退回通知");
       notification.setMessage("您于《" + materialPlan.getName()
           + "》中提报的需求物资被采购部门退回了，请重新草拟计划提报。物资部分详细信息为："
           + "<br/>物资类别及编号：[" + materialType.getCode() + "]" + materialType.getName()
           + "<br/>物料名称及编号：["
           + material.getCode() + "]" + material.getName() + "<br/>需求数量：" + planMaterial.getNumber()
-      );
+      ).setName("需求物资退回通知");
     } else {
       //从汇总表中删除
       List<PlanMaterial> planMaterials = planMaterialRepository
           .findAllByPlanId(materialPlan.getId());
       planMaterials.forEach(planMaterial1 -> planMaterial1.setSummaryId(null));
       planMaterialRepository.saveAll(planMaterials);
-      materialPlan.setApprovalStatus(ApprovalStatus.APPROVAL_NO);
-      materialPlan.setPlanStatus(PlanStatus.FREE);
-
+      materialPlan.setApprovalStatus(ApprovalStatus.APPROVAL_NO).setPlanStatus(PlanStatus.FREE);
       approve.setResult("采购部门审批退回");
 
       //设置通知参数
-      notification.setName("需求物资退回通知");
       notification.setMessage("您于" + materialPlan.getCreateTime()
-          + "提报创建的需求计划 《" + materialPlan.getName() + "》 因为某些原因被采购部门退回了。");
+          + "提报创建的需求计划 《" + materialPlan.getName() + "》 因为某些原因被采购部门退回了。")
+          .setName("需求物资退回通知");
     }
     //保存退回信息至审批
-    approve.setPlanId(planMaterial0.getPlanId());
-    approve.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL);
+    approve.setPlanId(planMaterial0.getPlanId())
+        .setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL);
     approvalRepository.save(approve);
 
     // 获取通知接收方id
     SysUser user = sysUserRepository.findFirstByUsername(planMaterial.getCreateUser())
         .orElseThrow(() -> new ResourceNotFoundException("该计划的提报员查询失败"));
-    notification.setReceiverId(user.getId());
-    notification.setStatus(NotificationStatus.UNREAD);
+    notification.setReceiverId(user.getId()).setStatus(NotificationStatus.UNREAD);
     notificationRepository.save(notification);
     // 检测用户是否在线发送通知
     notifyUtil.sendMessage(user.getId().toString(), notification);

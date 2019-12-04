@@ -154,8 +154,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     if ("PLANER".equals(role) && procurementPlan.getPlanStatus().equals(PlanStatus.APPROVAL)
         && procurementPlan.getApprovalStatus().equals(
         ApprovalStatus.APPROVAL_ING)) {
-      procurementPlan.setPlanStatus(PlanStatus.FREE);
-      procurementPlan.setApprovalStatus(ApprovalStatus.NO_SUBMIT);
+      procurementPlan.setPlanStatus(PlanStatus.FREE).setApprovalStatus(ApprovalStatus.NO_SUBMIT);
       procurementPlanRepository.save(procurementPlan);
     } else if ("SUPERVISOR".equals(role) && procurementPlan.getPlanStatus()
         .equals(PlanStatus.PROCUREMENT_OK)
@@ -164,10 +163,10 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
       procurementPlan.setPlanStatus(PlanStatus.APPROVAL);
       procurementPlanRepository.save(procurementPlan);
       Approval approval = new Approval();
-      approval.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL);
-      approval.setDescription("撤回上次审批操作.");
-      approval.setPlanId(procurementPlan.getId());
-      approval.setResult("采购主管审批结果撤回");
+      approval.setApprovalType(ApprovalTypeStatus.PROCUREMENT_APPROVAL)
+          .setPlanId(procurementPlan.getId())
+          .setDescription("撤回上次审批操作.")
+          .setResult("采购主管审批结果撤回");
       approvalRepository.save(approval);
     } else {
       throw new ResourceErrorException("当前项目状态有误，刷新后再试！");
@@ -253,10 +252,10 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     }
     // 若不存在则创建后再返回采购计划id
     procurementPlan = new ProcurementPlan();
-    procurementPlan.setName("**紧急采购计划**");
-    procurementPlan.setPlanType("紧急采购计划");
-    procurementPlan.setApprovalStatus(ApprovalStatus.APPROVAL_OK);
-    procurementPlan.setPlanStatus(PlanStatus.PROCUREMENT_OK);
+    procurementPlan.setPlanType("紧急采购计划")
+        .setApprovalStatus(ApprovalStatus.APPROVAL_OK)
+        .setPlanStatus(PlanStatus.PROCUREMENT_OK)
+        .setName("**紧急采购计划**");
     procurementPlanRepository.save(procurementPlan);
     return procurementPlan.getId();
   }
