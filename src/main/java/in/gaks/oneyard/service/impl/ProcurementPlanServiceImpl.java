@@ -93,7 +93,6 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
       //设置可用库存
       plan.setAvailableNum(
           plan.getMaterialNumber() - occupiedNum + inTransitNum - plan.getMaterialLowNumber());
-
     });
     return plans;
   }

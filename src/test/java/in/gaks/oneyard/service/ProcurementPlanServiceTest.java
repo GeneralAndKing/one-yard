@@ -1,12 +1,14 @@
 package in.gaks.oneyard.service;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 import in.gaks.oneyard.model.constant.ApprovalStatus;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
+import in.gaks.oneyard.model.entity.dto.ProcurementPlanDto;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
@@ -17,13 +19,14 @@ import in.gaks.oneyard.repository.SysUserRepository;
 import in.gaks.oneyard.repository.dto.ProcurementPlanDtoRepository;
 import in.gaks.oneyard.service.impl.ProcurementPlanServiceImpl;
 import in.gaks.oneyard.util.NotifyUtil;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -41,7 +44,7 @@ class ProcurementPlanServiceTest {
 
   @Autowired
   private ProcurementPlanRepository procurementPlanRepository;
-  @MockBean
+  @Mock
   private ProcurementPlanDtoRepository procurementPlanDtoRepository;
   @Autowired
   private PlanMaterialRepository planMaterialRepository;
@@ -61,6 +64,14 @@ class ProcurementPlanServiceTest {
         procurementPlanRepository, procurementPlanDtoRepository, planMaterialRepository,
         approvalRepository, sysUserRepository, notificationRepository, notifyUtil
     );
+    ArrayList<ProcurementPlanDto> procurementPlanDtoList = new ArrayList<>();
+    ProcurementPlanDto dto1 = new ProcurementPlanDto();
+    dto1.setMaterialId(1L);
+    dto1.setMaterialNumber(1L);
+    dto1.setMaterialLowNumber(1L);
+    procurementPlanDtoList.add(dto1);
+    when(procurementPlanDtoRepository.searchInfoById(1L)).thenReturn(null);
+    when(procurementPlanDtoRepository.searchInfoById(2L)).thenReturn(procurementPlanDtoList);
   }
 
   @Test
@@ -71,12 +82,11 @@ class ProcurementPlanServiceTest {
   }
 
   @Test
-  @Disabled
   @Tag("异常")
   @DisplayName("根据id查询完整的采购计划表-资源未找到异常")
   void findByIdToMaterialsResourceNotFoundException() {
     assertThrows(ResourceNotFoundException.class,
-        () -> procurementPlanService.findByIdToMaterials(500L));
+        () -> procurementPlanService.findByIdToMaterials(1L));
   }
 
   @Test
