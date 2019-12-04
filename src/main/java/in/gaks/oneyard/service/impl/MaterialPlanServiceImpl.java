@@ -21,7 +21,6 @@ import in.gaks.oneyard.service.PlanMaterialService;
 import in.gaks.oneyard.service.ProcurementPlanService;
 import in.gaks.oneyard.util.NotifyUtil;
 import java.util.List;
-import java.util.Objects;
 import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -47,29 +46,23 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   private final @NonNull MaterialPlanSummaryService materialPlanSummaryService;
   private final @NonNull PlanMaterialService planMaterialService;
   private final @NonNull ProcurementPlanService procurementPlanService;
-  private final NotifyUtil notifyUtil;
+  private final @NonNull NotifyUtil notifyUtil;
 
   /**
    * 保存/修改物料需求计划表.
    *
    * @param materialPlan 物料需求计划基础信息
-   * @param materials 需求的物资列表n
+   * @param materials    需求的物资列表n
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void savePlanAndPlanMaterials(MaterialDemandPlan materialPlan,
       List<PlanMaterial> materials) {
     materialPlanRepository.save(materialPlan);
-    //判断是否保存成功并返回了id
-    if (Objects.isNull(materialPlan.getId())) {
-      throw new ResourceErrorException("需求计划保存失败");
-    }
     Long planId = materialPlan.getId();
     //循环保存
-    materials.forEach(material -> {
-      material.setPlanId(planId);
-      planMaterialRepository.save(material);
-    });
+    materials.forEach(material -> material.setPlanId(planId));
+    planMaterialRepository.saveAll(materials);
   }
 
   /**
@@ -90,7 +83,7 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
    * 主管审批需求物料计划.
    *
    * @param materialDemandPlan 需求计划
-   * @param approval 审批信息
+   * @param approval           审批信息
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -141,14 +134,13 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
   public void withdrawApproval(Long id) {
     MaterialDemandPlan plan = materialPlanRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("需求计划查询失败"));
-    if (plan.getPlanStatus().equals(PlanStatus.APPROVAL)
-        && plan.getApprovalStatus().equals(
-        ApprovalStatus.APPROVAL_ING)) {
+    if (ApprovalStatus.APPROVAL_ING.equals(plan.getApprovalStatus())
+        && PlanStatus.APPROVAL.equals(plan.getPlanStatus())) {
       plan.setPlanStatus(PlanStatus.FREE);
       plan.setApprovalStatus(ApprovalStatus.NO_SUBMIT);
       materialPlanRepository.save(plan);
     } else {
-      throw (new ResourceErrorException("当前项目状态有误，刷新后再试！"));
+      throw new ResourceErrorException("当前项目状态有误，刷新后再试！");
     }
   }
 }
