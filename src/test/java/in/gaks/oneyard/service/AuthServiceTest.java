@@ -81,11 +81,15 @@ class AuthServiceTest {
   }
 
   @Test
+  @Tag("正常")
+  @DisplayName("根据邮箱判断是否存在")
   void existByEmail() {
     assertTrue(authService.existByEmail("123456@163.com"));
   }
 
   @Test
+  @Tag("正常")
+  @DisplayName("修改密码")
   void modifyPassword() {
     authService.modifyPassword("123456@163.com", "987654321");
     SysUser one = sysUserRepository.getOne(1L);
