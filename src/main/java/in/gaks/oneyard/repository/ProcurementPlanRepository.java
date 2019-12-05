@@ -56,5 +56,5 @@ public interface ProcurementPlanRepository extends BaseRepository<ProcurementPla
    * @return .
    */
   @RestResource(path = "byPlanType")
-  ProcurementPlan findByPlanType(@Param("planType") String planType);
+  List<ProcurementPlan> findAllByPlanType(@Param("planType") String planType);
 }

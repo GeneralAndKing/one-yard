@@ -59,8 +59,8 @@ public interface ProcurementPlanService extends BaseService<ProcurementPlan, Lon
 
   /**
    * 获取紧急采购计划id.
-   *
+   * @param planName 计划名
    * @return .
    */
-  Long getUrgentProcurementId();
+  Long getUrgentProcurementId(String planName);
 }

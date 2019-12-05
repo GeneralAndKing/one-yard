@@ -99,7 +99,8 @@ public class MaterialPlanServiceImpl extends BaseServiceImpl<MaterialDemandPlanR
       // 紧急计划自动进入紧急采购计划
       if ("紧急计划".equals(materialDemandPlan.getPlanType())) {
         planMaterials.forEach(planMaterial -> planMaterial
-            .setProcurementPlanId(procurementPlanService.getUrgentProcurementId()));
+            .setProcurementPlanId(
+                procurementPlanService.getUrgentProcurementId(materialDemandPlan.getName())));
       }
       planMaterials.forEach(planMaterial -> planMaterial
           .setSummaryId(materialPlanSummaryService.summaryMaterialPlan(materialDemandPlan)));
