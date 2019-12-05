@@ -158,7 +158,6 @@ class ProcurementPlanServiceTest {
   @Tag("正确")
   @DisplayName("获取紧急采购计划id")
   void getUrgentProcurementId() {
-    procurementPlanService.getUrgentProcurementId();
-    procurementPlanService.getUrgentProcurementId();
+    procurementPlanService.getUrgentProcurementId("紧急类型需求计划");
   }
 }

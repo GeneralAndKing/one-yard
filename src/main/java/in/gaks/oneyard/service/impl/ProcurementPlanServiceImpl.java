@@ -144,7 +144,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 撤回审批.
    *
    * @param procurementPlan 采购计划
-   * @param role            角色类型
+   * @param role 角色类型
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -173,7 +173,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 保存采购计划表.
    *
    * @param procurementPlan 物料需求计划基础信息
-   * @param materials       物资列表
+   * @param materials 物资列表
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -215,7 +215,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 更新采购计划表.
    *
    * @param procurementPlan 物料需求计划基础信息
-   * @param materials       物资列表
+   * @param materials 物资列表
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -234,20 +234,16 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
 
   /**
    * 获取紧急采购计划id.
+   *
+   * @param planName 计划名
    */
   @Override
-  public Long getUrgentProcurementId() {
-    ProcurementPlan procurementPlan = procurementPlanRepository.findByPlanType("紧急采购计划");
-    // 紧急采购计划若存在则返回采购计划id
-    if (Objects.nonNull(procurementPlan)) {
-      return procurementPlan.getId();
-    }
-    // 若不存在则创建后再返回采购计划id
-    procurementPlan = new ProcurementPlan();
+  public Long getUrgentProcurementId(String planName) {
+    ProcurementPlan procurementPlan = new ProcurementPlan();
     procurementPlan.setPlanType("紧急采购计划")
         .setApprovalStatus(ApprovalStatus.APPROVAL_OK)
         .setPlanStatus(PlanStatus.PROCUREMENT_OK)
-        .setName("**紧急采购计划**");
+        .setName(planName.concat("(紧急)"));
     procurementPlanRepository.save(procurementPlan);
     return procurementPlan.getId();
   }
