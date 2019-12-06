@@ -56,7 +56,12 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void approvalProcurementOrder(ProcurementOrder procurementOrder, Approval approval) {
+    ProcurementOrderPlanStatus status = procurementOrder.getPlanStatus();
+    if (ProcurementOrderPlanStatus.CHANGED.equals(status)) {
 
+    } else if (ProcurementOrderPlanStatus.CANCEL.equals(status)) {
+
+    }
   }
 
   /**
@@ -69,8 +74,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   public void withdrawApproval(Long procurementOrderId) {
     ProcurementOrder p = procurementOrderRepository.findById(procurementOrderId)
         .orElseThrow(() -> new ResourceNotFoundException("找不到对应的采购订单"));
-    if (!p.getApprovalStatus().equals(ApprovalStatus.APPROVAL_ING)
-        || !p.getPlanStatus().equals(ProcurementOrderPlanStatus.APPROVAL)) {
+    if (!ApprovalStatus.APPROVAL_ING.equals(p.getApprovalStatus())
+        || !ProcurementOrderPlanStatus.APPROVAL.equals(p.getPlanStatus())) {
       throw new ResourceErrorException("该采购订单状态发生改变，不可撤回，请刷新后再试！");
     }
     p.setApprovalStatus(ApprovalStatus.NO_SUBMIT)
@@ -104,7 +109,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
             .orElseThrow(() ->
                 new ResourceNotFoundException("找不到绑定的需求物料"));
         // 判断如果该物料已经被占用了则不保存该物料
-        if (planMaterial.getIsUseOrder()) {
+        if (planMaterial.getIsUseOrder() && !material.getOrderId()
+            .equals(procurementOrder.getId())) {
           msg = "部分数据已经被其他采购订单占用，生成的订单数据可能不完整！";
           continue;
         }
