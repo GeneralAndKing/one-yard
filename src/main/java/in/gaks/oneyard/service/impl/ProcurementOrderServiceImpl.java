@@ -125,6 +125,22 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     return msg;
   }
 
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public String updateProcurementOrder(ProcurementOrder procurementOrder, List<ProcurementMaterial> materials, List<OrderTerms> orderTerms) {
+    // 创建返回信息
+    String msg = "保存采购订单成功！";
+    Long procurementOrderId = procurementOrder.getId();
+    List<ProcurementMaterial> procurementMaterials = procurementMaterialRepository.findAllByOrderId(procurementOrderId);
+    //算出procurementMaterials中不包含materials的元素 删除 包含的更新
+//    procurementMaterials.stream().filter(procurementMaterial -> {
+//      materials.stream()
+//    })
+    //订单条款一样
+    return null;
+  }
+
   /**
    * 删除采购订单的明细信息（物料）.
    *
