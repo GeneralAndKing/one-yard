@@ -12,6 +12,7 @@ import in.gaks.oneyard.model.entity.dto.ProcurementPlanDto;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
+import in.gaks.oneyard.repository.MaterialRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.ProcurementPlanRepository;
@@ -53,6 +54,8 @@ class ProcurementPlanServiceTest {
   @Autowired
   private SysUserRepository sysUserRepository;
   @Autowired
+  private MaterialRepository materialRepository;
+  @Autowired
   private NotificationRepository notificationRepository;
   @MockBean
   private NotifyUtil notifyUtil;
@@ -62,7 +65,8 @@ class ProcurementPlanServiceTest {
   void setUp() {
     procurementPlanService = new ProcurementPlanServiceImpl(
         procurementPlanRepository, procurementPlanDtoRepository, planMaterialRepository,
-        approvalRepository, sysUserRepository, notificationRepository, notifyUtil
+        materialRepository, approvalRepository, sysUserRepository, notificationRepository,
+        notifyUtil
     );
     ArrayList<ProcurementPlanDto> procurementPlanDtoList = new ArrayList<>();
     ProcurementPlanDto dto1 = new ProcurementPlanDto();

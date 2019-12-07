@@ -1,7 +1,10 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import in.gaks.oneyard.model.constant.ProcurementMaterialStatus;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -120,6 +123,7 @@ public class ProcurementMaterial extends BaseEntity {
   /**
    * 订单物料状态.
    */
-  private java.lang.String status;
+  @Enumerated(EnumType.STRING)
+  private ProcurementMaterialStatus status = ProcurementMaterialStatus.NORMAL;
 
 }
