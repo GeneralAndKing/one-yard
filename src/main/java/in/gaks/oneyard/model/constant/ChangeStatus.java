@@ -14,7 +14,11 @@ public enum ChangeStatus {
   /**
    * 审核通过.
    */
-  APPROVAL_OK("审核通过");
+  APPROVAL_OK("审核通过"),
+  /**
+   * 审核不通过.
+   */
+  APPROVAL_PASS("审核不通过");
 
   private String value;
 

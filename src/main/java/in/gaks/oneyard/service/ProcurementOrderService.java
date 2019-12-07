@@ -41,20 +41,4 @@ public interface ProcurementOrderService extends BaseService<ProcurementOrder, L
   String saveProcurementOrder(ProcurementOrder procurementOrder,
       List<ProcurementMaterial> materials, List<OrderTerms> orderTerms);
 
-  /**
-   * 更新采购订单
-   * @param procurementOrder 采购订单
-   * @param materials 采购物料
-   * @param orderTerms 订单条款
-   * @return .
-   */
-  String updateProcurementOrder(ProcurementOrder procurementOrder,
-                                List<ProcurementMaterial> materials, List<OrderTerms> orderTerms);
-
-  /**
-   * 删除采购订单的明细信息（物料）.
-   *
-   * @param procurementMaterialId 待采购物料id
-   */
-  void deleteProcurementMaterial(Long procurementMaterialId);
 }

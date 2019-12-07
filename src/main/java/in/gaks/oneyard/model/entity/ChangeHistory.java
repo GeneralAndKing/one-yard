@@ -1,7 +1,10 @@
 package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
+import in.gaks.oneyard.model.constant.ChangeStatus;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -75,6 +78,7 @@ public class ChangeHistory extends BaseEntity {
   /**
    * 变更状态 待审批 审批通过.
    */
-  private java.lang.String status;
+  @Enumerated(EnumType.ORDINAL)
+  private ChangeStatus status;
 
 }

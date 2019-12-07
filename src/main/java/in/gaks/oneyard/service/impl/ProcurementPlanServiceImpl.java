@@ -6,6 +6,7 @@ import in.gaks.oneyard.model.constant.ApprovalTypeStatus;
 import in.gaks.oneyard.model.constant.MaterialStatus;
 import in.gaks.oneyard.model.constant.PlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
+import in.gaks.oneyard.model.entity.Material;
 import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.entity.ProcurementPlan;
@@ -14,6 +15,7 @@ import in.gaks.oneyard.model.entity.dto.ProcurementPlanDto;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
+import in.gaks.oneyard.repository.MaterialRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
 import in.gaks.oneyard.repository.ProcurementPlanRepository;
@@ -44,6 +46,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
   private final @NonNull ProcurementPlanRepository procurementPlanRepository;
   private final @NonNull ProcurementPlanDtoRepository procurementPlanDtoRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
+  private final @NonNull MaterialRepository materialRepository;
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
@@ -101,7 +104,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
    * 采购主管/财务审批采购计划.
    *
    * @param procurementPlan 需求计划
-   * @param approval        审批信息
+   * @param approval 审批信息
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -205,6 +208,18 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
         material.setProcurementPlanId(procurementPlanId);
       }
       if ("库存供应".equals(material.getSupplyMode())) {
+        Material m = materialRepository.findById(material.getMaterialId())
+            .orElseThrow(() -> new ResourceNotFoundException("库存供应的物料查询失败！"));
+        Long number = m.getNumber() - m.getLowNumber() - material.getNumber();
+        if (number < 0) {
+          String errorMsg = "%s 库存不足，当前库存数量为：%s ,最低库存为：%s， 最大可用库存为：%s";
+          throw new ResourceErrorException(
+              String.format(errorMsg, material.getMaterial().getName(), m.getNumber(),
+                  m.getLowNumber(), (m.getNumber() - m.getLowNumber()))
+          );
+        }
+        m.setNumber(number);
+        materialRepository.save(m);
         material.setStatus(MaterialStatus.INVENTORY);
       }
       planMaterialRepository.save(material);
