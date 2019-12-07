@@ -31,7 +31,7 @@ public enum ProcurementOrderPlanStatus {
   /**
    * 已变更.
    */
-  CHANGED("已变更"),
+  CHANGED("变更审批中"),
   /**
    * 已生效.
    */

@@ -1,10 +1,11 @@
 package in.gaks.oneyard.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
-import in.gaks.oneyard.model.constant.ApprovalStatus;
 import in.gaks.oneyard.model.constant.NotificationStatus;
+import in.gaks.oneyard.model.constant.ProcurementApprovalStatus;
 import in.gaks.oneyard.model.constant.ProcurementOrderPlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.Notification;
@@ -71,24 +72,80 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void approvalProcurementOrder(ProcurementOrder procurementOrder, Approval approval) {
-    // 更新订单审核状态
-    procurementOrderRepository.save(procurementOrder);
-    // 保存审批信息，回溯流程
-    approvalRepository.save(approval);
     // 根据审批环节和审批意见发送不同的通知信息
-    String res = approval.getResult();
+    String res;
+    res = approval.getResult();
     // 根据状态判断审批类型
     ProcurementOrderPlanStatus status = procurementOrder.getPlanStatus();
+    JSONObject result = new JSONObject();
     // 如果是更改订单审批，审批通过时需要将变更信息
+    if (ProcurementOrderPlanStatus.CHANGED.equals(status)) {
+      result = approvalChangeProcurementOrder(procurementOrder, approval);
+    } else if (ProcurementOrderPlanStatus.CANCEL.equals(status)) {
+      result = approvalCancleProcurementOrder(procurementOrder, approval);
+    } else {
+      result.put("procurementOrder", procurementOrder);
+      result.put("approval", approval);
+    }
+    procurementOrder = result.getObject("procurementOrder", ProcurementOrder.class);
+    approval = result.getObject("approval", Approval.class);
     // 获取通知接收方id
     SysUser user = sysUserRepository.findFirstByUsername(procurementOrder.getCreateUser())
         .orElseThrow(() -> new ResourceNotFoundException("采购计划员查询失败"));
     // 发送通知并存入数据库
     Notification notification = constructNotification(status, res, procurementOrder.getName(),
         user.getId());
-    notificationRepository.save(notification);
     // 检测用户是否在线发送通知
     notifyUtil.sendMessage(user.getId().toString(), notification);
+    notificationRepository.save(notification);
+    // 更新订单审核状态
+    procurementOrderRepository.save(procurementOrder);
+    // 保存审批信息，回溯流程
+    approvalRepository.save(approval);
+  }
+
+  /**
+   * 变更订单审批.
+   *
+   * @param procurementOrder 采购订单
+   * @param approval 审批信息
+   */
+  private JSONObject approvalChangeProcurementOrder(ProcurementOrder procurementOrder,
+      Approval approval) {
+    if (APPROVAL_OK.equals(approval.getResult())) {
+      // 通过则修改变更历史状态
+      approval.setResult("变更请求审批通过");
+    } else if (APPROVAL_PASS.equals(approval.getResult())) {
+      // 不通过则恢复数据并修改变更历史状态
+      approval.setResult("变更请求审批未通过");
+    }
+    procurementOrder.setApprovalStatus(ProcurementApprovalStatus.APPROVAL_OK)
+        .setPlanStatus(ProcurementOrderPlanStatus.EFFECTIVE);
+    JSONObject result = new JSONObject();
+    result.put("procurementOrder", procurementOrder);
+    result.put("approval", approval);
+    return result;
+  }
+
+  /**
+   * 取消订单审批.
+   *
+   * @param procurementOrder 采购订单
+   * @param approval 审批信息
+   */
+  private JSONObject approvalCancleProcurementOrder(ProcurementOrder procurementOrder,
+      Approval approval) {
+    if (APPROVAL_OK.equals(approval.getResult())) {
+      approval.setResult("取消订单请求审批通过");
+    } else if (APPROVAL_PASS.equals(approval.getResult())) {
+      approval.setResult("取消订单请求审批未通过");
+    }
+    procurementOrder.setApprovalStatus(ProcurementApprovalStatus.APPROVAL_OK)
+        .setPlanStatus(ProcurementOrderPlanStatus.EFFECTIVE);
+    JSONObject result = new JSONObject();
+    result.put("procurementOrder", procurementOrder);
+    result.put("approval", approval);
+    return result;
   }
 
   /**
@@ -101,11 +158,11 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   public void withdrawApproval(Long procurementOrderId) {
     ProcurementOrder p = procurementOrderRepository.findById(procurementOrderId)
         .orElseThrow(() -> new ResourceNotFoundException("找不到对应的采购订单"));
-    if (!ApprovalStatus.APPROVAL_ING.equals(p.getApprovalStatus())
+    if (!ProcurementApprovalStatus.APPROVAL_ING.equals(p.getApprovalStatus())
         || !ProcurementOrderPlanStatus.APPROVAL.equals(p.getPlanStatus())) {
       throw new ResourceErrorException("该采购订单状态发生改变，不可撤回，请刷新后再试！");
     }
-    p.setApprovalStatus(ApprovalStatus.NO_SUBMIT)
+    p.setApprovalStatus(ProcurementApprovalStatus.NO_SUBMIT)
         .setPlanStatus(ProcurementOrderPlanStatus.NO_SUBMIT);
     procurementOrderRepository.save(p);
   }
@@ -127,6 +184,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     procurementOrderRepository.save(procurementOrder);
     // 获取订单id并检测
     Long procurementOrderId = procurementOrder.getId();
+    // 逻辑删除失效数据
+    checkProcurementOrder(procurementOrderId, materials, orderTerms);
     // 给待采购物资赋值订单id 并让其绑定的物料变为已占用
     for (ProcurementMaterial material : materials) {
       material.setOrderId(procurementOrderId);
@@ -168,14 +227,13 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     ProcurementOrder procurementOrder = procurementOrderRepository
         .findById(procurementOrderId)
         .orElseThrow(() -> new ResourceNotFoundException("查询采购订单失败"));
-    if (!ApprovalStatus.NO_SUBMIT.equals(procurementOrder.getApprovalStatus())
+    if (!ProcurementApprovalStatus.NO_SUBMIT.equals(procurementOrder.getApprovalStatus())
         || !ProcurementOrderPlanStatus.NO_SUBMIT.equals(procurementOrder.getPlanStatus())) {
       throw new ResourceErrorException("当前采购订单状态不对");
     }
-    // 获取数据库数据进行对比
+    // 获取数据库待采购物料数据进行对比
     List<ProcurementMaterial> procurementMaterialDB = procurementMaterialRepository
         .findAllByOrderId(procurementOrderId);
-    List<OrderTerms> orderTermsDB = orderTermsRepository.findAllByOrderId(procurementOrderId);
     // set1 存放为数据库数据，
     HashSet<Long> set1 = new HashSet<>();
     HashSet<Long> set2 = new HashSet<>();
@@ -189,6 +247,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     // 清除 Set
     set1.clear();
     set2.clear();
+    // 获取数据库订单条款数据进行对比
+    List<OrderTerms> orderTermsDB = orderTermsRepository.findAllByOrderId(procurementOrderId);
     // 遍历条款 ID 存入 Set
     orderTermsDB.forEach(orderTerm -> set1.add(orderTerm.getId()));
     orderTerms.forEach(orderTerm -> set2.add(orderTerm.getId()));
@@ -244,7 +304,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * @param recId 接受者id
    * @return 通知对象
    */
-  Notification constructNotification(ProcurementOrderPlanStatus status,
+  private Notification constructNotification(ProcurementOrderPlanStatus status,
       String res, String orderName, Long recId) {
     Notification notification = new Notification();
     String name = "";
@@ -252,7 +312,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     if (ProcurementOrderPlanStatus.CHANGED.equals(status)) {
       if (APPROVAL_OK.equals(res)) {
         name = NOTIFICATION_NAME_CHANGED_OK;
-        msg = "提交的更改订单的请求审批通过了！";
+        msg = "提交的更改订单的请求审批通过了！订单已生效！";
       } else if (APPROVAL_PASS.equals(res)) {
         name = NOTIFICATION_NAME_CHANGED_PASS;
         msg = "提交的更改订单的请求因为某些原因审批未通过！（具体请查看订单详情页->审批流程）";
@@ -260,7 +320,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     } else if (ProcurementOrderPlanStatus.CANCEL.equals(status)) {
       if (APPROVAL_OK.equals(res)) {
         name = NOTIFICATION_NAME_CANCEL_OK;
-        msg = "提交的取消订单的请求审批通过了！";
+        msg = "提交的取消订单的请求审批通过了！订单已失效！";
       } else if (APPROVAL_PASS.equals(res)) {
         name = NOTIFICATION_NAME_CANCEL_PASS;
         msg = "提交的取消订单的请求因为某些原因审批未通过！（具体请查看订单详情页->审批流程）";
@@ -277,7 +337,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
       throw new ResourceErrorException("订单审批状态错误！");
     }
     notification.setStatus(NotificationStatus.UNREAD).setReceiverId(recId)
-        .setMessage(String.format(MSG, name, msg)).setName(name);
+        .setMessage(String.format(MSG, orderName, msg)).setName(name);
     return notification;
   }
+
 }
