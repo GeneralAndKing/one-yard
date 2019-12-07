@@ -6,8 +6,10 @@ import com.google.common.collect.Sets.SetView;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
 import in.gaks.oneyard.model.constant.NotificationStatus;
 import in.gaks.oneyard.model.constant.ProcurementApprovalStatus;
+import in.gaks.oneyard.model.constant.ProcurementMaterialStatus;
 import in.gaks.oneyard.model.constant.ProcurementOrderPlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
+import in.gaks.oneyard.model.entity.ChangeHistory;
 import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.OrderTerms;
 import in.gaks.oneyard.model.entity.PlanMaterial;
@@ -17,6 +19,7 @@ import in.gaks.oneyard.model.entity.SysUser;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
+import in.gaks.oneyard.repository.ChangeHistoryRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.OrderTermsRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
@@ -27,7 +30,9 @@ import in.gaks.oneyard.service.ProcurementOrderService;
 import in.gaks.oneyard.util.NotifyUtil;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -61,13 +66,14 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
+  private final @NonNull ChangeHistoryRepository changeHistoryRepository;
   private final @NonNull NotifyUtil notifyUtil;
 
   /**
    * 采购部门主管审批采购订单.
    *
    * @param procurementOrder 采购订单
-   * @param approval 审批信息
+   * @param approval         审批信息
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -108,7 +114,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * 变更订单审批.
    *
    * @param procurementOrder 采购订单
-   * @param approval 审批信息
+   * @param approval         审批信息
    */
   private JSONObject approvalChangeProcurementOrder(ProcurementOrder procurementOrder,
       Approval approval) {
@@ -131,7 +137,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * 取消订单审批.
    *
    * @param procurementOrder 采购订单
-   * @param approval 审批信息
+   * @param approval         审批信息
    */
   private JSONObject approvalCancleProcurementOrder(ProcurementOrder procurementOrder,
       Approval approval) {
@@ -171,8 +177,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * 保存采购订单表.
    *
    * @param procurementOrder 采购订单
-   * @param materials 采购物料
-   * @param orderTerms 订单条款
+   * @param materials        采购物料
+   * @param orderTerms       订单条款
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -215,11 +221,61 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   }
 
   /**
+   * 变更采购订单.
+   *
+   * @param id        采购订单 id
+   * @param materials 明细信息
+   */
+  @Override
+  public void changeProcurementOrder(Long id, List<ProcurementMaterial> materials) {
+    ProcurementOrder order = procurementOrderRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("采购订单 %s 未找到", id));
+    List<ProcurementMaterial> exist = procurementMaterialRepository.findAllByOrderId(id);
+    order.setPlanStatus(ProcurementOrderPlanStatus.CHANGED)
+        .setApprovalStatus(ProcurementApprovalStatus.APPROVAL_ING);
+    // 获取数据库中数据的 id
+    List<Long> existIds = exist.stream()
+        .map(ProcurementMaterial::getId)
+        .collect(Collectors.toList());
+    // 过滤出数据库中有的数据，并设置相应状态
+    List<ProcurementMaterial> materialList = materials.stream()
+        .filter(material -> existIds.contains(material.getId()))
+        .map(material -> material.setStatus(ProcurementMaterialStatus.CHANGED))
+        .collect(Collectors.toList());
+    // 最终要处理的数据的id
+    List<Long> ids = materialList.stream()
+        .map(ProcurementMaterial::getId)
+        .collect(Collectors.toList());
+    // 原来的数据
+    Map<Long, ProcurementMaterial> last = exist.stream()
+        .filter(material -> ids.contains(material.getId()))
+        .collect(Collectors.toMap(ProcurementMaterial::getId, material -> material));
+    List<ChangeHistory> histories = materialList.stream()
+        .map(material -> {
+          ChangeHistory changeHistory = new ChangeHistory();
+          ProcurementMaterial old = last.get(material.getId());
+          changeHistory.setName(order.getName());
+          return changeHistory
+              .setOldNumber(old.getProcurementNumber())
+              .setNewNumber(material.getProcurementNumber())
+              .setOldPrice(old.getUnitPrice()).setNewPrice(material.getUnitPrice())
+              .setOldChargeUnit(old.getChargeUnit()).setNewChargeUnit(material.getChargeUnit())
+              .setOldChargeNumber(old.getChargeNumber())
+              .setNewChargeNumber(material.getChargeNumber())
+              .setProcurementMaterialId(material.getId())
+              .setOrderId(order.getId());
+        }).collect(Collectors.toList());
+    procurementOrderRepository.save(order);
+    changeHistoryRepository.saveAll(histories);
+    procurementMaterialRepository.saveAll(materialList);
+  }
+
+  /**
    * 检查无效的物料和条款数据从数据库中逻辑删除.
    *
    * @param procurementOrderId 订单id
-   * @param materials 采购订单物料
-   * @param orderTerms 订单条款
+   * @param materials          采购订单物料
+   * @param orderTerms         订单条款
    */
   private void checkProcurementOrder(Long procurementOrderId, List<ProcurementMaterial> materials,
       List<OrderTerms> orderTerms) {
@@ -298,10 +354,10 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   /**
    * 构造通知.
    *
-   * @param status 审批状态/类型
-   * @param res 审批意见
+   * @param status    审批状态/类型
+   * @param res       审批意见
    * @param orderName 订单名称
-   * @param recId 接受者id
+   * @param recId     接受者id
    * @return 通知对象
    */
   private Notification constructNotification(ProcurementOrderPlanStatus status,

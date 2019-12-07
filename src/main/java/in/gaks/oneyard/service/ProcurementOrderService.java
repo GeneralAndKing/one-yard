@@ -19,7 +19,7 @@ public interface ProcurementOrderService extends BaseService<ProcurementOrder, L
    * 采购主管/财务审批采购订单.
    *
    * @param procurementOrder 采购订单
-   * @param approval 审批信息
+   * @param approval         审批信息
    */
   void approvalProcurementOrder(ProcurementOrder procurementOrder, Approval approval);
 
@@ -34,11 +34,18 @@ public interface ProcurementOrderService extends BaseService<ProcurementOrder, L
    * 保存采购订单表.
    *
    * @param procurementOrder 采购订单
-   * @param materials 采购物料
-   * @param orderTerms 订单条款
+   * @param materials        采购物料
+   * @param orderTerms       订单条款
    * @return .
    */
   String saveProcurementOrder(ProcurementOrder procurementOrder,
       List<ProcurementMaterial> materials, List<OrderTerms> orderTerms);
 
+  /**
+   * 变更采购订单.
+   *
+   * @param id        采购订单 id
+   * @param materials 明细信息
+   */
+  void changeProcurementOrder(Long id, List<ProcurementMaterial> materials);
 }

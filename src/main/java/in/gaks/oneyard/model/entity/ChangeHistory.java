@@ -63,7 +63,12 @@ public class ChangeHistory extends BaseEntity {
   /**
    * 计价单位.
    */
-  private java.lang.String chargeUnit;
+  private java.lang.String oldChargeUnit;
+
+  /**
+   * 计价单位.
+   */
+  private java.lang.String newChargeUnit;
 
   /**
    * 原计价数量.
@@ -79,6 +84,6 @@ public class ChangeHistory extends BaseEntity {
    * 变更状态 待审批 审批通过.
    */
   @Enumerated(EnumType.ORDINAL)
-  private ChangeStatus status;
+  private ChangeStatus status = ChangeStatus.APPROVAL_ING;
 
 }
