@@ -1,6 +1,7 @@
 package in.gaks.oneyard.repository;
 
 import in.gaks.oneyard.base.BaseRepository;
+import in.gaks.oneyard.model.constant.ChangeStatus;
 import in.gaks.oneyard.model.entity.ChangeHistory;
 import in.gaks.oneyard.model.constant.OneYard;
 import java.util.List;
@@ -25,5 +26,16 @@ public interface ChangeHistoryRepository extends BaseRepository<ChangeHistory, L
    */
   @RestResource(path = "byOrderId")
   List<ChangeHistory> findAllByOrderId(@Param("orderId") Long orderId);
+
+  /**
+   * 根据订单 id 和 status 查询.
+   *
+   * @param orderId 订单 id
+   * @param status 变更状态
+   * @return 结果
+   */
+  @RestResource(path = "byOrderIdAndStatus")
+  List<ChangeHistory> findAllByOrderIdAndStatus(@Param("orderId") Long orderId, @Param("status")
+      ChangeStatus status);
 
 }

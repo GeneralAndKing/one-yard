@@ -25,4 +25,14 @@ public interface ProcurementMaterialRepository extends BaseRepository<Procuremen
    */
   @RestResource(path = "byOrderId")
   List<ProcurementMaterial> findAllByOrderId(@Param("orderId") Long orderId);
+
+  /**
+   * 根据订单id查询与需求物料关联的待采购物料.
+   *
+   * @param orderId 订单id
+   * @return .
+   */
+  @RestResource(path = "byOrderIdAndPlanMaterialIdIsNotNull")
+  List<ProcurementMaterial> findAllByOrderIdAndPlanMaterialIdIsNotNull(
+      @Param("orderId") Long orderId);
 }

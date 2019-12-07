@@ -4,10 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
 import in.gaks.oneyard.base.impl.BaseServiceImpl;
+import in.gaks.oneyard.model.constant.ChangeStatus;
 import in.gaks.oneyard.model.constant.NotificationStatus;
 import in.gaks.oneyard.model.constant.ProcurementApprovalStatus;
 import in.gaks.oneyard.model.constant.ProcurementOrderPlanStatus;
 import in.gaks.oneyard.model.entity.Approval;
+import in.gaks.oneyard.model.entity.ChangeHistory;
 import in.gaks.oneyard.model.entity.Notification;
 import in.gaks.oneyard.model.entity.OrderTerms;
 import in.gaks.oneyard.model.entity.PlanMaterial;
@@ -17,6 +19,7 @@ import in.gaks.oneyard.model.entity.SysUser;
 import in.gaks.oneyard.model.exception.ResourceErrorException;
 import in.gaks.oneyard.model.exception.ResourceNotFoundException;
 import in.gaks.oneyard.repository.ApprovalRepository;
+import in.gaks.oneyard.repository.ChangeHistoryRepository;
 import in.gaks.oneyard.repository.NotificationRepository;
 import in.gaks.oneyard.repository.OrderTermsRepository;
 import in.gaks.oneyard.repository.PlanMaterialRepository;
@@ -54,10 +57,12 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   private static final String NOTIFICATION_NAME_CANCEL_OK = "取消采购订单审批通过通知";
   private static final String NOTIFICATION_NAME_CANCEL_PASS = "取消采购订单审批未通过通知";
   private static final String MSG = "您创建的采购订单 《%s》 %s";
+
   private final @NonNull ProcurementOrderRepository procurementOrderRepository;
   private final @NonNull ProcurementMaterialRepository procurementMaterialRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
   private final @NonNull OrderTermsRepository orderTermsRepository;
+  private final @NonNull ChangeHistoryRepository changeHistoryRepository;
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
@@ -82,7 +87,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     if (ProcurementOrderPlanStatus.CHANGED.equals(status)) {
       result = approvalChangeProcurementOrder(procurementOrder, approval);
     } else if (ProcurementOrderPlanStatus.CANCEL.equals(status)) {
-      result = approvalCancleProcurementOrder(procurementOrder, approval);
+      result = approvalCancelProcurementOrder(procurementOrder, approval);
     } else {
       result.put("procurementOrder", procurementOrder);
       result.put("approval", approval);
@@ -112,15 +117,32 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    */
   private JSONObject approvalChangeProcurementOrder(ProcurementOrder procurementOrder,
       Approval approval) {
+    List<ChangeHistory> changeHistories = changeHistoryRepository
+        .findAllByOrderIdAndStatus(procurementOrder.getId(), ChangeStatus.APPROVAL_ING);
     if (APPROVAL_OK.equals(approval.getResult())) {
       // 通过则修改变更历史状态
       approval.setResult("变更请求审批通过");
+      changeHistories.forEach(changeHistory -> changeHistory.setStatus(ChangeStatus.APPROVAL_OK));
     } else if (APPROVAL_PASS.equals(approval.getResult())) {
       // 不通过则恢复数据并修改变更历史状态
       approval.setResult("变更请求审批未通过");
+      changeHistories.forEach(c -> {
+        c.setStatus(ChangeStatus.APPROVAL_PASS);
+        // 复原数据
+        ProcurementMaterial p = procurementMaterialRepository
+            .findById(c.getProcurementMaterialId())
+            .orElseThrow(() -> new ResourceNotFoundException("变更历史关联的待采购物料查询失败！"));
+        p.setChargeNumber(c.getOldChargeNumber()).setChargeUnit(c.getOldChargeUnit())
+            .setProcurementNumber(c.getOldNumber()).setUnitPrice(c.getNewPrice());
+        procurementMaterialRepository.save(p);
+      });
     }
+    // 保存变更历史
+    changeHistoryRepository.saveAll(changeHistories);
+    // 设置订单状态
     procurementOrder.setApprovalStatus(ProcurementApprovalStatus.APPROVAL_OK)
         .setPlanStatus(ProcurementOrderPlanStatus.EFFECTIVE);
+    // 压入 JSONObject 并返回
     JSONObject result = new JSONObject();
     result.put("procurementOrder", procurementOrder);
     result.put("approval", approval);
@@ -133,15 +155,36 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * @param procurementOrder 采购订单
    * @param approval 审批信息
    */
-  private JSONObject approvalCancleProcurementOrder(ProcurementOrder procurementOrder,
+  private JSONObject approvalCancelProcurementOrder(ProcurementOrder procurementOrder,
       Approval approval) {
     if (APPROVAL_OK.equals(approval.getResult())) {
       approval.setResult("取消订单请求审批通过");
+      // 设置订单为已作废
+      procurementOrder.setPlanStatus(ProcurementOrderPlanStatus.CANCEL);
+      // 恢复订单下关联需求物资数据，解除占用
+      // 1.获取与需求物资关联的待采购物资列表
+      List<ProcurementMaterial> procurementMaterials = procurementMaterialRepository
+          .findAllByOrderIdAndPlanMaterialIdIsNotNull(procurementOrder.getId());
+      // 2.循环解除占用
+      procurementMaterials.forEach(p -> {
+        PlanMaterial planMaterial = planMaterialRepository
+            .findById(p.getPlanMaterialId())
+            .orElseThrow(() -> new ResourceNotFoundException("找不到关联的需求物料信息"));
+        // 接触关联需求物料的占用
+        planMaterial.setIsUseOrder(false);
+        planMaterialRepository.save(planMaterial);
+        p.setPlanMaterialId(null);
+      });
+      // 解除待采购和需求物资的关联
+      procurementMaterialRepository.saveAll(procurementMaterials);
     } else if (APPROVAL_PASS.equals(approval.getResult())) {
       approval.setResult("取消订单请求审批未通过");
+      // 恢复订单状态至取消前（审批通过/已生效）
+      procurementOrder.setPlanStatus(ProcurementOrderPlanStatus.EFFECTIVE);
     }
-    procurementOrder.setApprovalStatus(ProcurementApprovalStatus.APPROVAL_OK)
-        .setPlanStatus(ProcurementOrderPlanStatus.EFFECTIVE);
+    // 都是审批通过
+    procurementOrder.setApprovalStatus(ProcurementApprovalStatus.APPROVAL_OK);
+    // 压入 JSONObject 并返回
     JSONObject result = new JSONObject();
     result.put("procurementOrder", procurementOrder);
     result.put("approval", approval);
