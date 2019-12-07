@@ -69,4 +69,5 @@ logging:
     org.springframework.security: DEBUG
     in.gaks.oneyard: DEBUG
     org.springframework.context.support.[PostProcessorRegistrationDelegate$BeanPostProcessorChecker]: WARN
-  file: logs/one-yard.log
+  file:
+    path: logs

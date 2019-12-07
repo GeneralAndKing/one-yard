@@ -2,8 +2,6 @@ package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,12 +30,12 @@ public class ChangeHistory extends BaseEntity {
   /**
    * 订单id.
    */
-  private java.lang.Integer orderId;
+  private java.lang.Long orderId;
 
   /**
    * 物料id.
    */
-  private java.lang.Integer procurementMaterialId;
+  private java.lang.Long procurementMaterialId;
 
   /**
    * 原采购数量.

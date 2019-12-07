@@ -35,7 +35,7 @@ public class ProcurementMaterial extends BaseEntity {
   /**
    * 物料id.
    */
-  private java.lang.Integer materialId;
+  private java.lang.Long materialId;
 
   /**
    * 采购单位.

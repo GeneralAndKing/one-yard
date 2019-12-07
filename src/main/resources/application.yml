@@ -86,4 +86,3 @@ logging:
     org.springframework.context.support.[PostProcessorRegistrationDelegate$BeanPostProcessorChecker]: WARN
   file:
     path: logs
-    name: one-yard.log
