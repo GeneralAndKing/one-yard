@@ -1,5 +1,8 @@
 package in.gaks.oneyard.service.impl;
 
+import static in.gaks.oneyard.model.constant.OneYard.APPROVAL;
+import static in.gaks.oneyard.model.constant.OneYard.PROCUREMENT_ORDER;
+
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
 import com.google.common.collect.Sets.SetView;
@@ -65,7 +68,6 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   private final @NonNull ProcurementMaterialRepository procurementMaterialRepository;
   private final @NonNull PlanMaterialRepository planMaterialRepository;
   private final @NonNull OrderTermsRepository orderTermsRepository;
-  private final @NonNull ChangeHistoryRepository changeHistoryRepository;
   private final @NonNull ApprovalRepository approvalRepository;
   private final @NonNull SysUserRepository sysUserRepository;
   private final @NonNull NotificationRepository notificationRepository;
@@ -93,11 +95,11 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     } else if (ProcurementOrderPlanStatus.CANCEL.equals(status)) {
       result = approvalCancelProcurementOrder(procurementOrder, approval);
     } else {
-      result.put("procurementOrder", procurementOrder);
-      result.put("approval", approval);
+      result.put(PROCUREMENT_ORDER, procurementOrder);
+      result.put(APPROVAL, approval);
     }
-    procurementOrder = result.getObject("procurementOrder", ProcurementOrder.class);
-    approval = result.getObject("approval", Approval.class);
+    procurementOrder = result.getObject(PROCUREMENT_ORDER, ProcurementOrder.class);
+    approval = result.getObject(APPROVAL, Approval.class);
     // 获取通知接收方id
     SysUser user = sysUserRepository.findFirstByUsername(procurementOrder.getCreateUser())
         .orElseThrow(() -> new ResourceNotFoundException("采购计划员查询失败"));
@@ -148,8 +150,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
         .setPlanStatus(ProcurementOrderPlanStatus.EFFECTIVE);
     // 压入 JSONObject 并返回
     JSONObject result = new JSONObject();
-    result.put("procurementOrder", procurementOrder);
-    result.put("approval", approval);
+    result.put(PROCUREMENT_ORDER, procurementOrder);
+    result.put(APPROVAL, approval);
     return result;
   }
 
@@ -190,8 +192,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     procurementOrder.setApprovalStatus(ProcurementApprovalStatus.APPROVAL_OK);
     // 压入 JSONObject 并返回
     JSONObject result = new JSONObject();
-    result.put("procurementOrder", procurementOrder);
-    result.put("approval", approval);
+    result.put(PROCUREMENT_ORDER, procurementOrder);
+    result.put(APPROVAL, approval);
     return result;
   }
 
@@ -268,6 +270,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * @param materials 明细信息
    */
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void changeProcurementOrder(Long id, List<ProcurementMaterial> materials) {
     ProcurementOrder order = procurementOrderRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("采购订单 %s 未找到", id));
@@ -329,30 +332,30 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
       throw new ResourceErrorException("当前采购订单状态不对");
     }
     // 获取数据库待采购物料数据进行对比
-    List<ProcurementMaterial> procurementMaterialDB = procurementMaterialRepository
+    List<ProcurementMaterial> procurementMaterialDb = procurementMaterialRepository
         .findAllByOrderId(procurementOrderId);
     // set1 存放为数据库数据，
     HashSet<Long> set1 = new HashSet<>();
     HashSet<Long> set2 = new HashSet<>();
     // 遍历物料 ID 存入 Set
-    procurementMaterialDB.forEach(material -> set1.add(material.getId()));
+    procurementMaterialDb.forEach(material -> set1.add(material.getId()));
     materials.forEach(material -> set2.add(material.getId()));
     // 做差集
-    SetView differenceMaterials = Sets.difference(set1, set2);
+    SetView<Long> differenceMaterials = Sets.difference(set1, set2);
     // 执行删除
-    differenceMaterials.forEach(id -> deleteProcurementMaterial((Long) id));
+    differenceMaterials.forEach(this::deleteProcurementMaterial);
     // 清除 Set
     set1.clear();
     set2.clear();
     // 获取数据库订单条款数据进行对比
-    List<OrderTerms> orderTermsDB = orderTermsRepository.findAllByOrderId(procurementOrderId);
+    List<OrderTerms> orderTermsDb = orderTermsRepository.findAllByOrderId(procurementOrderId);
     // 遍历条款 ID 存入 Set
-    orderTermsDB.forEach(orderTerm -> set1.add(orderTerm.getId()));
+    orderTermsDb.forEach(orderTerm -> set1.add(orderTerm.getId()));
     orderTerms.forEach(orderTerm -> set2.add(orderTerm.getId()));
     // 做差集
-    SetView differenceOrderTerms = Sets.difference(set1, set2);
+    SetView<Long> differenceOrderTerms = Sets.difference(set1, set2);
     // 执行删除
-    differenceOrderTerms.forEach(id -> deleteOrderTerms(((Long) id)));
+    differenceOrderTerms.forEach(this::deleteOrderTerms);
   }
 
   /**

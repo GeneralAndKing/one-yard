@@ -1,8 +1,10 @@
 package in.gaks.oneyard.controller;
 
+import static in.gaks.oneyard.model.constant.OneYard.APPROVAL;
+import static in.gaks.oneyard.model.constant.OneYard.PLAN_MATERIAL;
+
 import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
-import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.PlanMaterial;
 import in.gaks.oneyard.model.helper.VerifyParameter;
@@ -29,7 +31,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RepositoryRestController
-@RequestMapping(OneYard.PLAN_MATERIAL)
+@RequestMapping(PLAN_MATERIAL)
 public class PlanMaterialController extends BaseController<PlanMaterial,
         PlanMaterialService, Long> {
 
@@ -45,8 +47,8 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
   public HttpEntity<?> backPlanOrMaterial(@NotNull @RequestBody JSONObject data) {
     planMaterialService.backPlanOrMaterial(
             data.getObject("flag", Boolean.class),
-            data.getObject("planMaterial", PlanMaterial.class),
-            data.getObject("approve", Approval.class)
+            data.getObject(PLAN_MATERIAL, PlanMaterial.class),
+            data.getObject(APPROVAL, Approval.class)
     );
     return ResponseEntity.ok().build();
   }
@@ -60,7 +62,7 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
   @VerifyParameter(required = {"planMaterial#物料为必填项", "ids#合并的物料id为必填项"})
   public HttpEntity<?> mergeMaterialPlan(@NotNull @RequestBody JSONObject data) {
     PlanMaterial planMaterial = planMaterialService
-            .mergeMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
+            .mergeMaterialPlan(data.getObject(PLAN_MATERIAL, PlanMaterial.class),
                     data.getJSONArray("ids").toJavaList(Long.class));
     return ResponseEntity.ok(planMaterial);
   }
@@ -74,7 +76,7 @@ public class PlanMaterialController extends BaseController<PlanMaterial,
   @VerifyParameter(required = {"planMaterial#被拆分的物料为必填项", "newPlanMaterials#拆分成的物料列表为必填项"})
   public HttpEntity<?> splitMaterialPlan(@NotNull @RequestBody JSONObject data) {
     List<PlanMaterial> planMaterials = planMaterialService
-            .splitMaterialPlan(data.getObject("planMaterial", PlanMaterial.class),
+            .splitMaterialPlan(data.getObject(PLAN_MATERIAL, PlanMaterial.class),
                     data.getJSONArray("newPlanMaterials").toJavaList(PlanMaterial.class));
     return ResponseEntity.ok(planMaterials);
   }

@@ -1,8 +1,11 @@
 package in.gaks.oneyard.controller;
 
+import static in.gaks.oneyard.model.constant.OneYard.APPROVAL;
+import static in.gaks.oneyard.model.constant.OneYard.ORDER_TERMS;
+import static in.gaks.oneyard.model.constant.OneYard.PROCUREMENT_ORDER;
+
 import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
-import in.gaks.oneyard.model.constant.OneYard;
 import in.gaks.oneyard.model.entity.Approval;
 import in.gaks.oneyard.model.entity.OrderTerms;
 import in.gaks.oneyard.model.entity.ProcurementMaterial;
@@ -30,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 @RequiredArgsConstructor
 @RepositoryRestController
-@RequestMapping(OneYard.PROCUREMENT_ORDER)
+@RequestMapping(PROCUREMENT_ORDER)
 public class ProcurementOrderController extends BaseController<ProcurementOrder,
     ProcurementOrderService, Long> {
 
@@ -46,8 +49,8 @@ public class ProcurementOrderController extends BaseController<ProcurementOrder,
   @VerifyParameter(required = {"procurementOrder#采购订单为必填项", "approval#审批表为必填项"})
   public HttpEntity<?> approvalMaterialOrder(@NotNull @RequestBody JSONObject data) {
     procurementOrderService.approvalProcurementOrder(
-        data.getObject("procurementOrder", ProcurementOrder.class),
-        data.getObject("approval", Approval.class));
+        data.getObject(PROCUREMENT_ORDER, ProcurementOrder.class),
+        data.getObject(APPROVAL, Approval.class));
     return ResponseEntity.ok().build();
   }
 
@@ -75,9 +78,9 @@ public class ProcurementOrderController extends BaseController<ProcurementOrder,
       "orderTerms#订单条款为必填项"})
   public HttpEntity<?> materialOrderCreate(@NotNull @RequestBody JSONObject data) {
     return ResponseEntity.ok(procurementOrderService.saveProcurementOrder(
-        data.getObject("procurementOrder", ProcurementOrder.class),
+        data.getObject(PROCUREMENT_ORDER, ProcurementOrder.class),
         data.getJSONArray("procurementMaterials").toJavaList(ProcurementMaterial.class),
-        data.getJSONArray("orderTerms").toJavaList(OrderTerms.class)
+        data.getJSONArray(ORDER_TERMS).toJavaList(OrderTerms.class)
     ));
   }
 

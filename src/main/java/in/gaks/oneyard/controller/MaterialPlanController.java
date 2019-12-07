@@ -1,5 +1,7 @@
 package in.gaks.oneyard.controller;
 
+import static in.gaks.oneyard.model.constant.OneYard.APPROVAL;
+
 import com.alibaba.fastjson.JSONObject;
 import in.gaks.oneyard.base.BaseController;
 import in.gaks.oneyard.model.constant.OneYard;
@@ -77,7 +79,7 @@ public class MaterialPlanController extends BaseController<MaterialDemandPlan,
   public HttpEntity<?> approvalMaterialPlan(@NotNull @RequestBody JSONObject data) {
     materialPlanService.approvalMaterialPlan(
         data.getObject("materialPlan", MaterialDemandPlan.class),
-        data.getObject("approval", Approval.class));
+        data.getObject(APPROVAL, Approval.class));
     return ResponseEntity.ok().build();
   }
 
