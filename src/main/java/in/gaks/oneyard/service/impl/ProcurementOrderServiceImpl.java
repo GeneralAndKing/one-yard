@@ -176,7 +176,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
         PlanMaterial planMaterial = planMaterialRepository
             .findById(p.getPlanMaterialId())
             .orElseThrow(() -> new ResourceNotFoundException("找不到关联的需求物料信息"));
-        // 接触关联需求物料的占用
+        // 解除关联需求物料的占用
         planMaterial.setIsUseOrder(false);
         planMaterialRepository.save(planMaterial);
         p.setPlanMaterialId(null);
@@ -368,12 +368,12 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     ProcurementMaterial procurementMaterial = procurementMaterialRepository
         .findById(procurementMaterialId)
         .orElseThrow(() -> new ResourceNotFoundException("找不到该待采购物料"));
-    // 若 planMaterialId 不为空说明是选单的数据，需接触关联
+    // 若 planMaterialId 不为空说明是选单的数据，需解除关联
     if (Objects.nonNull(procurementMaterial.getPlanMaterialId())) {
       PlanMaterial planMaterial = planMaterialRepository
           .findById(procurementMaterial.getPlanMaterialId())
           .orElseThrow(() -> new ResourceNotFoundException("找不到关联的需求物料信息"));
-      // 接触关联需求物料的占用
+      // 解除关联需求物料的占用
       planMaterial.setIsUseOrder(false);
       planMaterialRepository.save(planMaterial);
     }
