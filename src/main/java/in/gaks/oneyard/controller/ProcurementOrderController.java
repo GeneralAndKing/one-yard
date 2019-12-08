@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.rest.webmvc.RepositoryRestController;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -87,15 +86,14 @@ public class ProcurementOrderController extends BaseController<ProcurementOrder,
   /**
    * 变更采购订单.
    *
-   * @param id   采购订单 id
    * @param data 明细信息
    * @return 响应
    */
-  @PostMapping("/change/{id}")
-  @VerifyParameter(required = "procurementMaterials#采购物料为必填项")
-  public HttpEntity<?> materialOrderChange(@PathVariable("id") Long id,
-      @NonNull @RequestBody JSONObject data) {
-    procurementOrderService.changeProcurementOrder(id,
+  @PostMapping("/change")
+  @VerifyParameter(required = "procurementMaterials#采购物料为必填项", number = "id|#id只能为数字")
+  public HttpEntity<?> materialOrderChange(@NonNull @RequestBody JSONObject data) {
+    procurementOrderService.changeProcurementOrder(
+        data.getLong("id"),
         data.getJSONArray("procurementMaterials").toJavaList(ProcurementMaterial.class));
     return ResponseEntity.ok().build();
   }
