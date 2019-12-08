@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.2.1.RELEASE'
+        springBootVersion = '2.2.2.RELEASE'
     }
     repositories {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
@@ -12,7 +12,7 @@ buildscript {
 }
 
 plugins {
-    id 'org.springframework.boot' version '2.2.1.RELEASE'
+    id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
     id 'java'
     id 'idea'
@@ -46,7 +46,6 @@ allprojects {
 
     ext {
         set('springCloudVersion', "Hoxton.RC1")
-        set('springSecurityOauth2Version', "2.4.0.RELEASE")
         set('guavaVersion', "28.1-jre")
         set('gsonVersion', "2.8.6")
         set('jetbrainsVersion', "17.0.0")
@@ -82,7 +81,7 @@ dependencies {
             "com.qiniu:qiniu-java-sdk:${qiniuVersion}"
     )
     implementation(
-            "org.springframework.security.oauth:spring-security-oauth2:${springSecurityOauth2Version}",
+            "org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}",
             "org.springframework.boot:spring-boot-starter-security",
             'org.springframework.boot:spring-boot-starter-websocket',
             'org.springframework.boot:spring-boot-starter-actuator',
@@ -94,9 +93,6 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-mail',
             'org.springframework.data:spring-data-rest-hal-explorer'
     )
-    implementation("org.springframework.security.oauth.boot:spring-security-oauth2-autoconfigure:${springBootVersion}") {
-        exclude group: 'org.springframework.security.oauth', module: 'spring-security-oauth2'
-    }
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
