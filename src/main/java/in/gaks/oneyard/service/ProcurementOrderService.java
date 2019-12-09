@@ -48,4 +48,11 @@ public interface ProcurementOrderService extends BaseService<ProcurementOrder, L
    * @param materials 明细信息
    */
   void changeProcurementOrder(Long id, List<ProcurementMaterial> materials);
+
+  /**
+   * 删除采购订单.
+   *
+   * @param id 采购订单id
+   */
+  void deleteProcurementOrder(Long id);
 }

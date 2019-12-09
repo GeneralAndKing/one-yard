@@ -78,7 +78,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * 采购部门主管审批采购订单.
    *
    * @param procurementOrder 采购订单
-   * @param approval         审批信息
+   * @param approval 审批信息
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -89,14 +89,25 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     // 根据状态判断审批类型
     ProcurementOrderPlanStatus status = procurementOrder.getPlanStatus();
     JSONObject result = new JSONObject();
-    // 如果是更改订单审批，审批通过时需要将变更信息
     if (ProcurementOrderPlanStatus.CHANGED.equals(status)) {
+      // 如果是更改订单审批，审批通过时需要将变更信息
       result = approvalChangeProcurementOrder(procurementOrder, approval);
-    } else if (ProcurementOrderPlanStatus.CANCEL.equals(status)) {
+    } else if (ProcurementOrderPlanStatus.APPROVAL_CANCEL.equals(status)) {
+      // 如果是取消订单审批，需要解除关联物料
       result = approvalCancelProcurementOrder(procurementOrder, approval);
-    } else {
+    } else if (ProcurementOrderPlanStatus.APPROVAL.equals(status)) {
+      // 正常审批
+      if (APPROVAL_OK.equals(approval.getResult())) {
+        procurementOrder.setPlanStatus(ProcurementOrderPlanStatus.EFFECTIVE);
+        procurementOrder.setApprovalStatus(ProcurementApprovalStatus.APPROVAL_OK);
+      } else if (APPROVAL_PASS.equals(approval.getResult())) {
+        procurementOrder.setPlanStatus(ProcurementOrderPlanStatus.NO_SUBMIT);
+        procurementOrder.setApprovalStatus(ProcurementApprovalStatus.APPROVAL_NO);
+      }
       result.put(PROCUREMENT_ORDER, procurementOrder);
       result.put(APPROVAL, approval);
+    } else {
+      throw new ResourceErrorException("当前订单状态不正确，不可审批！");
     }
     procurementOrder = result.getObject(PROCUREMENT_ORDER, ProcurementOrder.class);
     approval = result.getObject(APPROVAL, Approval.class);
@@ -119,7 +130,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * 变更订单审批.
    *
    * @param procurementOrder 采购订单
-   * @param approval         审批信息
+   * @param approval 审批信息
    */
   private JSONObject approvalChangeProcurementOrder(ProcurementOrder procurementOrder,
       Approval approval) {
@@ -159,7 +170,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * 取消订单审批.
    *
    * @param procurementOrder 采购订单
-   * @param approval         审批信息
+   * @param approval 审批信息
    */
   private JSONObject approvalCancelProcurementOrder(ProcurementOrder procurementOrder,
       Approval approval) {
@@ -220,8 +231,8 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
    * 保存采购订单表.
    *
    * @param procurementOrder 采购订单
-   * @param materials        采购物料
-   * @param orderTerms       订单条款
+   * @param materials 采购物料
+   * @param orderTerms 订单条款
    */
   @Override
   @Transactional(rollbackOn = Exception.class)
@@ -266,7 +277,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   /**
    * 变更采购订单.
    *
-   * @param id        采购订单 id
+   * @param id 采购订单 id
    * @param materials 明细信息
    */
   @Override
@@ -315,11 +326,40 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   }
 
   /**
+   * 删除采购订单.
+   *
+   * @param id 采购订单id
+   */
+  @Override
+  public void deleteProcurementOrder(Long id) {
+    ProcurementOrder procurementOrder = procurementOrderRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("找不到该采购订单。"));
+    // 1.获取与需求物资关联的待采购物资列表
+    List<ProcurementMaterial> procurementMaterials = procurementMaterialRepository
+        .findAllByOrderIdAndPlanMaterialIdIsNotNull(id);
+    // 2.循环解除占用
+    procurementMaterials.forEach(p -> {
+      PlanMaterial planMaterial = planMaterialRepository
+          .findById(p.getPlanMaterialId())
+          .orElseThrow(() -> new ResourceNotFoundException("找不到关联的需求物料信息"));
+      // 解除关联需求物料的占用
+      planMaterial.setIsUseOrder(false);
+      planMaterialRepository.save(planMaterial);
+      p.setPlanMaterialId(null).setIsEnable(false);
+    });
+    // 解除待采购和需求物资的关联
+    procurementMaterialRepository.saveAll(procurementMaterials);
+    // 设置订单状态
+    procurementOrder.setPlanStatus(ProcurementOrderPlanStatus.CANCEL).setIsEnable(false);
+    procurementOrderRepository.save(procurementOrder);
+  }
+
+  /**
    * 检查无效的物料和条款数据从数据库中逻辑删除.
    *
    * @param procurementOrderId 订单id
-   * @param materials          采购订单物料
-   * @param orderTerms         订单条款
+   * @param materials 采购订单物料
+   * @param orderTerms 订单条款
    */
   private void checkProcurementOrder(Long procurementOrderId, List<ProcurementMaterial> materials,
       List<OrderTerms> orderTerms) {
@@ -398,10 +438,10 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
   /**
    * 构造通知.
    *
-   * @param status    审批状态/类型
-   * @param res       审批意见
+   * @param status 审批状态/类型
+   * @param res 审批意见
    * @param orderName 订单名称
-   * @param recId     接受者id
+   * @param recId 接受者id
    * @return 通知对象
    */
   private Notification constructNotification(ProcurementOrderPlanStatus status,

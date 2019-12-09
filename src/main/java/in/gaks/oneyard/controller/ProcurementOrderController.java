@@ -97,4 +97,17 @@ public class ProcurementOrderController extends BaseController<ProcurementOrder,
         data.getJSONArray("procurementMaterials").toJavaList(ProcurementMaterial.class));
     return ResponseEntity.ok().build();
   }
+
+  /**
+   * 删除采购订单.
+   *
+   * @param data 明细信息
+   * @return 响应
+   */
+  @PostMapping("/delete")
+  @VerifyParameter(number = "id|#id只能为数字")
+  public HttpEntity<?> deleteProcurementOrder(@NonNull @RequestBody JSONObject data) {
+    procurementOrderService.deleteProcurementOrder(data.getLong("id"));
+    return ResponseEntity.ok().build();
+  }
 }
