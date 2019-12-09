@@ -69,13 +69,13 @@ public class ProcurementOrder extends BaseEntity {
   /**
    * 计划状态： 待提交，提交审批，已关闭，未完成，已完成，已变更，已生效，已作废.
    */
-  @Enumerated(EnumType.ORDINAL)
+  @Enumerated(EnumType.STRING)
   private ProcurementOrderPlanStatus planStatus;
 
   /**
    * 审批状态： 0 未提交 1 审批中 2 审批退回 3 审批通过 4已失效.
    */
-  @Enumerated(EnumType.ORDINAL)
+  @Enumerated(EnumType.STRING)
   private ProcurementApprovalStatus approvalStatus;
 
 }
