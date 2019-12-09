@@ -457,7 +457,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
         name = NOTIFICATION_NAME_CHANGED_PASS;
         msg = "提交的更改订单的请求因为某些原因审批未通过！（具体请查看订单详情页->审批流程）";
       }
-    } else if (ProcurementOrderPlanStatus.CANCEL.equals(status)) {
+    } else if (ProcurementOrderPlanStatus.APPROVAL_CANCEL.equals(status)) {
       if (APPROVAL_OK.equals(res)) {
         name = NOTIFICATION_NAME_CANCEL_OK;
         msg = "提交的取消订单的请求审批通过了！订单已失效！";
