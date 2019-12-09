@@ -17,13 +17,9 @@ public enum ProcurementOrderPlanStatus {
    */
   APPROVAL("提交审批"),
   /**
-   * 已关闭.
+   * 取消审批.
    */
-  CLOSE("已关闭"),
-  /**
-   * 未完成.
-   */
-  UNFINISHED("未完成"),
+  APPROVAL_CANCEL("取消审批"),
   /**
    * 已完成.
    */
