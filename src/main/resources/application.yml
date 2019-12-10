@@ -78,7 +78,7 @@ application:
     bucket: resource-pic
     domain: q0zlaui5t.bkt.clouddn.com
     dir-name: oneYard
-    host: http://q0zlaui5t.bkt.clouddn.com/
+    host: http://image.japoul.cn/
 logging:
   level:
     org.springframework.security: DEBUG
