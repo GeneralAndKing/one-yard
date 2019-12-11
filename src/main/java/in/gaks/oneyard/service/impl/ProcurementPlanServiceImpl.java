@@ -78,7 +78,9 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
             .searchByProcurementPlanIdsAndSupplyMode(procurementIds, plan.getMaterialId(), "采购");
         if (Objects.nonNull(nums)) {
           for (Long n : nums) {
-            inTransitNum += n;
+            if (n != null) {
+              inTransitNum += n;
+            }
           }
         }
       }
@@ -257,7 +259,7 @@ public class ProcurementPlanServiceImpl extends BaseServiceImpl<ProcurementPlanR
     ProcurementPlan procurementPlan = new ProcurementPlan();
     procurementPlan.setPlanType("紧急采购计划")
         .setApprovalStatus(ApprovalStatus.APPROVAL_OK)
-        .setPlanStatus(PlanStatus.PROCUREMENT_OK)
+        .setPlanStatus(PlanStatus.FINALLY)
         .setName(planName.concat("(紧急)"));
     procurementPlanRepository.save(procurementPlan);
     return procurementPlan.getId();
