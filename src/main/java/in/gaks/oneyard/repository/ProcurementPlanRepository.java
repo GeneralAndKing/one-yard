@@ -28,10 +28,6 @@ public interface ProcurementPlanRepository extends BaseRepository<ProcurementPla
    * @return 。
    */
   @RestResource(path = "byStatus")
-  @Query(value = "select p.id, p.name from procurement_plan p "
-      + "where p.plan_status = (:planStatus) and p.approval_status = (:approvalStatus) "
-      + "and p.plan_type != '紧急采购计划' and p.is_enable = 1",
-      nativeQuery = true)
   List<ProcurementPlan> findAllByPlanStatusAndApprovalStatus(
       @Param("planStatus") PlanStatus planStatus,
       @Param("approvalStatus") ApprovalStatus approvalStatus);
