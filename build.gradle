@@ -151,7 +151,7 @@ task showLog {
     doLast {
         ssh.run {
             session(remotes.cloud) {
-                def log =  execute 'sudo journalctl -u one-yard'
+                def log =  execute 'cat /home/ec2-user/logs/spring.log'
                 println "获取日志： ${log}"
             }
         }
