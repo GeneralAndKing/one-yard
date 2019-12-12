@@ -26,5 +26,3 @@ logging:
     org.springframework.security: DEBUG
     in.gaks.oneyard: DEBUG
     org.springframework.context.support.[PostProcessorRegistrationDelegate$BeanPostProcessorChecker]: WARN
-  file:
-    path: logs

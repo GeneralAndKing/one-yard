@@ -21,6 +21,8 @@ spring:
         login-password: gak.123456789
         login-username: admin
         url-pattern: /druid/*
+        allow:
+        deny:
   jpa:
     open-in-view: true
   data:

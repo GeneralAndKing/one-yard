@@ -19,8 +19,5 @@ application:
   code:
     email-code-validity-minute: 15
     email-enable: true
-logging:
-  file:
-    path: logs
 server:
   port: 10011
