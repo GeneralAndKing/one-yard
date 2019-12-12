@@ -35,7 +35,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http.requestMatchers().antMatchers(HttpMethod.OPTIONS, "/**")
         .and()
-        .csrf().disable();
+        .cors()
+        .and()
+        .csrf()
+        .disable();
   }
 
   /**
