@@ -294,6 +294,7 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
         .collect(Collectors.toList());
     // 过滤出数据库中有的数据，并设置相应状态
     List<ProcurementMaterial> materialList = materials.stream()
+        .filter(material -> ProcurementMaterialStatus.CHANGED.equals(material.getStatus()))
         .filter(material -> existIds.contains(material.getId()))
         .map(material -> material.setStatus(ProcurementMaterialStatus.CHANGED))
         .collect(Collectors.toList());
@@ -367,8 +368,9 @@ public class ProcurementOrderServiceImpl extends BaseServiceImpl<ProcurementOrde
     ProcurementOrder procurementOrder = procurementOrderRepository
         .findById(procurementOrderId)
         .orElseThrow(() -> new ResourceNotFoundException("查询采购订单失败"));
-    if (!ProcurementApprovalStatus.NO_SUBMIT.equals(procurementOrder.getApprovalStatus())
-        || !ProcurementOrderPlanStatus.NO_SUBMIT.equals(procurementOrder.getPlanStatus())) {
+    if (!ProcurementOrderPlanStatus.NO_SUBMIT.equals(procurementOrder.getPlanStatus())
+        || (!ProcurementApprovalStatus.NO_SUBMIT.equals(procurementOrder.getApprovalStatus())
+        && !ProcurementApprovalStatus.APPROVAL_NO.equals(procurementOrder.getApprovalStatus()))) {
       throw new ResourceErrorException("当前采购订单状态不对");
     }
     // 获取数据库待采购物料数据进行对比

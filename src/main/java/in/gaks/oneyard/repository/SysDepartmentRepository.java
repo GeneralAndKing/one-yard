@@ -30,4 +30,11 @@ public interface SysDepartmentRepository extends BaseRepository<SysDepartment, L
       nativeQuery = true)
   List<SysDepartment> searchByRoles(@Param("ids") List<Long> ids);
 
+  @RestResource(path = "getDepartmentName")
+  @Query(value = "select d.name from sys_department d, plan_material pm, "
+      + "material_demand_plan mdp where pm.plan_id = (:planId) and mdp.id = pm.plan_id "
+      + "and d.id = mdp.department_id and pm.is_enable = 1  and d.is_enable = 1 "
+      + "and mdp.is_enable = 1 limit 1 "
+      , nativeQuery = true)
+  String getDepartmentNameByDepartmentId(@Param("planId") Long planId);
 }

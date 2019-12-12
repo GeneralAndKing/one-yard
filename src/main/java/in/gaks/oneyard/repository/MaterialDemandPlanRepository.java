@@ -62,4 +62,5 @@ public interface MaterialDemandPlanRepository extends BaseRepository<MaterialDem
    */
   @RestResource(path = "count")
   Long countAllByPlanStatusNotNull();
+
 }
