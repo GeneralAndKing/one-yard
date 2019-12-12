@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:mysql://118.24.1.170:3306/gak?useUnicode=true&characterEncoding=UTF-8&useOldAliasMetadataBehavior=true&autoReconnect=true&serverTimezone=UTC
+    username: gak
+    password:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  mail:
+    test-connection: true
+  profiles: dev
+application:
+  security:
+    enable: false
+    client-id: gak
+    client-secret: $2a$12$cLJL7vsJLzM07g83pV7FBeosMxwi0TWm1N70GskkmG2CIcWCFbLYK
+    access-token-validity-hour: 24
+    refresh-token-validity-hour: 24
+  code:
+    email-code-validity-minute: 30
+    email-enable: false
+logging:
+  level:
+    org.springframework.security: DEBUG
+    in.gaks.oneyard: DEBUG
+    org.springframework.context.support.[PostProcessorRegistrationDelegate$BeanPostProcessorChecker]: WARN
+  file:
+    path: logs

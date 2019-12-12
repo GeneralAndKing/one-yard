@@ -14,6 +14,7 @@ buildscript {
 plugins {
     id 'org.springframework.boot' version '2.2.2.RELEASE'
     id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id "org.hidetake.ssh" version "2.10.1"
     id 'java'
     id 'idea'
 }
@@ -109,5 +110,50 @@ dependencies {
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
+}
+
+ssh.settings {
+    knownHosts = allowAnyHosts
+}
+
+remotes {
+    cloud {
+    }
+}
+
+task copy(dependsOn: bootJar) {
+    doLast {
+        ssh.run {
+            session(remotes.cloud) {
+                def result = execute 'rm -rf one-yard-1.0.0-SNAPSHOT.jar'
+                println "delete exist jar ${result}"
+                println 'copy jar'
+                put from: buildDir.toString() + "/libs/one-yard-1.0.0-SNAPSHOT.jar", into: "/home/ec2-user"
+                println "copy ok"
+            }
+        }
+    }
+}
+
+task restart(dependsOn: copy) {
+    doLast {
+        ssh.run {
+            session(remotes.cloud) {
+                println 'restart service'
+                execute 'sudo systemctl restart one-yard'
+            }
+        }
+    }
+}
+
+task showLog {
+    doLast {
+        ssh.run {
+            session(remotes.cloud) {
+                def log =  execute 'sudo journalctl -u one-yard'
+                println "获取日志： ${log}"
+            }
+        }
     }
 }
