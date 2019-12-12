@@ -29,4 +29,12 @@ public interface ProcurementOrderRepository extends BaseRepository<ProcurementOr
       @Param("planStatus") String planStatus,
       @Param("approvalStatus") String approvalStatus);
 
+  /**
+   * 根据createUser去查询采购订单
+   * @param createUser 创建用户名
+   * @return 订单列表
+   */
+  @RestResource(path = "byCreateUser")
+  List<ProcurementOrder> findAllByCreateUser(@Param("createUser") String createUser);
+
 }
