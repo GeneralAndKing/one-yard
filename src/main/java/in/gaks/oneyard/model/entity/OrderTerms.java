@@ -2,8 +2,6 @@ package in.gaks.oneyard.model.entity;
 
 import in.gaks.oneyard.base.BaseEntity;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -47,7 +45,7 @@ public class OrderTerms extends BaseEntity {
   /**
    * 条款内容.
    */
-  private java.lang.String content;
+  private java.lang.String detail;
 
   /**
    * 说明.
