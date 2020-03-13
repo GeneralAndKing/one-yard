@@ -1,3 +1,5 @@
 = one-yard
 
-贵州省”一码当先“比赛项目：https://generalandking.github.io/one-
+智能制造协同平台
+
+贵州省”一码当先“比赛项目：https://generalandking.github.io/one-yard-ui/
